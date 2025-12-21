@@ -1081,14 +1081,4 @@ h1:hover, h2:hover, h3:hover {
   max-width: 100%;
 }
 
-/* Style the comment section to match glass effect */
-:root {
-  --giscus-bg-primary: rgba(255, 255, 255, 0.03);
-  --giscus-border: rgba(255, 255, 255, 0.1);
-  --giscus-text: var(--fg);
-}
-
-[data-theme="light"] {
-  --giscus-bg-primary: rgba(0, 0, 0, 0.02);
-  --giscus-border: rgba(0, 0, 0, 0.08);
-}
+/* Giscus automatically adapts to theme via data-theme="preferred_color_scheme" */

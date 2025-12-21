@@ -1,0 +1,23 @@
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="color-scheme" content="dark light" />
+<meta name="theme-color" content="#2d2438" media="(prefers-color-scheme: dark)" />
+<meta name="theme-color" content="#f5f1e8" media="(prefers-color-scheme: light)" />
+
+<title>
+  {% if page.title %}{{ page.title }} · {% endif %}{{ site.title | default: "Portfolio" }}
+</title>
+{% if site.description %}
+  <meta name="description" content="{{ site.description }}" />
+{% endif %}
+
+<!-- Preconnect for performance -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+<!-- Inter font for modern, clean typography -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+<link rel="stylesheet" href="/assets/css/site.css" />
+
+

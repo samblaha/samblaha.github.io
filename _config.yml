@@ -1,0 +1,10 @@
+title: "Desktop Labs"
+description: "Project-first portfolio"
+permalink: pretty
+
+collections:
+  projects:
+    output: true
+    permalink: /p/:name/
+
+

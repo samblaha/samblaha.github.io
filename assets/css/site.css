@@ -517,6 +517,15 @@ h1:hover, h2:hover, h3:hover {
   will-change: transform, border-radius;
   position: relative;
   overflow: visible;
+  min-height: 400px;
+}
+
+.card--small {
+  min-height: 350px;
+}
+
+.card--large {
+  min-height: 500px;
 }
 
 .card:hover {
@@ -1053,6 +1062,149 @@ h1:hover, h2:hover, h3:hover {
   }
 }
 
+/* --- Card Flip Styles --- */
+.card__inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: inherit;
+  transform-style: preserve-3d;
+  transition: transform 0.8s var(--blob);
+}
+
+.card[data-flippable]:hover .card__inner,
+.card[data-flippable].is-flipped .card__inner {
+  transform: rotateY(180deg);
+}
+
+.card__front,
+.card__back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  min-height: inherit;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.card__back {
+  transform: rotateY(180deg);
+}
+
+.card__back-content {
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  position: relative;
+}
+
+.card__status {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  font-weight: 700;
+  margin-bottom: 20px;
+  align-self: flex-start;
+  transition: all 0.4s var(--smooth);
+}
+
+.card__status--in-progress {
+  background: var(--accent-glow);
+  border: 1px solid var(--accent-dim);
+  color: var(--accent);
+}
+
+.card__status--completed {
+  background: rgba(34, 197, 94, 0.2);
+  border: 1px solid rgba(34, 197, 94, 0.4);
+  color: #22c55e;
+}
+
+.card__status--archived {
+  background: var(--accent-glow);
+  border: 1px solid var(--accent-dim);
+  color: var(--muted);
+}
+
+.card__back-title {
+  font-size: 1.75rem;
+  margin-bottom: 16px;
+  color: var(--fg);
+  transition: all 0.4s var(--smooth);
+}
+
+.card__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.card__tech-tag {
+  display: inline-block;
+  padding: 4px 12px;
+  background: var(--accent-glow);
+  border: 1px solid var(--accent-dim);
+  border-radius: 6px;
+  font-size: 0.75rem;
+  color: var(--accent);
+  font-weight: 500;
+  transition: all 0.4s var(--smooth);
+}
+
+.card__back-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: auto;
+  padding-top: 24px;
+}
+
+.card__back-actions .btn {
+  flex: 1;
+  min-width: 120px;
+  text-align: center;
+}
+
+.card__flip-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 2px solid var(--glass-border);
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.4s var(--smooth);
+  z-index: 10;
+}
+
+.card__flip-btn:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #ffffff;
+  transform: rotate(180deg);
+  box-shadow: 0 4px 16px var(--accent-glow);
+}
+
+.card__flip-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
 /* --- Print Styles --- */
 @media print {
   .bg,
@@ -1082,3 +1234,12 @@ h1:hover, h2:hover, h3:hover {
 }
 
 /* Giscus automatically adapts to theme via data-theme="preferred_color_scheme" */
+
+/* --- Ideas Section Glass Override --- */
+#ideas .glass {
+  color: #2d2621;
+}
+
+[data-theme="light"] #ideas .glass {
+  color: #2d2621;
+}

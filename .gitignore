@@ -4,5 +4,8 @@ _site/
 .sass-cache/
 .bundle/
 vendor/bundle/
-
-
+node_modules/
+package.json
+package-lock.json
+scrollcraft/lab/
+scrollcraft/builds/*/lab/

@@ -1,8 +1,8 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta name="color-scheme" content="dark light" />
-<meta name="theme-color" content="#2d2438" media="(prefers-color-scheme: dark)" />
-<meta name="theme-color" content="#f5f1e8" media="(prefers-color-scheme: light)" />
+<meta name="color-scheme" content="light dark" />
+<meta name="theme-color" content="#fff6e9" media="(prefers-color-scheme: light)" />
+<meta name="theme-color" content="#171233" media="(prefers-color-scheme: dark)" />
 
 <title>
   {% if page.title %}{{ page.title }} · {% endif %}{{ site.title | default: "Portfolio" }}
@@ -15,9 +15,15 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
-<!-- Inter font for modern, clean typography -->
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<!-- Bricolage Grotesque for loud headlines, Space Grotesk for body, Space Mono for labels -->
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
 
 <link rel="stylesheet" href="/assets/css/site.css" />
 
-
+<!-- Set theme before first paint to avoid flashing -->
+<script>
+  (function () {
+    var saved = localStorage.getItem("theme");
+    document.documentElement.setAttribute("data-theme", saved === "dark" ? "dark" : "light");
+  })();
+</script>

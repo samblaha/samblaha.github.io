@@ -4,38 +4,40 @@ layout: default
 
 <article class="project">
   <header class="project__header">
-    <div style="margin-bottom: 40px;">
-      <a href="/#projects" class="nav__link" style="display: flex; align-items: center; gap: 8px;">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M10 12L6 8L10 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-        Back to work
-      </a>
-    </div>
-    
-    <h1 class="display-1" style="margin-bottom: 48px;">{{ page.title | default: page.name }}</h1>
-    
-    <div class="grid" style="gap: 40px;">
-      <div class="project__meta-item" style="grid-column: span 6; @media (min-width: 768px) { grid-column: span 3; }">
-        <span class="project__meta-label">Role</span>
-        <span class="project__meta-value">{{ page.tags | join: ", " }}</span>
+    <a href="/#projects" class="project__back">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M10 12L6 8L10 4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Back to the workbench
+    </a>
+
+    {% if page.status %}
+      <span class="sticker sticker--yellow project__status">{{ page.status }}</span>
+    {% endif %}
+
+    <h1 class="display-1 project__title">{{ page.title | default: page.name }}</h1>
+
+    <div class="project__meta">
+      {% if page.tags %}
+      <div class="project__meta-item">
+        <span class="project__meta-label">Built with</span>
+        <div class="project__chips">
+          {% for tag in page.tags %}
+            <span class="chip">{{ tag }}</span>
+          {% endfor %}
+        </div>
       </div>
-      <div class="project__meta-item" style="grid-column: span 6; @media (min-width: 768px) { grid-column: span 3; }">
+      {% endif %}
+      <div class="project__meta-item">
         <span class="project__meta-label">Date</span>
         <span class="project__meta-value">{{ page.date | date: "%Y" }}</span>
       </div>
-      {% if page.status %}
-      <div class="project__meta-item" style="grid-column: span 6; @media (min-width: 768px) { grid-column: span 3; }">
-        <span class="project__meta-label">Status</span>
-        <span class="project__meta-value">{{ page.status }}</span>
-      </div>
-      {% endif %}
       {% if page.repo or page.demo %}
-      <div class="project__meta-item" style="grid-column: span 6; @media (min-width: 768px) { grid-column: span 3; }">
+      <div class="project__meta-item">
         <span class="project__meta-label">Links</span>
-        <div style="display: flex; gap: 16px;">
-          {% if page.repo %}<a href="{{ page.repo }}" class="nav__link">Source</a>{% endif %}
-          {% if page.demo %}<a href="{{ page.demo }}" class="nav__link">Live Demo</a>{% endif %}
+        <div class="project__chips">
+          {% if page.repo %}<a href="{{ page.repo }}" class="chip chip--link">Source ↗</a>{% endif %}
+          {% if page.demo %}<a href="{{ page.demo }}" class="chip chip--link">Live Demo ↗</a>{% endif %}
         </div>
       </div>
       {% endif %}
@@ -43,19 +45,19 @@ layout: default
   </header>
 
   {% if page.hero %}
-  <div class="glass" style="margin-bottom: 80px; border-radius: var(--r-lg);">
+  <div class="project__hero panel">
     <img src="{{ page.hero }}" alt="" style="width: 100%; display: block; aspect-ratio: 21/9; object-fit: cover;">
   </div>
   {% endif %}
 
-  <div class="prose" style="max-width: 800px; margin: 0 auto 120px;">
+  <div class="prose project__body">
     {{ content }}
   </div>
 
   {% if page.gallery %}
-  <div class="grid" style="margin-bottom: 120px;">
+  <div class="project__gallery">
     {% for img in page.gallery %}
-    <div class="glass" style="grid-column: span 12; @media (min-width: 768px) { grid-column: span 6; }">
+    <div class="panel project__gallery-item">
       <img src="{{ img }}" alt="" style="width: 100%; display: block;">
     </div>
     {% endfor %}

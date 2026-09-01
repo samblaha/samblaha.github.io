@@ -1,0 +1,420 @@
+/* ============================================================================
+   Desktop Labs · Field Notes — page styles on top of scrollcraft.css
+   Grammar: chaptered editorial. World: technical drawing on warm paper,
+   with cyanotype plates for chapter 02 and the colophon.
+   ========================================================================== */
+
+:root {
+  /* Colour roles: warm paper, near-black ink, cobalt accent */
+  --sc-canvas:     #f6eedf;
+  --sc-surface:    #fdf8ec;
+  --sc-ink:        #211c14;
+  --sc-ink-soft:   #6d6350;
+  --sc-accent:     #2743e0;
+  --sc-accent-ink: #f6eedf;
+
+  --sc-font-display: "Archivo", system-ui, sans-serif;
+  --sc-font-text:    "Newsreader", Georgia, serif;
+  --sc-font-mono:    "Archivo", system-ui, sans-serif;
+
+  /* Shadows tinted to the paper hue, halved for a light canvas */
+  --sc-shadow-color: 38 30% 12%;
+  --sc-e1: 0 1px 2px hsl(var(--sc-shadow-color) / 0.10),
+           0 2px 6px -1px hsl(var(--sc-shadow-color) / 0.08);
+  --sc-e2: 0 2px 4px hsl(var(--sc-shadow-color) / 0.09),
+           0 8px 18px -4px hsl(var(--sc-shadow-color) / 0.12);
+
+  /* Edge light inverted for paper (an ink lip reads as dirt here) */
+  --sc-edge: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+
+  /* Page-local tokens */
+  --lab-paper-2: #efe4ce;              /* the deeper paper stop            */
+  --lab-plate:   #14224e;              /* the cyanotype plate              */
+  --lab-plate-2: #101b3f;              /* the colophon plate               */
+  --lab-bone:    #ede9db;              /* ink on the plates                */
+  --lab-bone-soft: #b8bed4;            /* secondary ink on the plates      */
+  --lab-ice:     #a9bcff;              /* the accent's dark-ground stop    */
+}
+
+body { font-weight: 450; }
+
+/* Dark plates: restate the roles AND color, because color inherits as a
+   computed value and the subtree keeps the body ink otherwise. */
+[data-lab-dark] {
+  --sc-ink: var(--lab-bone);
+  --sc-ink-soft: var(--lab-bone-soft);
+  --sc-accent: var(--lab-ice);
+  --sc-accent-ink: var(--lab-plate);
+  color: var(--sc-ink);
+}
+
+/* Serif prose reads better a touch larger */
+.prose p {
+  max-width: var(--sc-measure);
+  font-size: var(--sc-t-lg);
+  line-height: 1.58;
+  color: var(--sc-ink);
+  text-wrap: pretty;
+  margin: 0 0 1.2em;
+}
+.prose p:last-child { margin-bottom: 0; }
+
+a { text-decoration-color: color-mix(in oklab, var(--sc-accent) 55%, transparent); }
+a:hover { color: var(--sc-accent); }
+
+/* ------------------------------------------------------------- the folio -- */
+.folio {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: var(--sc-z-chrome);
+  display: flex;
+  align-items: baseline;
+  gap: var(--sc-3);
+  padding: var(--sc-4) var(--sc-gutter);
+  font-family: var(--sc-font-display);
+  font-size: var(--sc-t-xs);
+  letter-spacing: var(--sc-track-wide);
+  text-transform: uppercase;
+  color: var(--sc-ink-soft);
+  pointer-events: none;
+}
+.folio a { pointer-events: auto; text-decoration: none; color: var(--sc-ink); font-weight: 700; }
+.folio__sep { flex: 1; border-bottom: 1px dotted var(--sc-hairline-strong); transform: translateY(-0.35em); }
+.folio__chapter { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.folio, .folio a, .folio__sep { transition: color 400ms var(--sc-ease-out), border-color 400ms var(--sc-ease-out); }
+.folio--inverted { color: var(--lab-bone-soft); }
+.folio--inverted a { color: var(--lab-bone); }
+.folio--inverted .folio__sep { border-color: color-mix(in oklab, var(--lab-bone) 30%, transparent); }
+
+/* --------------------------------------------------------- the title page -- */
+.title-page {
+  min-height: 92svh;
+  display: flex;
+  align-items: center;
+  background: var(--sc-canvas);
+  padding-block: var(--sc-9) var(--sc-8);
+}
+.title-page__masthead {
+  font-family: var(--sc-font-display);
+  font-size: var(--sc-t-xs);
+  font-weight: 600;
+  letter-spacing: var(--sc-track-wide);
+  text-transform: uppercase;
+  color: var(--sc-accent);
+  margin: 0 0 var(--sc-6);
+}
+.title-page h1 { font-weight: 700; font-size: clamp(3rem, 1.5rem + 5vw, 6rem); }
+.title-page .sc-lede { margin-top: var(--sc-5); color: var(--sc-ink-soft); font-style: italic; }
+
+.contents { margin-top: var(--sc-8); max-width: 34rem; }
+.contents__row {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sc-3);
+  padding-block: var(--sc-2);
+  font-family: var(--sc-font-display);
+  font-size: var(--sc-t-sm);
+  text-decoration: none;
+  color: var(--sc-ink);
+}
+.contents__row:hover .contents__title { color: var(--sc-accent); }
+.contents__no {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--sc-accent);
+  min-width: 2ch;
+}
+.contents__title { font-weight: 600; transition: color var(--sc-d-fast) var(--sc-ease-out); }
+.contents__leader { flex: 1; border-bottom: 1px dotted var(--sc-hairline-strong); transform: translateY(-0.3em); }
+.contents__page { color: var(--sc-ink-soft); font-variant-numeric: tabular-nums; }
+
+/* -------------------------------------------------------------- chapters -- */
+.chapter { padding-block: var(--sc-10); background: var(--sc-canvas); }
+.chapter--deep { background: var(--lab-paper-2); }
+
+.chapter__rule {
+  height: 2px; border: 0;
+  background: var(--sc-ink);
+  margin: 0 0 var(--sc-7);
+}
+.chapter__head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sc-4);
+  margin-bottom: var(--sc-7);
+}
+.chapter__no {
+  font-family: var(--sc-font-display);
+  font-weight: 700;
+  font-size: var(--sc-t-xl);
+  color: var(--sc-accent);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+.chapter__head h2 { font-weight: 700; }
+
+.chapter__body {
+  display: grid;
+  grid-template-columns: minmax(0, var(--sc-measure)) 1fr;
+  gap: var(--sc-8);
+  align-items: start;
+}
+
+/* Margin ornament: a small drawing in the media column, gently parallaxed */
+.margin-note { margin: 0; justify-self: center; max-width: 15rem; }
+.margin-note svg { width: 100%; height: auto; color: var(--sc-ink-soft); opacity: 0.85; }
+.margin-note figcaption {
+  margin-top: var(--sc-3);
+  font-family: var(--sc-font-display);
+  font-size: var(--sc-t-xs);
+  letter-spacing: var(--sc-track-wide);
+  text-transform: uppercase;
+  color: var(--sc-ink-soft);
+  text-align: center;
+}
+
+.pullquote {
+  margin: var(--sc-9) 0 0;
+  padding: 0;
+  border: 0;
+  font-family: var(--sc-font-text);
+  font-style: italic;
+  font-weight: 500;
+  font-size: var(--sc-t-2xl);
+  line-height: 1.18;
+  letter-spacing: var(--sc-track-snug);
+  max-width: 24ch;
+  text-wrap: balance;
+  color: var(--sc-ink);
+}
+.pullquote em { font-style: normal; color: var(--sc-accent); }
+
+/* ------------------------------------------------------------ the plates -- */
+.plate { background: var(--lab-plate); }
+
+.intertitle {
+  min-height: 78svh;
+  display: flex;
+  align-items: flex-end;
+  padding-block: var(--sc-9);
+}
+.intertitle__line {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sc-4);
+  margin: 0;
+  font-family: var(--sc-font-display);
+}
+.intertitle__line .chapter__no { color: var(--lab-ice); }
+.intertitle__line h2 { font-weight: 700; }
+
+/* ----------------------------------------------------------- the blueprint -- */
+.blueprint__stage {
+  background:
+    linear-gradient(color-mix(in oklab, var(--lab-bone) 5%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in oklab, var(--lab-bone) 5%, transparent) 1px, transparent 1px),
+    var(--lab-plate);
+  background-size: 44px 44px, 44px 44px, auto;
+}
+
+.blueprint__frame {
+  position: absolute;
+  inset: clamp(0.9rem, 2.5vw, 2rem);
+  border: 1px solid color-mix(in oklab, var(--lab-bone) 34%, transparent);
+  pointer-events: none;
+}
+
+/* The drawing itself */
+.blueprint__svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  padding: clamp(1.5rem, 4vw, 3.5rem);
+}
+.blueprint__svg [data-draw] {
+  fill: none;
+  stroke: var(--lab-bone);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.blueprint__svg .bp-fine[data-draw] { stroke-width: 1.4; }
+.blueprint__svg .bp-dim[data-draw] {
+  stroke: var(--lab-ice);
+  stroke-width: 1.1;
+}
+.blueprint__svg text {
+  font-family: var(--sc-font-display);
+  font-size: 15px;
+  letter-spacing: 0.06em;
+  fill: var(--lab-bone);
+}
+.blueprint__svg .bp-dim-label { fill: var(--lab-ice); font-size: 14px; }
+.blueprint__svg .bp-callout {
+  opacity: 0;
+  transition: opacity 300ms var(--sc-ease-out), transform 300ms var(--sc-ease-out);
+  transform: translateY(6px);
+}
+.blueprint__svg .bp-callout.bp-on { opacity: 1; transform: none; }
+.blueprint__svg .bp-callout text { font-size: 16px; font-weight: 600; }
+.blueprint__svg .bp-callout .bp-callout__sub { font-size: 13.5px; font-weight: 400; fill: var(--lab-bone-soft); }
+
+/* Title block, the static ground of the act: on screen from the entry slide */
+.blueprint__titleblock {
+  position: absolute;
+  top: clamp(2rem, 5vw, 3.4rem);
+  right: clamp(2rem, 5vw, 3.4rem);
+  z-index: var(--sc-z-copy);
+  border: 1px solid color-mix(in oklab, var(--lab-bone) 45%, transparent);
+  font-family: var(--sc-font-display);
+  font-size: var(--sc-t-xs);
+  letter-spacing: var(--sc-track-wide);
+  text-transform: uppercase;
+  color: var(--lab-bone);
+}
+.blueprint__titleblock > div { padding: var(--sc-2) var(--sc-3); }
+.blueprint__titleblock > div + div { border-top: 1px solid color-mix(in oklab, var(--lab-bone) 45%, transparent); }
+.blueprint__titleblock strong { font-weight: 700; color: var(--lab-ice); }
+
+.blueprint__copy h3 { font-weight: 700; max-width: 14ch; }
+.blueprint__copy .sc-lede { margin-top: var(--sc-4); color: var(--lab-bone-soft); font-style: italic; max-width: 34ch; }
+
+/* A drawing note: an opaque plate so the line reads over any linework */
+.blueprint__note {
+  background: var(--lab-plate);
+  border: 1px solid color-mix(in oklab, var(--lab-bone) 45%, transparent);
+  padding: var(--sc-4) var(--sc-5);
+}
+.blueprint__note .sc-lede { margin-top: 0; color: var(--lab-bone); }
+
+/* The dwell reward: a margin annotation for readers who stop mid-drawing */
+.blueprint__annotation {
+  position: absolute;
+  left: var(--sc-gutter);
+  top: clamp(6rem, 16vh, 10rem);
+  z-index: var(--sc-z-copy);
+  margin: 0;
+  max-width: 15rem;
+  font-family: var(--sc-font-text);
+  font-style: italic;
+  font-size: var(--sc-t-base);
+  color: var(--lab-ice);
+  opacity: 0;
+  transform: rotate(-2deg) translateY(4px);
+  transition: opacity 500ms var(--sc-ease-out), transform 500ms var(--sc-ease-out);
+  pointer-events: none;
+}
+.blueprint__annotation.bp-on { opacity: 1; transform: rotate(-2deg); }
+
+/* -------------------------------------------------------------- the specs -- */
+.specs {
+  margin: var(--sc-8) 0 0;
+  border-top: 1px solid var(--sc-hairline-strong);
+}
+.specs__row {
+  display: grid;
+  grid-template-columns: minmax(9rem, 16rem) 1fr;
+  gap: var(--sc-6);
+  padding-block: var(--sc-5);
+  border-bottom: 1px solid var(--sc-hairline);
+  align-items: baseline;
+}
+.specs__row dt {
+  font-family: var(--sc-font-display);
+  font-size: var(--sc-t-xs);
+  font-weight: 600;
+  letter-spacing: var(--sc-track-wide);
+  text-transform: uppercase;
+  color: var(--sc-ink-soft);
+}
+.specs__row dd {
+  margin: 0;
+  font-family: var(--sc-font-display);
+  font-size: var(--sc-t-xl);
+  font-weight: 600;
+  letter-spacing: var(--sc-track-snug);
+  color: var(--sc-ink);
+}
+.specs__row dd small {
+  font-size: var(--sc-t-base);
+  font-weight: 500;
+  color: var(--sc-ink-soft);
+  letter-spacing: var(--sc-track-normal);
+}
+.specs__row [data-sc-count] { color: var(--sc-accent); }
+
+.chapter__aside {
+  margin-top: var(--sc-7);
+  max-width: var(--sc-measure);
+  color: var(--sc-ink-soft);
+  text-wrap: pretty;
+}
+.chapter__aside a { color: var(--sc-ink); font-weight: 500; }
+
+/* ------------------------------------------------------------ the idea box -- */
+.ideas-panel {
+  margin-top: var(--sc-7);
+  background: var(--sc-surface);
+  border: 1px solid var(--sc-hairline-strong);
+  border-radius: var(--sc-r-md);
+  box-shadow: var(--sc-e2), var(--sc-edge);
+  padding: clamp(1.25rem, 3vw, 2.5rem);
+}
+
+/* -------------------------------------------------------------- colophon -- */
+.colophon {
+  background: var(--lab-plate-2);
+  padding-block: var(--sc-10) var(--sc-9);
+}
+.colophon .sc-wrap { max-width: 46rem; }
+.colophon__plate {
+  border: 1px solid color-mix(in oklab, var(--lab-bone) 30%, transparent);
+  padding: clamp(1.5rem, 4vw, 3rem);
+  text-align: center;
+}
+.colophon__mark {
+  font-family: var(--sc-font-display);
+  font-weight: 700;
+  font-size: var(--sc-t-sm);
+  letter-spacing: var(--sc-track-wide);
+  text-transform: uppercase;
+  margin: 0 0 var(--sc-5);
+}
+.colophon p { margin: 0 0 var(--sc-4); font-size: var(--sc-t-sm); line-height: 1.7; color: var(--lab-bone-soft); }
+.colophon a { color: var(--lab-bone); }
+.colophon__ask { font-style: italic; }
+.colophon__fine {
+  margin-top: var(--sc-6);
+  padding-top: var(--sc-4);
+  border-top: 1px dotted color-mix(in oklab, var(--lab-bone) 30%, transparent);
+  font-family: var(--sc-font-display);
+  font-size: var(--sc-t-xs);
+  letter-spacing: var(--sc-track-wide);
+  text-transform: uppercase;
+}
+
+/* --------------------------------------------------------------- mobile -- */
+@media (max-width: 860px) {
+  .title-page h1 { font-size: var(--sc-t-2xl); }
+  .chapter__body { grid-template-columns: 1fr; }
+  .margin-note { justify-self: start; max-width: 11rem; }
+  .blueprint__titleblock { display: none; }
+  .blueprint__annotation { display: none; }
+  .blueprint__svg { padding: 1rem 0.5rem 30svh; }
+  /* The drawing scales with the viewBox; its lettering must not. */
+  .blueprint__svg text { font-size: 24px; }
+  .blueprint__svg .bp-callout text { font-size: 25px; }
+  .blueprint__svg .bp-callout .bp-callout__sub { font-size: 21px; }
+  .blueprint__svg .bp-dim-label { font-size: 23px; }
+  .specs__row { grid-template-columns: 1fr; gap: var(--sc-2); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .blueprint__svg .bp-callout { opacity: 1; transform: none; }
+  .blueprint__annotation { display: none; }
+}
+
+@media print {
+  .folio, [data-sc-progress], .sc-grain { display: none; }
+}

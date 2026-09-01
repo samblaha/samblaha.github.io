@@ -1,9 +1,9 @@
 title: "Desktop Labs"
 description: "Project-first portfolio"
+url: "https://samblaha.github.io"
 permalink: pretty
 
 exclude:
-  - scrollcraft/
   - node_modules/
   - package.json
   - package-lock.json
@@ -17,4 +17,10 @@ collections:
     output: true
     permalink: /p/:name/
 
-
+defaults:
+  - scope:
+      path: ""
+      type: projects
+    values:
+      layout: project
+      comments: true

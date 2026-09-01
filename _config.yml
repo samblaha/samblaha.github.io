@@ -2,6 +2,16 @@ title: "Desktop Labs"
 description: "Project-first portfolio"
 permalink: pretty
 
+exclude:
+  - scrollcraft/
+  - node_modules/
+  - package.json
+  - package-lock.json
+  - Gemfile
+  - Gemfile.lock
+  - GISCUS-SETUP.md
+  - REDESIGN-SUMMARY.md
+
 collections:
   projects:
     output: true

@@ -6,15 +6,15 @@ layout: default
 {% assign projects_sorted = site.projects | where_exp: "p", "p.featured != true" | sort: "date" | reverse %}
 
 <section class="hero">
-  <div class="hero__badge sticker sticker--yellow" data-reveal>
+  <div class="hero__badge sticker sticker--mustard" data-reveal>
     <span class="hero__badge-dot" aria-hidden="true"></span>
     Open for weird ideas
   </div>
 
   <h1 class="hero__title display-1" data-reveal>
-    I build <span class="marker marker--pink">cool&nbsp;things</span><br />
+    I build <span class="marker marker--orange">cool&nbsp;things</span><br />
     &amp; a respectable amount<br />
-    of <span class="marker marker--yellow">nonsense</span><span class="hero__period">.</span>
+    of <span class="marker marker--mustard">nonsense</span><span class="hero__period">.</span>
   </h1>
 
   <p class="hero__sub" data-reveal>
@@ -23,7 +23,7 @@ layout: default
   </p>
 
   <div class="hero__cta" data-reveal>
-    <a class="btn btn--pink" href="#projects">See the workbench ↓</a>
+    <a class="btn btn--orange" href="#projects">See the workbench ↓</a>
     <a class="btn btn--ghost" href="#about">Who's building this?</a>
   </div>
 </section>
@@ -72,7 +72,7 @@ layout: default
             {% endif %}
           </div>
           <div class="card__content">
-            <span class="card__tag sticker sticker--pink">★ Featured</span>
+            <span class="card__tag sticker sticker--orange">★ Featured</span>
             <div class="card__meta">
               <time datetime="{{ project.date | date_to_xmlschema }}">{{ project.date | date: "%b %Y" }}</time>
               <span>{{ words | divided_by: 200 | plus: 1 }} min read</span>
@@ -144,6 +144,6 @@ layout: default
   <div class="contact panel panel--contact" data-reveal>
     <h3 class="contact__title">Let's build something ridiculous together</h3>
     <p class="contact__sub">Got an idea? Want to collaborate? Just want to argue about 3D printer brands?</p>
-    <a class="btn btn--yellow" href="mailto:email@example.com">Get in touch ✦</a>
+    <a class="btn btn--mustard" href="mailto:email@example.com">Get in touch ✦</a>
   </div>
 </section>

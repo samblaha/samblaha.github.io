@@ -1,6 +1,6 @@
 # Desktop Labs (GitHub Pages + Jekyll)
 
-A bright, loud "Workshop Pop" portfolio where every project is a blog post. **Projects are a Jekyll collection**—each project is one Markdown file in `_projects/`.
+A loud, TVA-toned "Workshop Pop" portfolio where every project is a blog post. **Projects are a Jekyll collection**—each project is one Markdown file in `_projects/`.
 
 ## Run locally (live updates)
 This runs a local web server and automatically refreshes when you edit files.

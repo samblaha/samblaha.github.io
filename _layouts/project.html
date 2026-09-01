@@ -30,7 +30,7 @@ layout: default
       {% if page.status %}
         {% assign status_key = page.status | downcase %}
         {% if status_key contains "progress" or status_key contains "wip" %}
-          <span class="sticker sticker--yellow project__status"><span class="project__status-dot" aria-hidden="true"></span>{{ page.status }}</span>
+          <span class="sticker sticker--mustard project__status"><span class="project__status-dot" aria-hidden="true"></span>{{ page.status }}</span>
         {% elsif status_key contains "ship" or status_key contains "done" or status_key contains "complete" %}
           <span class="sticker project__status">✓ {{ page.status }}</span>
         {% else %}
@@ -92,7 +92,7 @@ layout: default
     <div class="project__main">
       {% if page.specs %}
       <section class="specsheet panel" aria-label="Spec sheet">
-        <span class="sticker sticker--yellow specsheet__badge">Spec sheet</span>
+        <span class="sticker sticker--mustard specsheet__badge">Spec sheet</span>
         <dl class="specsheet__grid">
           {% for spec in page.specs %}
             <div class="specsheet__row">

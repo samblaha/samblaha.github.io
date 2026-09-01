@@ -10,6 +10,23 @@ tags:
 status: "In progress"
 repo: "https://github.com/samblaha/DIYEreader"
 demo: ""
+specs:
+  Display: "4.7″ e-paper, 16-level grayscale"
+  Resolution: "540 × 960 portrait buffer"
+  MCU: "ESP32-S3"
+  Memory: "16 MB flash · 8 MB PSRAM"
+  Formats: "EPUB · TXT · CBZ"
+  Firmware: "C++ / Arduino via PlatformIO"
+parts:
+  - name: "LilyGo T5-4.7-S3"
+    note: "ESP32-S3 dev board with the 4.7″ e-paper panel attached"
+    qty: 1
+  - name: "microSD card"
+    note: "Local library, bookmarks, and cached daily briefs"
+    qty: 1
+  - name: "LiPo battery"
+    note: "Gauged against its real discharge curve, not a straight line"
+    qty: 1
 layout: project
 ---
 

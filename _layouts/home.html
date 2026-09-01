@@ -6,53 +6,80 @@ layout: default
 {% assign projects_sorted = site.projects | where_exp: "p", "p.featured != true" | sort: "date" | reverse %}
 
 <section class="hero">
-  <h1 class="hero__title display-1">
-    Maker Space
+  <div class="hero__badge sticker sticker--yellow" data-reveal>
+    <span class="hero__badge-dot" aria-hidden="true"></span>
+    Open for weird ideas
+  </div>
+
+  <h1 class="hero__title display-1" data-reveal>
+    I build <span class="marker marker--pink">cool&nbsp;things</span><br />
+    &amp; a respectable amount<br />
+    of <span class="marker marker--cyan">nonsense</span><span class="hero__period">.</span>
   </h1>
-  <p class="hero__sub">
-    A DIY engineer who builds cool things, including a respectable amount of nonsense.
+
+  <p class="hero__sub" data-reveal>
+    DIY engineer mixing hardware, software &amp; design into projects that are fun,
+    functional, and sometimes delightfully unnecessary.
   </p>
-  <div class="hero__cta">
-    <a class="btn" href="#projects">View Work</a>
-    <a class="btn btn--outline" href="#contact" style="margin-left: 12px;">Get in touch</a>
+
+  <div class="hero__cta" data-reveal>
+    <a class="btn btn--pink" href="#projects">See the workbench ↓</a>
+    <a class="btn btn--ghost" href="#about">Who's building this?</a>
   </div>
 </section>
 
+<div class="ticker" aria-hidden="true">
+  <div class="ticker__track">
+    <span class="ticker__item">HARDWARE ✦ FIRMWARE ✦ 3D PRINTING ✦ LASERS ✦ E-PAPER ✦ PROTOTYPES ✦ UX ✦ SOLDER ✦&nbsp;</span>
+    <span class="ticker__item">HARDWARE ✦ FIRMWARE ✦ 3D PRINTING ✦ LASERS ✦ E-PAPER ✦ PROTOTYPES ✦ UX ✦ SOLDER ✦&nbsp;</span>
+    <span class="ticker__item">HARDWARE ✦ FIRMWARE ✦ 3D PRINTING ✦ LASERS ✦ E-PAPER ✦ PROTOTYPES ✦ UX ✦ SOLDER ✦&nbsp;</span>
+  </div>
+</div>
+
 <section id="projects" class="section">
+  <div class="section__head" data-reveal>
+    <span class="section__num">01</span>
+    <h2 class="display-2">The Workbench</h2>
+  </div>
+
   <div class="grid">
     {% for project in featured_projects %}
-      <article class="card card--large glass">
-        <a href="{{ project.url }}">
+      <article class="card card--large" data-reveal>
+        <a class="card__link" href="{{ project.url }}">
           <div class="card__img-wrap">
             {% if project.hero %}
               <img class="card__img" src="{{ project.hero }}" alt="" loading="lazy" />
             {% else %}
-              <div class="card__fallback"></div>
+              <div class="card__fallback"><span aria-hidden="true">✦</span></div>
             {% endif %}
           </div>
           <div class="card__content">
-            <span class="card__tag">Featured Project</span>
+            <span class="card__tag sticker sticker--pink">★ Featured</span>
             <h3 class="card__title">{{ project.title | default: project.name }}</h3>
             <p class="card__desc">{{ project.summary }}</p>
+            <span class="card__cta">Read the build <span class="card__arrow">→</span></span>
           </div>
         </a>
       </article>
     {% endfor %}
 
     {% for project in projects_sorted %}
-      <article class="card card--small glass">
-        <a href="{{ project.url }}">
+      <article class="card card--small" data-reveal>
+        <a class="card__link" href="{{ project.url }}">
           <div class="card__img-wrap">
             {% if project.hero %}
               <img class="card__img" src="{{ project.hero }}" alt="" loading="lazy" />
             {% else %}
-              <div class="card__fallback"></div>
+              <div class="card__fallback"><span aria-hidden="true">✦</span></div>
             {% endif %}
           </div>
           <div class="card__content">
-            <span class="card__tag">{{ project.tags | first }}</span>
+            {% if project.tags.first %}
+              <span class="card__tag sticker">{{ project.tags | first }}</span>
+            {% endif %}
             <h3 class="card__title">{{ project.title | default: project.name }}</h3>
             <p class="card__desc">{{ project.summary }}</p>
+            <span class="card__cta">Read the build <span class="card__arrow">→</span></span>
           </div>
         </a>
       </article>
@@ -60,26 +87,33 @@ layout: default
   </div>
 </section>
 
-<section id="ideas" class="section" style="margin-top: 160px; max-width: 800px; margin-bottom: 80px;">
-  <h2 class="display-2" style="margin-bottom: 24px;">Project Ideas</h2>
-  <p class="hero__sub" style="margin-bottom: 48px;">
-    Got an idea for a project you'd like to see? Drop an idea below and upvote the ones you're most interested in!
+<section id="ideas" class="section section--narrow">
+  <div class="section__head" data-reveal>
+    <span class="section__num">02</span>
+    <h2 class="display-2">The Idea Box</h2>
+  </div>
+  <p class="section__intro" data-reveal>
+    Got an idea for a project you'd like to see? Drop it below and upvote the ones
+    you're most excited about — the loudest ideas get built first.
   </p>
-  
-  <div class="glass" style="padding: 32px; border-radius: var(--r-lg);">
+
+  <div class="panel panel--ideas" data-reveal>
     {% include giscus.html %}
   </div>
 </section>
 
-<section id="about" class="section" style="margin-top: 160px; max-width: 800px; margin-bottom: 80px;">
-  <h2 class="display-2" style="margin-bottom: 40px;">About</h2>
-  <div class="prose" style="margin-bottom: 40px;">
+<section id="about" class="section section--narrow">
+  <div class="section__head" data-reveal>
+    <span class="section__num">03</span>
+    <h2 class="display-2">The Human</h2>
+  </div>
+  <div class="prose" data-reveal>
     {{ content }}
   </div>
-  
-  <div style="padding: 20px 0; text-align: center;">
-    <h3 style="font-size: 1.75rem; margin-bottom: 16px;">Let's build something together</h3>
-    <p class="hero__sub" style="margin: 0 auto 32px; font-size: 1rem;">Got an idea? Want to collaborate? Just want to chat about projects?</p>
-    <a class="btn" href="mailto:email@example.com">Get in touch</a>
+
+  <div class="contact panel panel--contact" data-reveal>
+    <h3 class="contact__title">Let's build something ridiculous together</h3>
+    <p class="contact__sub">Got an idea? Want to collaborate? Just want to argue about 3D printer brands?</p>
+    <a class="btn btn--yellow" href="mailto:email@example.com">Get in touch ✦</a>
   </div>
 </section>

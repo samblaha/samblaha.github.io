@@ -75,7 +75,7 @@ layout: default
 
   {% if page.hero %}
   <figure class="project__hero panel">
-    <img class="project__hero-img" src="{{ page.hero }}" alt="{{ page.hero_alt | default: page.title }}" data-lightbox />
+    <img class="project__hero-img{% if page.hero_fit == 'contain' %} project__hero-img--contain{% endif %}" src="{{ page.hero }}" alt="{{ page.hero_alt | default: page.title }}" data-lightbox />
     {% if page.hero_caption %}<figcaption class="project__hero-caption">{{ page.hero_caption }}</figcaption>{% endif %}
   </figure>
   {% endif %}

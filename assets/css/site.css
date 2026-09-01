@@ -771,10 +771,13 @@ h1, h2, h3 {
 
 .project__gallery {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 32px;
   margin-bottom: 100px;
 }
+
+.project__gallery-item { margin: 0; }
+.project__gallery-item img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; cursor: zoom-in; }
 
 /* ==========================================================================
    Footer
@@ -997,6 +1000,7 @@ html.js .hero [data-reveal] { opacity: 1; transform: none; }
 
 .project__hero { margin-bottom: 70px; overflow: hidden; }
 .project__hero-img { width: 100%; display: block; aspect-ratio: 21 / 9; object-fit: cover; cursor: zoom-in; }
+.project__hero-img--contain { aspect-ratio: 16 / 9; object-fit: contain; background: var(--ink); }
 .project__hero-caption {
   padding: 12px 18px;
   font-family: var(--font-mono);
@@ -1232,7 +1236,9 @@ html.js .hero [data-reveal] { opacity: 1; transform: none; }
   margin: 2.2em 0;
   overflow: hidden;
 }
-.prose__figure img { display: block; width: 100%; height: auto; cursor: zoom-in; }
+.prose__figure img { display: block; max-width: 100%; height: auto; margin: 0 auto; cursor: zoom-in; }
+.prose__figure video { display: block; width: 100%; height: auto; background: var(--ink); }
+.prose__figure--portrait img, .prose__figure--portrait video { max-height: 80vh; width: auto; }
 .prose__figure figcaption {
   padding: 12px 18px;
   font-family: var(--font-mono);

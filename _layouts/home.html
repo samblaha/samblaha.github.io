@@ -1,289 +1,119 @@
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="color-scheme" content="light">
-<meta name="theme-color" content="#f6eedf">
-<title>{{ site.title | default: "Portfolio" }} · Field Notes</title>
-<meta name="description" content="{{ site.description | default: 'Field notes from a desktop workshop' }}">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%232743e0'/><rect x='9' y='7' width='14' height='18' rx='2' fill='none' stroke='%23f6eedf' stroke-width='2'/></svg>">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/scrollcraft/scrollcraft.css">
-<link rel="stylesheet" href="/assets/css/lab.css">
-</head>
-<body>
+---
+layout: default
+---
 
-<span data-sc-progress></span>
-<div class="sc-grain" aria-hidden="true"></div>
+{% assign featured_projects = site.projects | where_exp: "p", "p.featured == true" | sort: "date" | reverse %}
+{% assign projects_sorted = site.projects | where_exp: "p", "p.featured != true" | sort: "date" | reverse %}
 
-<aside class="folio" id="folio">
-  <a href="/">Desktop Labs</a>
-  <span class="folio__sep" aria-hidden="true"></span>
-  <span class="folio__chapter" id="folio-chapter">Field Notes, vol. 1</span>
-</aside>
+<section class="hero">
+  <div class="hero__badge sticker sticker--yellow" data-reveal>
+    <span class="hero__badge-dot" aria-hidden="true"></span>
+    Open for weird ideas
+  </div>
 
-<main id="top">
+  <h1 class="hero__title display-1" data-reveal>
+    I build <span class="marker marker--pink">cool&nbsp;things</span><br />
+    &amp; a respectable amount<br />
+    of <span class="marker marker--cyan">nonsense</span><span class="hero__period">.</span>
+  </h1>
 
-  <!-- ································ the title page -->
-  <header class="title-page" data-sc-act="flow" data-lab-chapter="Field Notes, vol. 1">
-    <div class="sc-wrap" data-sc-in data-sc-stagger="70">
-      <p class="title-page__masthead">Desktop Labs · Field Notes, vol. 1</p>
-      <h1 class="sc-display sc-display--xl">Cool things &amp;<br>respectable nonsense.</h1>
-      <p class="sc-lede">Field notes from a desktop workshop: hardware, firmware, and ideas that refused to stay sketches.</p>
-      <nav class="contents" aria-label="Contents">
-        <a class="contents__row" href="#why">
-          <span class="contents__no">01</span>
-          <span class="contents__title">Why I build</span>
-          <span class="contents__leader" aria-hidden="true"></span>
+  <p class="hero__sub" data-reveal>
+    DIY engineer mixing hardware, software &amp; design into projects that are fun,
+    functional, and sometimes delightfully unnecessary.
+  </p>
+
+  <div class="hero__cta" data-reveal>
+    <a class="btn btn--pink" href="#projects">See the workbench ↓</a>
+    <a class="btn btn--ghost" href="#about">Who's building this?</a>
+  </div>
+</section>
+
+<div class="ticker" aria-hidden="true">
+  <div class="ticker__track">
+    <span class="ticker__item">HARDWARE ✦ FIRMWARE ✦ 3D PRINTING ✦ LASERS ✦ E-PAPER ✦ PROTOTYPES ✦ UX ✦ SOLDER ✦&nbsp;</span>
+    <span class="ticker__item">HARDWARE ✦ FIRMWARE ✦ 3D PRINTING ✦ LASERS ✦ E-PAPER ✦ PROTOTYPES ✦ UX ✦ SOLDER ✦&nbsp;</span>
+    <span class="ticker__item">HARDWARE ✦ FIRMWARE ✦ 3D PRINTING ✦ LASERS ✦ E-PAPER ✦ PROTOTYPES ✦ UX ✦ SOLDER ✦&nbsp;</span>
+  </div>
+</div>
+
+<section id="projects" class="section">
+  <div class="section__head" data-reveal>
+    <span class="section__num">01</span>
+    <h2 class="display-2">The Workbench</h2>
+  </div>
+
+  <div class="grid">
+    {% for project in featured_projects %}
+      <article class="card card--large" data-reveal>
+        <a class="card__link" href="{{ project.url }}">
+          <div class="card__img-wrap">
+            {% if project.hero %}
+              <img class="card__img" src="{{ project.hero }}" alt="" loading="lazy" />
+            {% else %}
+              <div class="card__fallback"><span aria-hidden="true">✦</span></div>
+            {% endif %}
+          </div>
+          <div class="card__content">
+            <span class="card__tag sticker sticker--pink">★ Featured</span>
+            <h3 class="card__title">{{ project.title | default: project.name }}</h3>
+            <p class="card__desc">{{ project.summary }}</p>
+            <span class="card__cta">Read the build <span class="card__arrow">→</span></span>
+          </div>
         </a>
-        <a class="contents__row" href="#build">
-          <span class="contents__no">02</span>
-          <span class="contents__title">The build</span>
-          <span class="contents__leader" aria-hidden="true"></span>
+      </article>
+    {% endfor %}
+
+    {% for project in projects_sorted %}
+      <article class="card card--small" data-reveal>
+        <a class="card__link" href="{{ project.url }}">
+          <div class="card__img-wrap">
+            {% if project.hero %}
+              <img class="card__img" src="{{ project.hero }}" alt="" loading="lazy" />
+            {% else %}
+              <div class="card__fallback"><span aria-hidden="true">✦</span></div>
+            {% endif %}
+          </div>
+          <div class="card__content">
+            {% if project.tags.first %}
+              <span class="card__tag sticker">{{ project.tags | first }}</span>
+            {% endif %}
+            <h3 class="card__title">{{ project.title | default: project.name }}</h3>
+            <p class="card__desc">{{ project.summary }}</p>
+            <span class="card__cta">Read the build <span class="card__arrow">→</span></span>
+          </div>
         </a>
-        <a class="contents__row" href="#numbers">
-          <span class="contents__no">03</span>
-          <span class="contents__title">The numbers</span>
-          <span class="contents__leader" aria-hidden="true"></span>
-        </a>
-        <a class="contents__row" href="#ideas">
-          <span class="contents__no">04</span>
-          <span class="contents__title">The idea box</span>
-          <span class="contents__leader" aria-hidden="true"></span>
-        </a>
-        <a class="contents__row" href="#colophon">
-          <span class="contents__no">·</span>
-          <span class="contents__title">Colophon</span>
-          <span class="contents__leader" aria-hidden="true"></span>
-        </a>
-      </nav>
-    </div>
-  </header>
+      </article>
+    {% endfor %}
+  </div>
+</section>
 
-  <!-- ································ chapter 01 · why I build -->
-  <section class="chapter chapter--deep" id="why" data-sc-act="flow" data-lab-chapter="Ch. 01 · Why I build">
-    <div class="sc-wrap">
-      <hr class="chapter__rule" data-sc-reveal="left" data-sc-reveal-at="0.04 0.24">
-      <header class="chapter__head" data-sc-in>
-        <span class="chapter__no">01</span>
-        <h2 class="sc-display sc-display--md">Why I build</h2>
-      </header>
-      <div class="chapter__body">
-        <div class="prose" data-sc-in data-sc-stagger="80">
-          {{ content }}
-        </div>
-        <figure class="margin-note" data-sc-parallax="-0.5">
-          <svg viewBox="0 0 120 120" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
-            <circle cx="60" cy="60" r="26"/>
-            <circle cx="60" cy="60" r="8"/>
-            <path d="M60 22v-12M60 110V98M22 60H10M110 60H98M33 33l-8.5-8.5M95.5 95.5 87 87M87 33l8.5-8.5M24.5 95.5 33 87"/>
-          </svg>
-          <figcaption>fig. 0 · the itch</figcaption>
-        </figure>
-      </div>
-      <blockquote class="pullquote" data-sc-in>
-        &ldquo;If it can be prototyped, I <em>probably</em> want to try it.&rdquo;
-      </blockquote>
-    </div>
-  </section>
+<section id="ideas" class="section section--narrow">
+  <div class="section__head" data-reveal>
+    <span class="section__num">02</span>
+    <h2 class="display-2">The Idea Box</h2>
+  </div>
+  <p class="section__intro" data-reveal>
+    Got an idea for a project you'd like to see? Drop it below and upvote the ones
+    you're most excited about — the loudest ideas get built first.
+  </p>
 
-  <!-- ································ chapter 02 · intertitle (the authored silence) -->
-  <section class="intertitle plate" data-sc-act="flow" data-lab-chapter="Ch. 02 · The build" data-lab-dark>
-    <div class="sc-wrap">
-      <div class="intertitle__line" data-sc-in>
-        <span class="chapter__no">02</span>
-        <h2 class="sc-display sc-display--md">The build</h2>
-      </div>
-    </div>
-  </section>
+  <div class="panel panel--ideas" data-reveal>
+    {% include giscus.html %}
+  </div>
+</section>
 
-  <!-- ································ chapter 02 · the blueprint (the peak) -->
-  <section id="build" data-sc-act="pin" data-sc-span="4.2" data-lab-chapter="Ch. 02 · The build" data-lab-dark>
-    <div data-sc-stage class="blueprint__stage">
-      <div class="blueprint__frame" aria-hidden="true"></div>
+<section id="about" class="section section--narrow">
+  <div class="section__head" data-reveal>
+    <span class="section__num">03</span>
+    <h2 class="display-2">The Human</h2>
+  </div>
+  <div class="prose" data-reveal>
+    {{ content }}
+  </div>
 
-      <div class="blueprint__titleblock" aria-hidden="true">
-        <div><strong>Desktop Labs</strong> · dwg 001</div>
-        <div>OpenPage e-reader</div>
-        <div>scale: scroll</div>
-      </div>
-
-      <svg class="blueprint__svg" id="lab-drawing" viewBox="0 0 1000 660" preserveAspectRatio="xMidYMid meet"
-           role="img" aria-label="Technical drawing of the OpenPage e-reader: an e-paper device with its dimensions and parts called out">
-
-        <!-- the device -->
-        <rect data-draw="0.03 0.22" x="520" y="50" width="310" height="540" rx="24"/>
-        <rect data-draw="0.14 0.30" x="548" y="86" width="254" height="400" rx="6"/>
-
-        <!-- the page on screen -->
-        <line class="bp-fine" data-draw="0.26 0.36" x1="566" y1="116" x2="700" y2="116"/>
-        <line class="bp-fine" data-draw="0.28 0.38" x1="566" y1="150" x2="784" y2="150"/>
-        <line class="bp-fine" data-draw="0.30 0.40" x1="566" y1="178" x2="770" y2="178"/>
-        <line class="bp-fine" data-draw="0.32 0.42" x1="566" y1="206" x2="784" y2="206"/>
-        <line class="bp-fine" data-draw="0.34 0.44" x1="566" y1="234" x2="742" y2="234"/>
-        <line class="bp-fine" data-draw="0.36 0.46" x1="566" y1="262" x2="784" y2="262"/>
-        <line class="bp-fine" data-draw="0.38 0.48" x1="566" y1="290" x2="776" y2="290"/>
-        <line class="bp-fine" data-draw="0.40 0.50" x1="566" y1="318" x2="748" y2="318"/>
-        <line class="bp-fine" data-draw="0.42 0.52" x1="566" y1="346" x2="700" y2="346"/>
-        <line class="bp-fine" data-draw="0.44 0.54" x1="664" y1="456" x2="686" y2="456"/>
-
-        <!-- the hardware -->
-        <rect class="bp-fine" data-draw="0.50 0.60" x="650" y="584" width="50" height="12" rx="6"/>
-        <rect class="bp-fine" data-draw="0.52 0.62" x="824" y="120" width="12" height="56" rx="6"/>
-        <rect class="bp-fine" data-draw="0.54 0.64" x="514" y="300" width="12" height="52" rx="4"/>
-        <g class="bp-callout" data-call="0.58">
-          <text x="675" y="560" text-anchor="middle" letter-spacing="5" font-size="14">OPENPAGE</text>
-        </g>
-
-        <!-- dimensions -->
-        <line class="bp-dim" data-draw="0.60 0.70" x1="548" y1="80" x2="548" y2="40"/>
-        <line class="bp-dim" data-draw="0.60 0.70" x1="802" y1="80" x2="802" y2="40"/>
-        <line class="bp-dim" data-draw="0.62 0.72" x1="548" y1="46" x2="802" y2="46"/>
-        <g class="bp-callout" data-call="0.72">
-          <text class="bp-dim-label" x="675" y="34" text-anchor="middle">540 px</text>
-        </g>
-
-        <line class="bp-dim" data-draw="0.63 0.73" x1="808" y1="86" x2="880" y2="86"/>
-        <line class="bp-dim" data-draw="0.63 0.73" x1="808" y1="486" x2="880" y2="486"/>
-        <line class="bp-dim" data-draw="0.65 0.75" x1="872" y1="86" x2="872" y2="486"/>
-        <g class="bp-callout" data-call="0.75">
-          <text class="bp-dim-label" x="896" y="286" text-anchor="middle" transform="rotate(-90 896 286)">960 px</text>
-        </g>
-
-        <line class="bp-dim" data-draw="0.68 0.78" x1="556" y1="478" x2="794" y2="94"/>
-        <g class="bp-callout" data-call="0.78">
-          <text class="bp-dim-label" x="706" y="272">4.7 in</text>
-        </g>
-
-        <!-- callouts -->
-        <polyline class="bp-dim" data-draw="0.72 0.80" points="268,144 430,144 566,190" fill="none"/>
-        <g class="bp-callout" data-call="0.80">
-          <circle cx="570" cy="192" r="3.5" fill="currentColor" stroke="none"/>
-          <text x="40" y="140">E-paper panel</text>
-          <text class="bp-callout__sub" x="40" y="162">16 grayscale levels</text>
-        </g>
-
-        <polyline class="bp-dim" data-draw="0.76 0.84" points="250,322 460,322 506,326" fill="none"/>
-        <g class="bp-callout" data-call="0.84">
-          <circle cx="509" cy="326" r="3.5" fill="currentColor" stroke="none"/>
-          <text x="40" y="318">microSD library</text>
-          <text class="bp-callout__sub" x="40" y="340">EPUB · TXT · CBZ</text>
-        </g>
-
-        <polyline class="bp-dim" data-draw="0.80 0.88" points="205,512 420,512 620,535" fill="none"/>
-        <g class="bp-callout" data-call="0.88">
-          <circle cx="624" cy="536" r="3.5" fill="currentColor" stroke="none"/>
-          <text x="40" y="508">ESP32-S3</text>
-          <text class="bp-callout__sub" x="40" y="530">16 MB flash · 8 MB PSRAM</text>
-        </g>
-
-        <polyline class="bp-dim" data-draw="0.84 0.92" points="118,616 560,616 644,594" fill="none"/>
-        <g class="bp-callout" data-call="0.92">
-          <circle cx="648" cy="592" r="3.5" fill="currentColor" stroke="none"/>
-          <text x="40" y="612">USB-C</text>
-        </g>
-      </svg>
-
-      <div class="sc-copy sc-copy--lead blueprint__copy" data-sc-cue="0 0.3 0 0.3">
-        <h3 class="sc-display sc-display--lg">One build, drawn to scale.</h3>
-        <p class="sc-lede">OpenPage: a distraction-free e-reader, designed and soldered at this desk.</p>
-      </div>
-      <div class="sc-copy sc-copy--trail blueprint__copy blueprint__note" data-sc-cue="0.68 0.98 0.25 0.2">
-        <p class="sc-lede">Every line of it is real. The numbers are next.</p>
-      </div>
-
-      <p class="blueprint__annotation" id="lab-annotation">rev. B. rev. A is a coaster now.</p>
-    </div>
-  </section>
-
-  <!-- ································ chapter 03 · the numbers -->
-  <section class="chapter" id="numbers" data-sc-act="flow" data-lab-chapter="Ch. 03 · The numbers">
-    <div class="sc-wrap">
-      <hr class="chapter__rule" data-sc-reveal="left" data-sc-reveal-at="0.04 0.24">
-      <header class="chapter__head" data-sc-in>
-        <span class="chapter__no">03</span>
-        <h2 class="sc-display sc-display--md">The numbers</h2>
-      </header>
-
-      <dl class="specs">
-        <div class="specs__row" data-sc-in>
-          <dt>Display</dt>
-          <dd><span data-sc-count="0 4.7">0</span> in <small>e-paper, LilyGo T5</small></dd>
-        </div>
-        <div class="specs__row" data-sc-in>
-          <dt>Portrait buffer</dt>
-          <dd><span data-sc-count="0 540">0</span> × <span data-sc-count="0 960" data-sc-count-at="0.14 0.6">0</span> px <small>on landscape-native hardware</small></dd>
-        </div>
-        <div class="specs__row" data-sc-in>
-          <dt>Grayscale</dt>
-          <dd><span data-sc-count="0 16" data-sc-count-at="0.16 0.62">0</span> levels <small>and an image blitter that respects them</small></dd>
-        </div>
-        <div class="specs__row" data-sc-in>
-          <dt>Memory</dt>
-          <dd><span data-sc-count="0 16" data-sc-count-at="0.18 0.64">0</span> MB flash · <span data-sc-count="0 8" data-sc-count-at="0.2 0.66">0</span> MB PSRAM <small>framebuffers live in the latter</small></dd>
-        </div>
-        <div class="specs__row" data-sc-in>
-          <dt>Formats</dt>
-          <dd>EPUB · TXT · CBZ <small>straight off the SD card</small></dd>
-        </div>
-      </dl>
-
-      <p class="chapter__aside" data-sc-in>
-        The numbers are the easy part. The hard part was pagination that wraps words
-        on an embedded chip, a battery gauge that respects the LiPo discharge curve,
-        and a dual-sleep strategy so the thing wakes instantly and still lasts.
-        <a href="/p/laser-timing-gates/">Read the full build log</a> for the honest version.
-      </p>
-    </div>
-  </section>
-
-  <!-- ································ chapter 04 · the idea box -->
-  <section class="chapter chapter--deep" id="ideas" data-sc-act="flow" data-lab-chapter="Ch. 04 · The idea box">
-    <div class="sc-wrap">
-      <hr class="chapter__rule" data-sc-reveal="left" data-sc-reveal-at="0.04 0.24">
-      <header class="chapter__head" data-sc-in>
-        <span class="chapter__no">04</span>
-        <h2 class="sc-display sc-display--md">The idea box</h2>
-      </header>
-      <div class="prose" data-sc-in>
-        <p>
-          The next build is not decided yet, and that is where you come in. Sign in
-          with GitHub, drop an idea, and upvote the ones you want to see on the bench.
-          The loudest ideas get drawn next.
-        </p>
-      </div>
-      <div class="ideas-panel" data-sc-in>
-        {% include giscus.html %}
-      </div>
-    </div>
-  </section>
-
-  <!-- ································ colophon -->
-  <footer class="colophon" id="colophon" data-sc-act="flow" data-lab-chapter="Colophon" data-lab-dark>
-    <div class="sc-wrap" data-sc-in data-sc-stagger="70">
-      <div class="colophon__plate">
-        <p class="colophon__mark">Desktop Labs</p>
-        <p>
-          Field Notes, vol. 1. Drawn, soldered, and typeset by one human.
-          Set in Archivo and Newsreader on warm paper, with one cyanotype plate.
-        </p>
-        <p class="colophon__ask">
-          Want to build something ridiculous together?
-          Write to <a href="mailto:email@example.com">email@example.com</a>.
-        </p>
-        <p class="colophon__fine">
-          © {{ "now" | date: "%Y" }} Desktop Labs · <a href="/p/laser-timing-gates/">the build log</a> · <a href="#top">back to the cover</a>
-        </p>
-      </div>
-    </div>
-  </footer>
-
-</main>
-
-<script src="/assets/scrollcraft/scrollcraft.js"></script>
-<script src="/assets/js/lab.js"></script>
-</body>
-</html>
+  <div class="contact panel panel--contact" data-reveal>
+    <h3 class="contact__title">Let's build something ridiculous together</h3>
+    <p class="contact__sub">Got an idea? Want to collaborate? Just want to argue about 3D printer brands?</p>
+    <a class="btn btn--yellow" href="mailto:email@example.com">Get in touch ✦</a>
+  </div>
+</section>

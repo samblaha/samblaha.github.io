@@ -49,7 +49,7 @@
   }
 
   // ===== Confetti sparkle burst on primary actions =====
-  const SPARKLE_COLORS = ['#ff4d8d', '#ffc800', '#00c2c2', '#7a5cff', '#ff7a30'];
+  const SPARKLE_COLORS = ['#ff4d8d', '#ffc800', '#211a3e'];
 
   function sparkleBurst(x, y) {
     if (prefersReduced) return;

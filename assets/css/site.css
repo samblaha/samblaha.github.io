@@ -99,7 +99,7 @@ a { color: inherit; text-decoration: none; }
   border: 3px solid var(--base);
   border-radius: 8px;
 }
-::-webkit-scrollbar-thumb:hover { background: var(--purple); }
+::-webkit-scrollbar-thumb:hover { background: var(--ink); }
 
 /* ==========================================================================
    Background: graph paper + soft color blobs + floating doodles
@@ -134,8 +134,8 @@ a { color: inherit; text-decoration: none; }
 }
 
 .bg__blob--1 { top: -12%; right: -5%; width: 520px; height: 520px; background: var(--pink); }
-.bg__blob--2 { bottom: -18%; left: -8%; width: 620px; height: 620px; background: var(--cyan); animation-delay: -8s; }
-.bg__blob--3 { top: 40%; left: 55%; width: 420px; height: 420px; background: var(--yellow); opacity: 0.25; animation-delay: -16s; }
+.bg__blob--2 { bottom: -18%; left: -8%; width: 620px; height: 620px; background: var(--yellow); animation-delay: -8s; }
+.bg__blob--3 { top: 40%; left: 55%; width: 420px; height: 420px; background: var(--pink); opacity: 0.14; animation-delay: -16s; }
 
 @keyframes blobDrift {
   0%   { transform: translate(0, 0) scale(1); }
@@ -148,15 +148,16 @@ a { color: inherit; text-decoration: none; }
   position: absolute;
   width: 44px;
   height: 44px;
-  opacity: 0.4;
+  opacity: 0.22;
+  color: var(--ink);
   animation: doodleBob 7s ease-in-out infinite;
 }
 
-.doodle--gear   { top: 16%; left: 6%;  color: var(--purple); width: 56px; height: 56px; animation-duration: 9s; }
-.doodle--bolt   { top: 24%; right: 9%; color: var(--yellow); animation-delay: -2s; }
-.doodle--wrench { bottom: 24%; left: 10%; color: var(--cyan); animation-delay: -4s; }
-.doodle--spring { bottom: 12%; right: 14%; color: var(--pink); width: 60px; height: 60px; animation-delay: -1s; }
-.doodle--chip   { top: 58%; right: 4%;  color: var(--lime); animation-delay: -5s; animation-duration: 8s; }
+.doodle--gear   { top: 16%; left: 6%;  width: 56px; height: 56px; animation-duration: 9s; }
+.doodle--bolt   { top: 24%; right: 9%; color: var(--pink); animation-delay: -2s; }
+.doodle--wrench { bottom: 24%; left: 10%; animation-delay: -4s; }
+.doodle--spring { bottom: 12%; right: 14%; width: 60px; height: 60px; animation-delay: -1s; }
+.doodle--chip   { top: 58%; right: 4%;  animation-delay: -5s; animation-duration: 8s; }
 
 @keyframes doodleBob {
   0%, 100% { transform: translateY(0) rotate(-6deg); }
@@ -470,10 +471,6 @@ h1, h2, h3 {
 [data-theme="dark"] .card { border-color: rgba(255, 243, 224, 0.85); }
 
 /* Rotate accents through the grid so every card feels hand-placed */
-.grid .card:nth-child(4n+1) { --card-accent: var(--pink); }
-.grid .card:nth-child(4n+2) { --card-accent: var(--cyan); }
-.grid .card:nth-child(4n+3) { --card-accent: var(--yellow); }
-.grid .card:nth-child(4n+4) { --card-accent: var(--purple); }
 
 .card:hover {
   transform: translate(-4px, -4px) rotate(-0.6deg);
@@ -641,7 +638,7 @@ h1, h2, h3 {
 .prose li::marker { color: var(--pink); content: "✦ "; }
 
 .prose a {
-  color: var(--purple);
+  color: var(--ink);
   font-weight: 600;
   text-decoration: underline wavy var(--pink) 2px;
   text-underline-offset: 4px;
@@ -670,7 +667,7 @@ h1, h2, h3 {
   text-align: center;
   background:
     radial-gradient(circle at 12% 20%, color-mix(in srgb, var(--pink) 16%, transparent), transparent 40%),
-    radial-gradient(circle at 88% 80%, color-mix(in srgb, var(--cyan) 16%, transparent), transparent 40%),
+    radial-gradient(circle at 88% 80%, color-mix(in srgb, var(--yellow) 22%, transparent), transparent 40%),
     var(--paper);
 }
 
@@ -697,13 +694,7 @@ h1, h2, h3 {
   left: 0;
   right: 0;
   height: 4px;
-  background: repeating-linear-gradient(
-    90deg,
-    var(--pink) 0 40px,
-    var(--yellow) 40px 80px,
-    var(--cyan) 80px 120px,
-    var(--purple) 120px 160px
-  );
+  background: var(--accent);
   border-radius: 2px;
 }
 
@@ -769,10 +760,6 @@ h1, h2, h3 {
 
 [data-theme="dark"] .chip { border-color: rgba(255, 243, 224, 0.85); }
 
-.project__chips .chip:nth-child(4n+1) { background: color-mix(in srgb, var(--pink) 22%, var(--paper)); }
-.project__chips .chip:nth-child(4n+2) { background: color-mix(in srgb, var(--cyan) 22%, var(--paper)); }
-.project__chips .chip:nth-child(4n+3) { background: color-mix(in srgb, var(--yellow) 26%, var(--paper)); }
-.project__chips .chip:nth-child(4n+4) { background: color-mix(in srgb, var(--purple) 22%, var(--paper)); }
 
 .chip--link:hover {
   background: var(--ink);
@@ -885,7 +872,7 @@ h1, h2, h3 {
 }
 
 [data-theme="dark"] .theme-float__icon--moon { color: #211a3e; }
-[data-theme="dark"] .theme-float__slider { transform: translateX(0); background: var(--cyan); }
+[data-theme="dark"] .theme-float__slider { transform: translateX(0); background: var(--pink); }
 
 [data-theme="light"] .theme-float__icon--sun { color: #211a3e; }
 [data-theme="light"] .theme-float__slider { transform: translateX(34px); background: var(--yellow); }
@@ -972,13 +959,7 @@ html.js .hero [data-reveal] { opacity: 1; transform: none; }
   height: 100%;
   transform-origin: 0 50%;
   transform: scaleX(0);
-  background: repeating-linear-gradient(
-    90deg,
-    var(--pink) 0 40px,
-    var(--yellow) 40px 80px,
-    var(--cyan) 80px 120px,
-    var(--purple) 120px 160px
-  );
+  background: var(--accent);
   border-right: 3px solid var(--ink);
 }
 
@@ -1149,10 +1130,7 @@ html.js .hero [data-reveal] { opacity: 1; transform: none; }
   flex-shrink: 0;
 }
 
-.project__body > h2:nth-of-type(4n+1)::before { background: var(--pink); color: #fff; }
-.project__body > h2:nth-of-type(4n+2)::before { background: var(--cyan); color: #16123a; }
-.project__body > h2:nth-of-type(4n+3)::before { background: var(--yellow); color: #211a3e; }
-.project__body > h2:nth-of-type(4n+4)::before { background: var(--purple); color: #fff; }
+[data-theme="dark"] .project__body > h2::before { color: var(--base); }
 
 .prose h2 .anchor,
 .prose h3 .anchor {
@@ -1172,10 +1150,10 @@ html.js .hero [data-reveal] { opacity: 1; transform: none; }
   scroll-margin-top: 110px;
 }
 
-.prose h3::before { content: "→ "; color: var(--cyan); }
+.prose h3::before { content: "→ "; color: var(--pink); }
 
 .prose ol { padding-left: 1.5em; margin: 0 0 1.4em; }
-.prose ol li::marker { color: var(--purple); font-weight: 700; font-family: var(--font-mono); }
+.prose ol li::marker { color: var(--pink); font-weight: 700; font-family: var(--font-mono); }
 
 .prose hr {
   border: 0;
@@ -1249,7 +1227,7 @@ html.js .hero [data-reveal] { opacity: 1; transform: none; }
   color: var(--paper);
 }
 [data-theme="dark"] .prose th { color: var(--base); }
-.prose tr:nth-child(even) td { background: color-mix(in srgb, var(--cyan) 8%, transparent); }
+.prose tr:nth-child(even) td { background: color-mix(in srgb, var(--ink) 4%, transparent); }
 .prose td + td, .prose th + th { border-left: 2px solid color-mix(in srgb, var(--ink) 15%, transparent); }
 .prose tr + tr td { border-top: 2px solid color-mix(in srgb, var(--ink) 15%, transparent); }
 
@@ -1298,8 +1276,8 @@ html.js .hero [data-reveal] { opacity: 1; transform: none; }
   letter-spacing: 0.12em;
   padding: 3px 9px;
   border-radius: 999px;
-  background: var(--cyan);
-  color: #16123a;
+  background: var(--yellow);
+  color: #211a3e;
   transform: rotate(-2deg);
 }
 
@@ -1330,16 +1308,15 @@ html.js .hero [data-reveal] { opacity: 1; transform: none; }
 
 .codeblock pre code { background: none; border: 0; padding: 0; font-size: inherit; }
 
-/* Rouge token colours in the workshop palette */
+/* Rouge token colours: cream, pink for keywords, yellow for literals */
 .highlight .c, .highlight .c1, .highlight .cm, .highlight .cp { color: rgba(255, 243, 224, 0.5); font-style: italic; }
-.highlight .k, .highlight .kd, .highlight .kn, .highlight .kr, .highlight .kt, .highlight .kp { color: #ff6fa5; font-weight: 700; }
-.highlight .s, .highlight .s1, .highlight .s2, .highlight .sb, .highlight .sr, .highlight .se { color: #ffd84d; }
-.highlight .m, .highlight .mi, .highlight .mf, .highlight .mh, .highlight .il { color: #a5f55f; }
-.highlight .nf, .highlight .fm, .highlight .nx { color: #2ee6e0; }
-.highlight .nc, .highlight .nn, .highlight .nt { color: #9b7bff; font-weight: 700; }
-.highlight .na, .highlight .nv, .highlight .vi, .highlight .bp { color: #ff9633; }
-.highlight .o, .highlight .p, .highlight .ow { color: rgba(255, 243, 224, 0.85); }
-.highlight .gi { color: #a5f55f; } .highlight .gd { color: #ff6fa5; }
+.highlight .k, .highlight .kd, .highlight .kn, .highlight .kr, .highlight .kt, .highlight .kp, .highlight .nt { color: #ff6fa5; font-weight: 700; }
+.highlight .s, .highlight .s1, .highlight .s2, .highlight .sb, .highlight .sr, .highlight .se,
+.highlight .m, .highlight .mi, .highlight .mf, .highlight .mh, .highlight .il { color: #ffd84d; }
+.highlight .nf, .highlight .fm, .highlight .nc, .highlight .nn { color: #fff3e0; font-weight: 700; }
+.highlight .na, .highlight .nv, .highlight .vi, .highlight .bp, .highlight .nx { color: rgba(255, 243, 224, 0.9); }
+.highlight .o, .highlight .p, .highlight .ow { color: rgba(255, 243, 224, 0.7); }
+.highlight .gi { color: #ffd84d; } .highlight .gd { color: #ff6fa5; }
 .highlight .err { background: none; color: #ff6fa5; }
 
 /* ==========================================================================
@@ -1351,7 +1328,7 @@ html.js .hero [data-reveal] { opacity: 1; transform: none; }
   padding: 34px 28px 24px;
   margin: 0 0 56px;
   background:
-    radial-gradient(circle at 90% 10%, color-mix(in srgb, var(--cyan) 14%, transparent), transparent 45%),
+    radial-gradient(circle at 90% 10%, color-mix(in srgb, var(--yellow) 18%, transparent), transparent 45%),
     var(--paper);
 }
 
@@ -1392,8 +1369,8 @@ html.js .hero [data-reveal] { opacity: 1; transform: none; }
   font-weight: 700;
   padding: 4px 8px;
   border-radius: 6px;
-  background: var(--lime);
-  color: #16123a;
+  background: var(--yellow);
+  color: #211a3e;
   transform: rotate(-3deg);
 }
 
@@ -1431,7 +1408,7 @@ html.js .hero [data-reveal] { opacity: 1; transform: none; }
   position: absolute;
   inset: 3px;
   border-radius: 2px;
-  background: var(--lime);
+  background: var(--pink);
   opacity: 0;
   transition: opacity 0.2s var(--smooth);
 }
@@ -1494,7 +1471,7 @@ a.bom__name:hover { color: var(--pink); }
 
 .timeline__heading { display: block; font-size: 1.1rem; margin-bottom: 4px; }
 .timeline__note { margin: 0; color: var(--muted); }
-.timeline__note a { color: var(--purple); font-weight: 600; text-decoration: underline wavy var(--pink) 2px; }
+.timeline__note a { color: var(--ink); font-weight: 600; text-decoration: underline wavy var(--pink) 2px; }
 
 /* ==========================================================================
    Project blog: newer / older navigation, comments, lightbox
@@ -1525,7 +1502,7 @@ a.bom__name:hover { color: var(--pink); }
 .navcard--empty { opacity: 0.6; box-shadow: none; border-style: dashed; }
 
 a.navcard:hover { transform: translate(-4px, -4px); box-shadow: var(--shadow-hard-lg); }
-a.navcard--newer:hover { background: color-mix(in srgb, var(--cyan) 18%, var(--paper)); }
+a.navcard--newer:hover { background: color-mix(in srgb, var(--yellow) 24%, var(--paper)); }
 a.navcard--older:hover { background: color-mix(in srgb, var(--pink) 18%, var(--paper)); }
 
 .navcard__label {

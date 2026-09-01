@@ -1,4 +1,4 @@
-# Desktop Labs (GitHub Pages + Jekyll)
+# Blaha Labs (GitHub Pages + Jekyll)
 
 A loud, TVA-toned "Workshop Pop" portfolio where every project is a blog post. **Projects are a Jekyll collection**—each project is one Markdown file in `_projects/`.
 

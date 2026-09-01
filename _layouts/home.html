@@ -42,9 +42,27 @@ layout: default
     <h2 class="display-2">The Workbench</h2>
   </div>
 
-  <div class="grid">
+  {% assign all_tags = "" | split: "" %}
+  {% for project in site.projects %}
+    {% for tag in project.tags %}
+      {% assign all_tags = all_tags | push: tag %}
+    {% endfor %}
+  {% endfor %}
+  {% assign all_tags = all_tags | uniq | sort %}
+
+  {% if all_tags.size > 1 %}
+  <div class="filter" data-reveal role="group" aria-label="Filter builds by tag">
+    <button class="filter__btn is-active" type="button" data-filter="all">All builds</button>
+    {% for tag in all_tags %}
+      <button class="filter__btn" type="button" data-filter="{{ tag | slugify }}">{{ tag }}</button>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <div class="grid" id="build-grid">
     {% for project in featured_projects %}
-      <article class="card card--large" data-reveal>
+      {% assign words = project.content | strip_html | number_of_words %}
+      <article class="card card--large" data-reveal data-tags="{% for tag in project.tags %}{{ tag | slugify }} {% endfor %}">
         <a class="card__link" href="{{ project.url }}">
           <div class="card__img-wrap">
             {% if project.hero %}
@@ -55,6 +73,11 @@ layout: default
           </div>
           <div class="card__content">
             <span class="card__tag sticker sticker--pink">★ Featured</span>
+            <div class="card__meta">
+              <time datetime="{{ project.date | date_to_xmlschema }}">{{ project.date | date: "%b %Y" }}</time>
+              <span>{{ words | divided_by: 200 | plus: 1 }} min read</span>
+              {% if project.status %}<span>{{ project.status }}</span>{% endif %}
+            </div>
             <h3 class="card__title">{{ project.title | default: project.name }}</h3>
             <p class="card__desc">{{ project.summary }}</p>
             <span class="card__cta">Read the build <span class="card__arrow">→</span></span>
@@ -64,7 +87,8 @@ layout: default
     {% endfor %}
 
     {% for project in projects_sorted %}
-      <article class="card card--small" data-reveal>
+      {% assign words = project.content | strip_html | number_of_words %}
+      <article class="card card--small" data-reveal data-tags="{% for tag in project.tags %}{{ tag | slugify }} {% endfor %}">
         <a class="card__link" href="{{ project.url }}">
           <div class="card__img-wrap">
             {% if project.hero %}
@@ -77,6 +101,11 @@ layout: default
             {% if project.tags.first %}
               <span class="card__tag sticker">{{ project.tags | first }}</span>
             {% endif %}
+            <div class="card__meta">
+              <time datetime="{{ project.date | date_to_xmlschema }}">{{ project.date | date: "%b %Y" }}</time>
+              <span>{{ words | divided_by: 200 | plus: 1 }} min read</span>
+              {% if project.status %}<span>{{ project.status }}</span>{% endif %}
+            </div>
             <h3 class="card__title">{{ project.title | default: project.name }}</h3>
             <p class="card__desc">{{ project.summary }}</p>
             <span class="card__cta">Read the build <span class="card__arrow">→</span></span>
@@ -84,6 +113,7 @@ layout: default
         </a>
       </article>
     {% endfor %}
+    <p class="grid__empty" id="grid-empty" hidden>Nothing tagged that yet. Nudge me in the Idea Box below.</p>
   </div>
 </section>
 

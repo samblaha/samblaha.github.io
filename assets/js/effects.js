@@ -106,11 +106,42 @@
     });
   }
 
+  // ===== Tag filter on the workbench grid (deep-linkable via ?tag=) =====
+  function initTagFilter() {
+    const buttons = Array.from(document.querySelectorAll('.filter__btn'));
+    const cards = Array.from(document.querySelectorAll('#build-grid .card'));
+    const empty = document.getElementById('grid-empty');
+    if (!buttons.length || !cards.length) return;
+
+    const apply = (tag) => {
+      let shown = 0;
+      cards.forEach((card) => {
+        const tags = (card.getAttribute('data-tags') || '').split(/\s+/);
+        const match = tag === 'all' || tags.includes(tag);
+        card.classList.toggle('is-filtered', !match);
+        if (match) shown++;
+      });
+      buttons.forEach((b) => b.classList.toggle('is-active', b.getAttribute('data-filter') === tag));
+      if (empty) empty.hidden = shown > 0;
+
+      const url = new URL(location.href);
+      if (tag === 'all') url.searchParams.delete('tag');
+      else url.searchParams.set('tag', tag);
+      history.replaceState(null, '', url);
+    };
+
+    buttons.forEach((b) => b.addEventListener('click', () => apply(b.getAttribute('data-filter'))));
+
+    const initial = new URL(location.href).searchParams.get('tag');
+    if (initial && buttons.some((b) => b.getAttribute('data-filter') === initial)) apply(initial);
+  }
+
   function init() {
     initReveal();
     initCardTilt();
     initSparkles();
     initSmoothScroll();
+    initTagFilter();
   }
 
   if (document.readyState === 'loading') {

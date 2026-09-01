@@ -2,7 +2,22 @@
 layout: default
 ---
 
-<article class="project">
+{% assign words = content | strip_html | number_of_words %}
+{% assign minutes = words | divided_by: 200 | plus: 1 %}
+{% assign builds = site.projects | sort: "date" %}
+{% for p in builds %}
+  {% if p.url == page.url %}
+    {% assign idx = forloop.index0 %}
+    {% assign prev_idx = idx | minus: 1 %}
+    {% assign next_idx = idx | plus: 1 %}
+    {% if idx > 0 %}{% assign older = builds[prev_idx] %}{% endif %}
+    {% if forloop.last == false %}{% assign newer = builds[next_idx] %}{% endif %}
+  {% endif %}
+{% endfor %}
+
+<div class="progress" aria-hidden="true"><div class="progress__bar" id="read-progress"></div></div>
+
+<article class="project" data-project>
   <header class="project__header">
     <a href="/#projects" class="project__back">
       <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -11,11 +26,25 @@ layout: default
       Back to the workbench
     </a>
 
-    {% if page.status %}
-      <span class="sticker sticker--yellow project__status">{{ page.status }}</span>
-    {% endif %}
+    <div class="project__badges">
+      {% if page.status %}
+        {% assign status_key = page.status | downcase %}
+        {% if status_key contains "progress" or status_key contains "wip" %}
+          <span class="sticker sticker--yellow project__status"><span class="project__status-dot" aria-hidden="true"></span>{{ page.status }}</span>
+        {% elsif status_key contains "ship" or status_key contains "done" or status_key contains "complete" %}
+          <span class="sticker sticker--cyan project__status">✓ {{ page.status }}</span>
+        {% else %}
+          <span class="sticker project__status">{{ page.status }}</span>
+        {% endif %}
+      {% endif %}
+      <span class="project__readtime"><span aria-hidden="true">⏱</span> {{ minutes }} min read</span>
+    </div>
 
     <h1 class="display-1 project__title">{{ page.title | default: page.name }}</h1>
+
+    {% if page.summary %}
+      <p class="project__deck">{{ page.summary }}</p>
+    {% endif %}
 
     <div class="project__meta">
       {% if page.tags %}
@@ -23,21 +52,21 @@ layout: default
         <span class="project__meta-label">Built with</span>
         <div class="project__chips">
           {% for tag in page.tags %}
-            <span class="chip">{{ tag }}</span>
+            <a href="/?tag={{ tag | slugify }}#projects" class="chip chip--tag">{{ tag }}</a>
           {% endfor %}
         </div>
       </div>
       {% endif %}
       <div class="project__meta-item">
-        <span class="project__meta-label">Date</span>
-        <span class="project__meta-value">{{ page.date | date: "%Y" }}</span>
+        <span class="project__meta-label">Logged</span>
+        <time class="project__meta-value" datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%b %-d, %Y" }}</time>
       </div>
       {% if page.repo or page.demo %}
       <div class="project__meta-item">
         <span class="project__meta-label">Links</span>
         <div class="project__chips">
-          {% if page.repo %}<a href="{{ page.repo }}" class="chip chip--link">Source ↗</a>{% endif %}
-          {% if page.demo %}<a href="{{ page.demo }}" class="chip chip--link">Live Demo ↗</a>{% endif %}
+          {% if page.repo and page.repo != "" %}<a href="{{ page.repo }}" class="chip chip--link" rel="noopener">Source ↗</a>{% endif %}
+          {% if page.demo and page.demo != "" %}<a href="{{ page.demo }}" class="chip chip--link" rel="noopener">Live demo ↗</a>{% endif %}
         </div>
       </div>
       {% endif %}
@@ -45,22 +74,132 @@ layout: default
   </header>
 
   {% if page.hero %}
-  <div class="project__hero panel">
-    <img src="{{ page.hero }}" alt="" style="width: 100%; display: block; aspect-ratio: 21/9; object-fit: cover;">
-  </div>
+  <figure class="project__hero panel">
+    <img class="project__hero-img" src="{{ page.hero }}" alt="{{ page.hero_alt | default: page.title }}" data-lightbox />
+    {% if page.hero_caption %}<figcaption class="project__hero-caption">{{ page.hero_caption }}</figcaption>{% endif %}
+  </figure>
   {% endif %}
 
-  <div class="prose project__body">
-    {{ content }}
+  <div class="project__layout">
+    <aside class="project__rail" aria-label="On this page">
+      <div class="rail" id="build-rail" hidden>
+        <p class="rail__title">Build log</p>
+        <ol class="rail__list" id="build-rail-list"></ol>
+        <a class="rail__top" href="#top">↑ Back to top</a>
+      </div>
+    </aside>
+
+    <div class="project__main">
+      {% if page.specs %}
+      <section class="specsheet panel" aria-label="Spec sheet">
+        <span class="sticker sticker--cyan specsheet__badge">Spec sheet</span>
+        <dl class="specsheet__grid">
+          {% for spec in page.specs %}
+            <div class="specsheet__row">
+              <dt>{{ spec[0] }}</dt>
+              <dd>{{ spec[1] }}</dd>
+            </div>
+          {% endfor %}
+        </dl>
+      </section>
+      {% endif %}
+
+      <div class="prose project__body" id="project-body">
+        {{ content }}
+      </div>
+
+      {% if page.parts %}
+      <section class="bom" aria-labelledby="bom-title">
+        <h2 id="bom-title" class="bom__title"><span class="bom__num" aria-hidden="true">BOM</span> Parts list</h2>
+        <ul class="bom__list">
+          {% for part in page.parts %}
+            <li class="bom__item">
+              <span class="bom__check" aria-hidden="true"></span>
+              <div class="bom__body">
+                {% if part.link and part.link != "" %}
+                  <a class="bom__name" href="{{ part.link }}" rel="noopener">{{ part.name }} ↗</a>
+                {% else %}
+                  <span class="bom__name">{{ part.name }}</span>
+                {% endif %}
+                {% if part.note %}<span class="bom__note">{{ part.note }}</span>{% endif %}
+              </div>
+              {% if part.qty %}<span class="bom__qty">×{{ part.qty }}</span>{% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+      </section>
+      {% endif %}
+
+      {% if page.log %}
+      <section class="timeline" aria-labelledby="log-title">
+        <h2 id="log-title" class="timeline__title">Build log</h2>
+        <ol class="timeline__list">
+          {% assign entries = page.log | sort: "date" | reverse %}
+          {% for entry in entries %}
+            <li class="timeline__item">
+              <time class="timeline__date" datetime="{{ entry.date | date_to_xmlschema }}">{{ entry.date | date: "%b %-d, %Y" }}</time>
+              <div class="timeline__body">
+                {% if entry.title %}<strong class="timeline__heading">{{ entry.title }}</strong>{% endif %}
+                {% if entry.note %}<p class="timeline__note">{{ entry.note | markdownify | remove: '<p>' | remove: '</p>' }}</p>{% endif %}
+              </div>
+            </li>
+          {% endfor %}
+        </ol>
+      </section>
+      {% endif %}
+
+      {% if page.gallery %}
+      <section class="project__gallery" aria-label="Gallery">
+        {% for img in page.gallery %}
+        <figure class="panel project__gallery-item">
+          <img src="{{ img }}" alt="{{ page.title }} photo {{ forloop.index }}" loading="lazy" data-lightbox />
+        </figure>
+        {% endfor %}
+      </section>
+      {% endif %}
+    </div>
   </div>
 
-  {% if page.gallery %}
-  <div class="project__gallery">
-    {% for img in page.gallery %}
-    <div class="panel project__gallery-item">
-      <img src="{{ img }}" alt="" style="width: 100%; display: block;">
-    </div>
-    {% endfor %}
-  </div>
+  <nav class="project__nav" aria-label="More builds">
+    {% if newer %}
+      <a class="navcard navcard--newer" href="{{ newer.url }}">
+        <span class="navcard__label">← Newer build</span>
+        <span class="navcard__title">{{ newer.title }}</span>
+      </a>
+    {% else %}
+      <span class="navcard navcard--empty">
+        <span class="navcard__label">Newest build</span>
+        <span class="navcard__title">You're at the top of the pile.</span>
+      </span>
+    {% endif %}
+    {% if older %}
+      <a class="navcard navcard--older" href="{{ older.url }}">
+        <span class="navcard__label">Older build →</span>
+        <span class="navcard__title">{{ older.title }}</span>
+      </a>
+    {% else %}
+      <a class="navcard navcard--older" href="/#ideas">
+        <span class="navcard__label">Nothing older →</span>
+        <span class="navcard__title">Suggest what I build next</span>
+      </a>
+    {% endif %}
+  </nav>
+
+  {% if page.comments %}
+  <section class="project__comments panel panel--ideas" aria-labelledby="comments-title">
+    <h2 id="comments-title" class="project__comments-title">Talk shop about this build</h2>
+    <p class="project__comments-sub">Questions, corrections, or "why didn't you just…" — all welcome.</p>
+    {% include giscus.html %}
+  </section>
   {% endif %}
 </article>
+
+<div class="lightbox" id="lightbox" hidden>
+  <button class="lightbox__close" type="button" aria-label="Close image">✕</button>
+  <figure class="lightbox__figure">
+    <img class="lightbox__img" alt="" />
+    <figcaption class="lightbox__caption"></figcaption>
+  </figure>
+</div>
+
+<script src="/assets/js/project.js" defer></script>

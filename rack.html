@@ -1,0 +1,53 @@
+---
+layout: default
+title: The Ball Rack
+description: "A virtual replica of the golf ball display case — every logo ball from every course played, pinned on a map."
+permalink: /rack/
+leaflet: true
+extra_css: /assets/css/rack.css
+---
+
+<section class="rackpage__hero">
+  <div class="sticker sticker--mustard rackpage__badge" data-reveal>
+    <span aria-hidden="true">⛳</span> Field collection
+  </div>
+
+  <h1 class="display-1 rackpage__title" data-reveal>
+    The <span class="marker marker--teal">Ball&nbsp;Rack</span>
+  </h1>
+
+  <p class="rackpage__sub" data-reveal>
+    A virtual replica of the display case on my wall — every logo ball from every
+    course played, rebuilt shelf by shelf and pinned on a map.
+  </p>
+
+  <div id="stats" class="rack-stats" data-reveal></div>
+</section>
+
+<div class="rack-layout">
+  <section class="rack-panel" aria-label="The display case">
+    <div class="rack-case">
+      <div class="rack-hinge rack-hinge-top" aria-hidden="true"></div>
+      <div class="rack-hinge rack-hinge-bottom" aria-hidden="true"></div>
+      <div id="rack" class="rack"></div>
+    </div>
+    <p class="rack-caption">Click a ball to see the course and find it on the map. Balls marked
+      <span class="uncertain-dot" aria-hidden="true"></span> are best guesses from the photo.</p>
+  </section>
+
+  <section class="info-panel" aria-label="Course details">
+    <div id="detail" class="detail-card panel empty">
+      <p class="detail-hint">Select a ball from the rack&hellip;</p>
+    </div>
+    <div id="map" class="rack-map panel"></div>
+    <div class="course-list-wrap">
+      <h2 class="course-list-title">Courses played</h2>
+      <div id="course-list" class="course-list"></div>
+    </div>
+  </section>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script src="/assets/js/rack-data.js"></script>
+<script src="/assets/js/rack.js"></script>

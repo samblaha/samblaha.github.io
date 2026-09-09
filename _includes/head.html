@@ -42,6 +42,13 @@
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
 
 <link rel="stylesheet" href="/assets/css/site.css" />
+{% if page.leaflet %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+{% endif %}
+{% if page.extra_css %}
+<link rel="stylesheet" href="{{ page.extra_css }}" />
+{% endif %}
 
 <!-- Set theme before first paint to avoid flashing -->
 <script>

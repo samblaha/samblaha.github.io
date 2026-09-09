@@ -298,7 +298,7 @@ h1, h2, h3 {
   background: var(--paper);
   border: var(--border-w) solid var(--ink);
   width: 100%;
-  max-width: 620px;
+  max-width: 720px;
   box-shadow: var(--shadow-hard);
   transition: transform 0.3s var(--snap), background-color 0.4s var(--smooth);
 }
@@ -921,6 +921,8 @@ html.js .hero [data-reveal] { opacity: 1; transform: none; }
 
 @media (max-width: 480px) {
   .nav__logo { font-size: 1rem; }
+  .nav { padding: 8px 8px 8px 12px; }
+  .nav__link { font-size: 0.65rem; padding: 6px 8px; }
   .hero__cta .btn { width: 100%; justify-content: center; }
 }
 

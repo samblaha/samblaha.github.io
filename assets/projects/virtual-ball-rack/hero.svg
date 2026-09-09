@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" role="img" aria-label="A mahogany golf ball display case">
+  <rect width="640" height="400" fill="#eee2c8"/>
+  <rect x="48" y="28" width="544" height="344" rx="18" fill="#5a1e24" stroke="#2a1b12" stroke-width="6"/>
+  <rect x="72" y="50" width="496" height="300" rx="10" fill="#141414"/>
+  <g fill="#f1ede2" stroke="#2a1b12" stroke-width="1.2">
+    <circle cx="132" cy="92" r="18"/><circle cx="188" cy="92" r="18"/><circle cx="244" cy="92" r="18"/>
+    <circle cx="300" cy="92" r="18"/><circle cx="356" cy="92" r="18"/><circle cx="412" cy="92" r="18"/>
+    <circle cx="468" cy="92" r="18"/><circle cx="524" cy="92" r="18"/>
+    <circle cx="132" cy="148" r="18"/><circle cx="188" cy="148" r="18"/><circle cx="244" cy="148" r="18"/>
+    <circle cx="300" cy="148" r="18"/><circle cx="356" cy="148" r="18"/><circle cx="412" cy="148" r="18"/>
+    <circle cx="468" cy="148" r="18"/><circle cx="524" cy="148" r="18"/>
+    <circle cx="160" cy="204" r="18"/><circle cx="216" cy="204" r="18"/><circle cx="272" cy="204" r="18"/>
+    <circle cx="328" cy="204" r="18"/><circle cx="384" cy="204" r="18"/><circle cx="440" cy="204" r="18"/>
+    <circle cx="496" cy="204" r="18"/>
+    <circle cx="188" cy="260" r="18"/><circle cx="244" cy="260" r="18"/><circle cx="300" cy="260" r="18"/>
+    <circle cx="356" cy="260" r="18"/><circle cx="412" cy="260" r="18"/><circle cx="468" cy="260" r="18"/>
+  </g>
+  <g fill="#d9a52d" font-family="Georgia, serif" font-size="8" font-weight="700" text-anchor="middle">
+    <text x="300" y="95">MV</text>
+    <text x="356" y="95">OSU</text>
+    <text x="244" y="151">Links</text>
+    <text x="328" y="207">RTJ</text>
+    <text x="300" y="263">PH</text>
+  </g>
+  <rect x="80" y="118" width="480" height="8" rx="2" fill="#3d1216"/>
+  <rect x="80" y="174" width="480" height="8" rx="2" fill="#3d1216"/>
+  <rect x="80" y="230" width="480" height="8" rx="2" fill="#3d1216"/>
+  <rect x="80" y="286" width="480" height="8" rx="2" fill="#3d1216"/>
+  <rect x="42" y="90" width="14" height="42" rx="3" fill="#e0c96a" stroke="#2a1b12" stroke-width="2"/>
+  <rect x="42" y="268" width="14" height="42" rx="3" fill="#e0c96a" stroke="#2a1b12" stroke-width="2"/>
+</svg>

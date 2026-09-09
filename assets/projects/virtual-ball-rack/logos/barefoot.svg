@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-hidden="true">
+
+  <path d="M28 10c-6 1-11 8-10 16 1 6 5 8 4 12-1 5-6 8-4 14 6 2 12-2 14-8 1-4-1-8 1-11 3-4 9-4 11-9 2-6-3-13-10-14-2 0-4 0-6 0z" fill="#a8842c"/>
+  <circle cx="24" cy="18" r="2.1" fill="#f4ead0"/>
+  <circle cx="29" cy="15" r="1.8" fill="#f4ead0"/>
+  <circle cx="34" cy="16.5" r="1.6" fill="#f4ead0"/>
+  <circle cx="38" cy="20" r="1.5" fill="#f4ead0"/>
+  <text x="32" y="56" fill="#a8842c" font-size="7" font-weight="800" font-family="Arial Black, Arial, sans-serif" text-anchor="middle" dominant-baseline="middle">BAREFOOT</text>
+
+</svg>

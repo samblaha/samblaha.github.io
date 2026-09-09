@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-hidden="true">
+
+  <!-- Simplified Putter Boy silhouette -->
+  <ellipse cx="30" cy="16" rx="11" ry="4.5" fill="#1e5631"/>
+  <circle cx="30" cy="20" r="7.5" fill="#1e5631"/>
+  <path d="M22 30 Q30 26 38 32 L36 50 H24 Z" fill="#1e5631"/>
+  <rect x="24" y="50" width="5" height="8" fill="#1e5631"/>
+  <rect x="31" y="50" width="5" height="8" fill="#1e5631"/>
+  <rect x="44" y="12" width="2.6" height="36" rx="1" fill="#1e5631"/>
+  <rect x="40" y="46" width="11" height="3" rx="1" fill="#1e5631"/>
+  <text x="32" y="62" fill="#1e5631" font-size="6" font-weight="800"
+        font-family="Georgia, Times, serif" text-anchor="middle">1895</text>
+
+</svg>

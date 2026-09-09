@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-hidden="true">
+
+  <path d="M16 44 L32 10 48 44 C40 52 24 52 16 44z" fill="#b03a2e"/>
+  <path d="M24 22 L18 12 M40 22 L46 12" stroke="#b03a2e" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="26" cy="28" r="2" fill="#f4ead8"/>
+  <circle cx="38" cy="28" r="2" fill="#f4ead8"/>
+  <text x="32" y="58" fill="#b03a2e" font-size="8" font-weight="800" font-family="Arial Black, Arial, sans-serif" text-anchor="middle" dominant-baseline="middle">FOX</text>
+
+</svg>

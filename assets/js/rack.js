@@ -15,6 +15,82 @@ const markersByBall = new Map(); // ball index -> Leaflet marker
 const ballEls = new Map();       // ball index -> button element
 let selectedIdx = null;
 
+function ballLocation(b) {
+  return b.city
+    ? `${b.city}, ${STATE_NAMES[b.state] || b.state}`
+    : (b.state ? STATE_NAMES[b.state] : "Location unknown");
+}
+
+function appendBallFace(host, ball, { large = false } = {}) {
+  const sphere = document.createElement("span");
+  sphere.className = "ball__sphere";
+  sphere.setAttribute("aria-hidden", "true");
+  host.appendChild(sphere);
+
+  const dimples = document.createElement("span");
+  dimples.className = "ball__dimples";
+  dimples.setAttribute("aria-hidden", "true");
+  host.appendChild(dimples);
+
+  const equator = document.createElement("span");
+  equator.className = "ball__equator";
+  equator.setAttribute("aria-hidden", "true");
+  host.appendChild(equator);
+
+  const highlight = document.createElement("span");
+  highlight.className = "ball__highlight";
+  highlight.setAttribute("aria-hidden", "true");
+  host.appendChild(highlight);
+
+  const mark = document.createElement("span");
+  mark.className = "mark";
+  mark.textContent = ball.mark;
+  mark.style.color = ball.color;
+
+  if (ball.logo) {
+    const img = document.createElement("img");
+    img.className = "ball__logo";
+    img.src = ball.logo;
+    img.alt = "";
+    img.loading = large ? "eager" : "lazy";
+    img.decoding = "async";
+    img.addEventListener("error", () => {
+      img.remove();
+      host.classList.remove("ball--logo");
+      host.classList.add("ball--stamp");
+    });
+    img.addEventListener("load", () => {
+      host.classList.add("ball--logo");
+      host.classList.remove("ball--stamp");
+    });
+    host.appendChild(img);
+  } else {
+    host.classList.add("ball--stamp");
+  }
+  host.appendChild(mark);
+}
+
+function scoreMarkup(ball) {
+  const scores = typeof scoresForBall === "function" ? scoresForBall(ball) : [];
+  if (!scores.length) {
+    return `<div class="score-block score-block--empty">
+      <span class="badge score-empty">No posted round on file</span>
+    </div>`;
+  }
+  const latest = scores[0];
+  const line = latestScoreLine(scores);
+  const extra = scores.length > 1
+    ? `<span class="score-count">${scores.length} rounds on file</span>`
+    : "";
+  const diff = latest.differential != null
+    ? `<span class="score-diff">Diff ${escapeHtml(String(latest.differential))}</span>`
+    : "";
+  return `<div class="score-block">
+    <span class="badge score-posted">${escapeHtml(line)}</span>
+    ${extra}${diff}
+  </div>`;
+}
+
 // ---------- Rack ----------
 function buildRack() {
   for (let r = 1; r <= RACK_ROWS; r++) {
@@ -45,11 +121,7 @@ function makeBall(idx) {
   btn.title = ball.name + (ball.city ? ` — ${ball.city}, ${ball.state}` : "");
   btn.setAttribute("aria-label", btn.title);
 
-  const mark = document.createElement("span");
-  mark.className = "mark";
-  mark.textContent = ball.mark;
-  mark.style.color = ball.color;
-  btn.appendChild(mark);
+  appendBallFace(btn, ball);
 
   if (ball.uncertain) {
     const flag = document.createElement("span");
@@ -89,20 +161,35 @@ function selectBall(idx, { flyTo = false, pulse = false } = {}) {
 function renderDetail(idx) {
   const b = BALLS[idx];
   detailEl.classList.remove("empty");
-  const loc = b.city ? `${b.city}, ${STATE_NAMES[b.state] || b.state}` : (b.state ? STATE_NAMES[b.state] : "Location unknown");
+  const loc = ballLocation(b);
+
   detailEl.innerHTML = `
-    <div class="detail-ball" style="color:${b.color}">${escapeHtml(b.mark)}</div>
+    <div class="detail-ball"></div>
     <div class="detail-body">
       <h3>${escapeHtml(b.name)}</h3>
       <div class="loc">${escapeHtml(loc)}</div>
       ${b.detail ? `<div class="note">${escapeHtml(b.detail)}</div>` : ""}
+      ${scoreMarkup(b)}
       ${b.uncertain ? `<span class="badge uncertain">Best guess</span>` : ""}
-      ${b.special ? `<span class="badge special">${b.special}</span>` : ""}
+      ${b.special ? `<span class="badge special">${escapeHtml(b.special)}</span>` : ""}
     </div>`;
+
+  const face = detailEl.querySelector(".detail-ball");
+  appendBallFace(face, b, { large: true });
 }
 
 function escapeHtml(s) {
   return String(s).replace(/[&<>"']/g, (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch]));
+}
+
+function popupHtml(b) {
+  const scores = typeof scoresForBall === "function" ? scoresForBall(b) : [];
+  const scoreLine = scores.length ? `<div class="popup-score">${escapeHtml(latestScoreLine(scores))}</div>` : "";
+  return (
+    `<b>${escapeHtml(b.name)}</b><br>${b.detail ? escapeHtml(b.detail) + "<br>" : ""}` +
+    `${escapeHtml(b.city || "")}${b.city ? ", " : ""}${escapeHtml(b.state || "")}` +
+    scoreLine
+  );
 }
 
 // ---------- Map ----------
@@ -131,10 +218,7 @@ function buildMap() {
       iconAnchor: [11, 11],
     });
     const marker = L.marker([b.lat + jitter, b.lng + jitter], { icon }).addTo(map);
-    marker.bindPopup(
-      `<b>${escapeHtml(b.name)}</b><br>${b.detail ? escapeHtml(b.detail) + "<br>" : ""}` +
-      `${escapeHtml(b.city || "")}${b.city ? ", " : ""}${escapeHtml(b.state || "")}`
-    );
+    marker.bindPopup(popupHtml(b));
     marker.on("click", () => selectBall(i, { pulse: true }));
     markersByBall.set(i, marker);
   }
@@ -175,7 +259,10 @@ function buildCourseList() {
       chip.className = "course-chip";
       if (BALLS[idxs[0]].lat == null) chip.classList.add("no-pin");
       chip.dataset.indices = idxs.join(",");
-      chip.innerHTML = escapeHtml(name) + (idxs.length > 1 ? `<span class="n">&times;${idxs.length}</span>` : "");
+      const hasScore = idxs.some((i) => (typeof scoresForBall === "function" ? scoresForBall(BALLS[i]) : []).length);
+      chip.innerHTML = escapeHtml(name)
+        + (idxs.length > 1 ? `<span class="n">&times;${idxs.length}</span>` : "")
+        + (hasScore ? `<span class="n score-dot" title="Posted round on file">●</span>` : "");
       chip.addEventListener("click", () => selectBall(idxs[0], { flyTo: true, pulse: true }));
       items.appendChild(chip);
     }
@@ -196,10 +283,14 @@ function highlightChips(idx) {
 function buildStats() {
   const courses = new Set(BALLS.filter((b) => !b.special).map((b) => b.name));
   const states = new Set(BALLS.filter((b) => b.state).map((b) => b.state));
+  const posted = typeof SCOREBOOK !== "undefined"
+    ? SCOREBOOK.length
+    : 0;
   const stats = [
     [BALLS.length, "Balls"],
     [courses.size, "Courses"],
     [states.size, "States"],
+    [posted, "Posted rounds"],
   ];
   statsEl.innerHTML = stats
     .map(([n, l]) => `<div class="stat"><span class="num">${n}</span><span class="lbl">${l}</span></div>`)

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-hidden="true">
+
+  <path d="M10 36 Q18 18 32 16 Q46 18 54 36 Q42 30 32 42 Q22 30 10 36z" fill="#4a2c1a"/>
+  <path d="M24 28 L32 22 L40 28" fill="none" stroke="#c9a227" stroke-width="1.5"/>
+  <circle cx="26" cy="30" r="1.6" fill="#c9a227"/>
+  <circle cx="38" cy="30" r="1.6" fill="#c9a227"/>
+  <text x="32" y="54" fill="#4a2c1a" font-size="8" font-weight="800" font-family="Arial Black, Arial, sans-serif" text-anchor="middle" dominant-baseline="middle">HAWK</text>
+
+</svg>

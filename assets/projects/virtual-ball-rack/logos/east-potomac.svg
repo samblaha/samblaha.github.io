@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-hidden="true">
+
+  <path d="M18 40 V28 h6 v-8 h16 v8 h6 v12z" fill="#b03a2e"/>
+  <path d="M14 28 h36 v4 H14z" fill="#b03a2e"/>
+  <circle cx="32" cy="14" r="5" fill="#b03a2e"/>
+  <text x="32" y="52" fill="#b03a2e" font-size="9" font-weight="800" font-family="Arial Black, Arial, sans-serif" text-anchor="middle" dominant-baseline="middle">D.C.</text>
+
+</svg>

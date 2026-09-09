@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-hidden="true">
+
+  <path d="M32 8 C20 20 16 34 32 56 C48 34 44 20 32 8z" fill="#2f5d3a"/>
+  <path d="M32 16 C26 24 24 34 32 46 C40 34 38 24 32 16z" fill="#c9a227" opacity=".85"/>
+  <text x="32" y="60" fill="#2f5d3a" font-size="6.5" font-weight="800" font-family="Arial Black, Arial, sans-serif" text-anchor="middle" dominant-baseline="middle">HIGHLANDS</text>
+
+</svg>

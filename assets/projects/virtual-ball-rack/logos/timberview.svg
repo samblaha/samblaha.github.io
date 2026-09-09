@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-hidden="true">
+
+  <path d="M16 46 L24 22 32 46z" fill="#2e6da4"/>
+  <path d="M28 46 L40 14 52 46z" fill="#1e4a78"/>
+  <rect x="22" y="46" width="5" height="8" fill="#5a4a1f"/>
+  <rect x="37" y="46" width="6" height="8" fill="#5a4a1f"/>
+  <text x="32" y="12" fill="#2e6da4" font-size="7" font-weight="800" font-family="Arial Black, Arial, sans-serif" text-anchor="middle" dominant-baseline="middle">TIMBER</text>
+
+</svg>

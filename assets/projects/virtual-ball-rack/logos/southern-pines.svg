@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-hidden="true">
+
+  <path d="M32 8 L38 28 h20 L42 40 l8 20 -18-12 -18 12 8-20 L6 28 h20z" fill="#2c2c2c"/>
+  <text x="32" y="36" fill="#f4ead8" font-size="12" font-weight="800" font-family="Arial Black, Arial, sans-serif" text-anchor="middle" dominant-baseline="middle">SP</text>
+
+</svg>

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-hidden="true">
+
+  <circle cx="32" cy="30" r="16" fill="#d8c9a0"/>
+  <circle cx="32" cy="30" r="16" fill="none" stroke="#8a7b4f" stroke-width="2"/>
+  <circle cx="26" cy="24" r="4" fill="#fff" opacity=".7"/>
+  <text x="32" y="54" fill="#8a7b4f" font-size="9" font-weight="800" font-family="Arial Black, Arial, sans-serif" text-anchor="middle" dominant-baseline="middle">PEARL</text>
+
+</svg>

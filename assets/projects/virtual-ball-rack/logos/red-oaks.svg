@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-hidden="true">
+
+  <path d="M32 8 C18 18 16 30 24 40 L32 56 40 40 C48 30 46 18 32 8z" fill="#2f5d3a"/>
+  <path d="M22 28 h20 M26 36 h12 M32 16 v24" stroke="#d9c48a" stroke-width="1.4"/>
+  <text x="32" y="60" fill="#2f5d3a" font-size="8" font-weight="800" font-family="Arial Black, Arial, sans-serif" text-anchor="middle" dominant-baseline="middle">OAKS</text>
+
+</svg>

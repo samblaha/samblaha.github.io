@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-hidden="true">
+
+  <circle cx="24" cy="24" r="7" fill="#6b1f4a"/>
+  <circle cx="36" cy="20" r="6.5" fill="#8c2f4e"/>
+  <circle cx="42" cy="30" r="7" fill="#6b1f4a"/>
+  <circle cx="30" cy="32" r="6" fill="#2e8b9a"/>
+  <path d="M32 34 C28 42 32 52 32 56" stroke="#2f5d3a" stroke-width="2" fill="none"/>
+  <text x="32" y="60" fill="#2e8b9a" font-size="8" font-weight="800" font-family="Arial Black, Arial, sans-serif" text-anchor="middle" dominant-baseline="middle">VINE</text>
+
+</svg>

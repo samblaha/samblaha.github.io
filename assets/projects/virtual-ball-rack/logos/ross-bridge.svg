@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-hidden="true">
+
+  <path d="M10 40 Q32 12 54 40" fill="none" stroke="#2f5d3a" stroke-width="4" stroke-linecap="round"/>
+  <path d="M14 40 v8 M24 32 v16 M32 28 v20 M40 32 v16 M50 40 v8" stroke="#2f5d3a" stroke-width="2.2"/>
+  <text x="32" y="16" fill="#2f5d3a" font-size="8" font-weight="800" font-family="Arial Black, Arial, sans-serif" text-anchor="middle" dominant-baseline="middle">ROSS</text>
+  <text x="32" y="58" fill="#2f5d3a" font-size="8" font-weight="800" font-family="Arial Black, Arial, sans-serif" text-anchor="middle" dominant-baseline="middle">BRIDGE</text>
+
+</svg>

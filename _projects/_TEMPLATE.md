@@ -9,6 +9,7 @@
 # - hyphen-separated
 # - keep it short and memorable
 
+published: false
 title: "Project Title"
 date: 2025-01-01
 summary: "One sentence that tells what it is and why it matters."

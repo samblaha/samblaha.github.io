@@ -1,0 +1,89 @@
+{% unless include.bare %}
+<section id="arcade" class="section">
+  <div class="section__head" data-reveal>
+    <span class="section__num">{{ include.num | default: "02" }}</span>
+    <h2 class="display-2">The Arcade</h2>
+    <a class="section__more" href="/arcade/">Open full screen →</a>
+  </div>
+  <p class="section__intro" data-reveal>
+    Three workshop-flavored games, built into the site. High scores live in this
+    browser — no accounts, no quarters.
+  </p>
+{% endunless %}
+
+<div class="arcade" data-arcade{% if include.bare %} id="arcade"{% endif %} data-reveal>
+  <div class="arcade__picker" role="tablist" aria-label="Choose a game">
+    <button class="arcade__pick is-active" type="button" role="tab" aria-selected="true" data-game="snake">
+      <span class="arcade__pick-icon" aria-hidden="true">🐍</span>
+      <span class="arcade__pick-copy">
+        <strong>Solder Snake</strong>
+        <em>Eat the blobs. Don't hit the traces.</em>
+      </span>
+    </button>
+    <button class="arcade__pick" type="button" role="tab" aria-selected="false" data-game="lasers">
+      <span class="arcade__pick-icon" aria-hidden="true">📡</span>
+      <span class="arcade__pick-copy">
+        <strong>Laser Gates</strong>
+        <em>Flap through the timing windows.</em>
+      </span>
+    </button>
+    <button class="arcade__pick" type="button" role="tab" aria-selected="false" data-game="match">
+      <span class="arcade__pick-icon" aria-hidden="true">💾</span>
+      <span class="arcade__pick-copy">
+        <strong>Chip Match</strong>
+        <em>Flip pairs. Clear the bench.</em>
+      </span>
+    </button>
+  </div>
+
+  <div class="arcade__cabinet panel">
+    <div class="arcade__marquee" aria-hidden="true">
+      <span>BLAHA LABS ARCADE</span>
+      <span>FREE PLAY</span>
+      <span>BLAHA LABS ARCADE</span>
+      <span>FREE PLAY</span>
+    </div>
+
+    <div class="arcade__hud">
+      <div class="arcade__stat">
+        <span class="arcade__stat-label">Score</span>
+        <span class="arcade__stat-value" data-arcade-score>0</span>
+      </div>
+      <div class="arcade__stat arcade__stat--title">
+        <span class="arcade__stat-label">Now playing</span>
+        <span class="arcade__stat-value" data-arcade-title>Solder Snake</span>
+      </div>
+      <div class="arcade__stat">
+        <span class="arcade__stat-label">Best</span>
+        <span class="arcade__stat-value" data-arcade-best>0</span>
+      </div>
+    </div>
+
+    <div class="arcade__screen" tabindex="0" aria-label="Game screen. Click, then use the keyboard to play.">
+      <canvas class="arcade__canvas" data-arcade-canvas width="720" height="450"></canvas>
+      <div class="arcade__match" data-arcade-match hidden></div>
+      <div class="arcade__overlay" data-arcade-overlay>
+        <p class="arcade__kicker">Insert curiosity</p>
+        <h3 class="arcade__overlay-title" data-arcade-overlay-title>Solder Snake</h3>
+        <p class="arcade__overlay-msg" data-arcade-overlay-msg>Steer the iron. Eat molten solder. Don't short the board.</p>
+        <button class="btn btn--orange" type="button" data-arcade-start>Play ✦</button>
+      </div>
+    </div>
+
+    <p class="arcade__hint" data-arcade-hint>Arrows / WASD to steer · Enter or click Play to start</p>
+
+    <div class="arcade__pad" data-arcade-pad hidden>
+      <button type="button" data-pad="up" aria-label="Up">▲</button>
+      <button type="button" data-pad="left" aria-label="Left">◀</button>
+      <button type="button" data-pad="down" aria-label="Down">▼</button>
+      <button type="button" data-pad="right" aria-label="Right">▶</button>
+      <button type="button" class="arcade__pad-action" data-pad="action" aria-label="Action">GO</button>
+    </div>
+  </div>
+</div>
+
+{% unless include.bare %}
+</section>
+{% endunless %}
+
+<script src="/assets/js/arcade.js" defer></script>

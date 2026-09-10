@@ -2,8 +2,9 @@
 layout: default
 ---
 
-{% assign featured_projects = site.projects | where_exp: "p", "p.featured == true" | sort: "date" | reverse %}
-{% assign projects_sorted = site.projects | where_exp: "p", "p.featured != true" | sort: "date" | reverse %}
+{% assign latest_projects = site.projects | sort: "date" | reverse %}
+{% assign oldest_project = site.projects | sort: "date" | first %}
+{% assign project_count = site.projects | size %}
 
 <section class="hero">
   <div class="hero__badge sticker sticker--mustard" data-reveal>
@@ -19,107 +20,91 @@ layout: default
 
   <p class="hero__sub" data-reveal>
     DIY engineer mixing hardware, software &amp; design into projects that are fun,
-    functional, and sometimes delightfully unnecessary.
+    functional, and sometimes delightfully unnecessary. Also: a few games, because
+    the workbench is more fun when it beeps.
   </p>
 
   <div class="hero__cta" data-reveal>
-    <a class="btn btn--orange" href="#projects">See the workbench ↓</a>
-    <a class="btn btn--ghost" href="#about">Who's building this?</a>
+    <a class="btn btn--orange" href="#projects">See the latest builds ↓</a>
+    <a class="btn btn--ghost" href="#arcade">Play a game</a>
   </div>
+
+  <ul class="hero__stats" data-reveal>
+    <li class="hero__stat">
+      <strong>{{ project_count }}</strong>
+      <span>builds logged</span>
+    </li>
+    <li class="hero__stat">
+      <strong>3</strong>
+      <span>playable games</span>
+    </li>
+    <li class="hero__stat">
+      <strong>{% if oldest_project %}{{ oldest_project.date | date: "%Y" }}→{% else %}Now{% endif %}</strong>
+      <span>still soldering</span>
+    </li>
+  </ul>
 </section>
 
 <div class="ticker" aria-hidden="true">
   <div class="ticker__track">
-    <span class="ticker__item">HARDWARE ✦ FIRMWARE ✦ 3D PRINTING ✦ LASERS ✦ E-PAPER ✦ PROTOTYPES ✦ UX ✦ SOLDER ✦&nbsp;</span>
-    <span class="ticker__item">HARDWARE ✦ FIRMWARE ✦ 3D PRINTING ✦ LASERS ✦ E-PAPER ✦ PROTOTYPES ✦ UX ✦ SOLDER ✦&nbsp;</span>
-    <span class="ticker__item">HARDWARE ✦ FIRMWARE ✦ 3D PRINTING ✦ LASERS ✦ E-PAPER ✦ PROTOTYPES ✦ UX ✦ SOLDER ✦&nbsp;</span>
+    <span class="ticker__item">HARDWARE ✦ FIRMWARE ✦ 3D PRINTING ✦ LASERS ✦ GAMES ✦ E-PAPER ✦ PROTOTYPES ✦ UX ✦ SOLDER ✦&nbsp;</span>
+    <span class="ticker__item">HARDWARE ✦ FIRMWARE ✦ 3D PRINTING ✦ LASERS ✦ GAMES ✦ E-PAPER ✦ PROTOTYPES ✦ UX ✦ SOLDER ✦&nbsp;</span>
+    <span class="ticker__item">HARDWARE ✦ FIRMWARE ✦ 3D PRINTING ✦ LASERS ✦ GAMES ✦ E-PAPER ✦ PROTOTYPES ✦ UX ✦ SOLDER ✦&nbsp;</span>
   </div>
 </div>
+
+{% if latest_projects.size > 0 %}
+{% assign newest = latest_projects | first %}
+<div class="bento">
+  <a class="bento__card bento__card--build panel" href="{{ newest.url }}" data-reveal>
+    <span class="bento__label">On the bench</span>
+    <strong class="bento__title">{{ newest.title }}</strong>
+    <span class="bento__cta">Read the latest build →</span>
+  </a>
+  <a class="bento__card bento__card--play panel" href="#arcade" data-reveal>
+    <span class="bento__label">Free play</span>
+    <strong class="bento__title">Workshop arcade</strong>
+    <span class="bento__cta">Snake, lasers &amp; memory →</span>
+  </a>
+  <a class="bento__card bento__card--idea panel" href="#ideas" data-reveal>
+    <span class="bento__label">Idea box</span>
+    <strong class="bento__title">What should I build next?</strong>
+    <span class="bento__cta">Drop a vote →</span>
+  </a>
+</div>
+{% endif %}
 
 <section id="projects" class="section">
   <div class="section__head" data-reveal>
     <span class="section__num">01</span>
     <h2 class="display-2">The Workbench</h2>
+    <a class="section__more" href="/portfolio/">Full portfolio →</a>
+  </div>
+  <p class="section__intro" data-reveal>
+    The six newest builds, fresh off the bench. Everything else lives in the
+    <a href="/portfolio/">portfolio</a>.
+  </p>
+
+  <div class="grid" id="home-grid">
+    {% for project in latest_projects limit: 6 %}
+      {% if forloop.first %}
+        {% include project-card.html project=project variant="large" badge="★ Newest" badge_tone="orange" %}
+      {% else %}
+        {% include project-card.html project=project variant="small" %}
+      {% endif %}
+    {% endfor %}
   </div>
 
-  {% assign all_tags = "" | split: "" %}
-  {% for project in site.projects %}
-    {% for tag in project.tags %}
-      {% assign all_tags = all_tags | push: tag %}
-    {% endfor %}
-  {% endfor %}
-  {% assign all_tags = all_tags | uniq | sort %}
-
-  {% if all_tags.size > 1 %}
-  <div class="filter" data-reveal role="group" aria-label="Filter builds by tag">
-    <button class="filter__btn is-active" type="button" data-filter="all">All builds</button>
-    {% for tag in all_tags %}
-      <button class="filter__btn" type="button" data-filter="{{ tag | slugify }}">{{ tag }}</button>
-    {% endfor %}
-  </div>
-  {% endif %}
-
-  <div class="grid" id="build-grid">
-    {% for project in featured_projects %}
-      {% assign words = project.content | strip_html | number_of_words %}
-      <article class="card card--large" data-reveal data-tags="{% for tag in project.tags %}{{ tag | slugify }} {% endfor %}">
-        <a class="card__link" href="{{ project.url }}">
-          <div class="card__img-wrap">
-            {% if project.hero %}
-              <img class="card__img" src="{{ project.hero }}" alt="" loading="lazy" />
-            {% else %}
-              <div class="card__fallback"><span aria-hidden="true">✦</span></div>
-            {% endif %}
-          </div>
-          <div class="card__content">
-            <span class="card__tag sticker sticker--orange">★ Featured</span>
-            <div class="card__meta">
-              <time datetime="{{ project.date | date_to_xmlschema }}">{{ project.date | date: "%b %Y" }}</time>
-              <span>{{ words | divided_by: 200 | plus: 1 }} min read</span>
-              {% if project.status %}<span>{{ project.status }}</span>{% endif %}
-            </div>
-            <h3 class="card__title">{{ project.title | default: project.name }}</h3>
-            <p class="card__desc">{{ project.summary }}</p>
-            <span class="card__cta">Read the build <span class="card__arrow">→</span></span>
-          </div>
-        </a>
-      </article>
-    {% endfor %}
-
-    {% for project in projects_sorted %}
-      {% assign words = project.content | strip_html | number_of_words %}
-      <article class="card card--small" data-reveal data-tags="{% for tag in project.tags %}{{ tag | slugify }} {% endfor %}">
-        <a class="card__link" href="{{ project.url }}">
-          <div class="card__img-wrap">
-            {% if project.hero %}
-              <img class="card__img" src="{{ project.hero }}" alt="" loading="lazy" />
-            {% else %}
-              <div class="card__fallback"><span aria-hidden="true">✦</span></div>
-            {% endif %}
-          </div>
-          <div class="card__content">
-            {% if project.tags.first %}
-              <span class="card__tag sticker">{{ project.tags | first }}</span>
-            {% endif %}
-            <div class="card__meta">
-              <time datetime="{{ project.date | date_to_xmlschema }}">{{ project.date | date: "%b %Y" }}</time>
-              <span>{{ words | divided_by: 200 | plus: 1 }} min read</span>
-              {% if project.status %}<span>{{ project.status }}</span>{% endif %}
-            </div>
-            <h3 class="card__title">{{ project.title | default: project.name }}</h3>
-            <p class="card__desc">{{ project.summary }}</p>
-            <span class="card__cta">Read the build <span class="card__arrow">→</span></span>
-          </div>
-        </a>
-      </article>
-    {% endfor %}
-    <p class="grid__empty" id="grid-empty" hidden>Nothing tagged that yet. Nudge me in the Idea Box below.</p>
+  <div class="section__foot" data-reveal>
+    <a class="btn btn--mustard" href="/portfolio/">Browse the full portfolio →</a>
   </div>
 </section>
 
+{% include arcade.html num="02" %}
+
 <section id="ideas" class="section section--narrow">
   <div class="section__head" data-reveal>
-    <span class="section__num">02</span>
+    <span class="section__num">03</span>
     <h2 class="display-2">The Idea Box</h2>
   </div>
   <p class="section__intro" data-reveal>
@@ -134,7 +119,7 @@ layout: default
 
 <section id="about" class="section section--narrow">
   <div class="section__head" data-reveal>
-    <span class="section__num">03</span>
+    <span class="section__num">04</span>
     <h2 class="display-2">The Human</h2>
   </div>
   <div class="prose" data-reveal>

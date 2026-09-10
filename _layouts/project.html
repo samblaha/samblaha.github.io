@@ -19,7 +19,7 @@ layout: default
 
 <article class="project" data-project>
   <header class="project__header">
-    <a href="/#projects" class="project__back">
+    <a href="/portfolio/" class="project__back">
       <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M10 12L6 8L10 4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
@@ -52,7 +52,7 @@ layout: default
         <span class="project__meta-label">Built with</span>
         <div class="project__chips">
           {% for tag in page.tags %}
-            <a href="/?tag={{ tag | slugify }}#projects" class="chip chip--tag">{{ tag }}</a>
+            <a href="/portfolio/?tag={{ tag | slugify }}#projects" class="chip chip--tag">{{ tag }}</a>
           {% endfor %}
         </div>
       </div>

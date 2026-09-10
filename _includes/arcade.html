@@ -13,21 +13,21 @@
 
 <div class="arcade" data-arcade{% if include.bare %} id="arcade"{% endif %} data-reveal>
   <div class="arcade__picker" role="tablist" aria-label="Choose a game">
-    <button class="arcade__pick is-active" type="button" role="tab" aria-selected="true" data-game="snake">
+    <button class="arcade__pick is-active" type="button" role="tab" id="arcade-tab-snake" aria-controls="arcade-cabinet" aria-selected="true" tabindex="0" data-game="snake">
       <span class="arcade__pick-icon" aria-hidden="true">🐍</span>
       <span class="arcade__pick-copy">
         <strong>Solder Snake</strong>
         <em>Eat the blobs. Don't hit the traces.</em>
       </span>
     </button>
-    <button class="arcade__pick" type="button" role="tab" aria-selected="false" data-game="lasers">
+    <button class="arcade__pick" type="button" role="tab" id="arcade-tab-lasers" aria-controls="arcade-cabinet" aria-selected="false" tabindex="-1" data-game="lasers">
       <span class="arcade__pick-icon" aria-hidden="true">📡</span>
       <span class="arcade__pick-copy">
         <strong>Laser Gates</strong>
         <em>Flap through the timing windows.</em>
       </span>
     </button>
-    <button class="arcade__pick" type="button" role="tab" aria-selected="false" data-game="match">
+    <button class="arcade__pick" type="button" role="tab" id="arcade-tab-match" aria-controls="arcade-cabinet" aria-selected="false" tabindex="-1" data-game="match">
       <span class="arcade__pick-icon" aria-hidden="true">💾</span>
       <span class="arcade__pick-copy">
         <strong>Chip Match</strong>
@@ -36,7 +36,8 @@
     </button>
   </div>
 
-  <div class="arcade__cabinet panel">
+  <div class="arcade__cabinet panel" id="arcade-cabinet" role="tabpanel" aria-labelledby="arcade-tab-snake">
+    <p class="arcade__live" data-arcade-live aria-live="polite"></p>
     <div class="arcade__marquee" aria-hidden="true">
       <span>BLAHA LABS ARCADE</span>
       <span>FREE PLAY</span>
@@ -62,7 +63,7 @@
 
     <div class="arcade__screen" tabindex="0" aria-label="Game screen. Click, then use the keyboard to play.">
       <canvas class="arcade__canvas" data-arcade-canvas width="720" height="450"></canvas>
-      <div class="arcade__match" data-arcade-match hidden></div>
+      <div class="arcade__match" data-arcade-match role="group" aria-label="Chip Match board" hidden></div>
       <div class="arcade__glass" aria-hidden="true"></div>
       <div class="arcade__overlay" data-arcade-overlay>
         <p class="arcade__kicker">Insert curiosity</p>

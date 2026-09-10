@@ -7,6 +7,7 @@ tags:
   - Python
   - Cryptography
 status: "Shipped"
+hero: "/assets/projects/quantum-random-number-generator/hero.png"
 repo: "https://github.com/samblaha/QRNG"
 specs:
   Framework: "IBM Qiskit"

@@ -1,0 +1,49 @@
+---
+layout: default
+title: Portfolio
+description: "Every build on the workbench, newest first."
+permalink: /portfolio/
+---
+
+{% assign latest_projects = site.projects | sort: "date" | reverse %}
+
+<section class="hero hero--page">
+  <div class="hero__badge sticker sticker--mustard" data-reveal>
+    The full workbench
+  </div>
+
+  <h1 class="hero__title display-1" data-reveal>
+    Every <span class="marker marker--orange">build</span><span class="hero__period">.</span>
+  </h1>
+
+  <p class="hero__sub" data-reveal>
+    Newest first. Filter by tag if you're hunting something specific — or jump
+    back to the <a href="/#projects">latest six</a> on the home page.
+  </p>
+</section>
+
+<section id="projects" class="section section--flush">
+  {% assign all_tags = "" | split: "" %}
+  {% for project in site.projects %}
+    {% for tag in project.tags %}
+      {% assign all_tags = all_tags | push: tag %}
+    {% endfor %}
+  {% endfor %}
+  {% assign all_tags = all_tags | uniq | sort %}
+
+  {% if all_tags.size > 1 %}
+  <div class="filter" data-reveal role="group" aria-label="Filter builds by tag">
+    <button class="filter__btn is-active" type="button" data-filter="all">All builds</button>
+    {% for tag in all_tags %}
+      <button class="filter__btn" type="button" data-filter="{{ tag | slugify }}">{{ tag }}</button>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <div class="grid" id="build-grid">
+    {% for project in latest_projects %}
+      {% include project-card.html project=project variant="small" %}
+    {% endfor %}
+    <p class="grid__empty" id="grid-empty" hidden>Nothing tagged that yet. Nudge me in the <a href="/#ideas">Idea Box</a>.</p>
+  </div>
+</section>

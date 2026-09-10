@@ -108,6 +108,13 @@
 
   // ===== Tag filter on the workbench grid (deep-linkable via ?tag=) =====
   function initTagFilter() {
+    const onHome = location.pathname === '/' || location.pathname === '/index.html';
+    const tagParam = new URL(location.href).searchParams.get('tag');
+    if (onHome && tagParam) {
+      location.replace('/portfolio/' + location.search + '#projects');
+      return;
+    }
+
     const buttons = Array.from(document.querySelectorAll('.filter__btn'));
     const cards = Array.from(document.querySelectorAll('#build-grid .card'));
     const empty = document.getElementById('grid-empty');

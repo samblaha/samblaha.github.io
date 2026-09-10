@@ -1,0 +1,31 @@
+{% assign project = include.project %}
+{% assign variant = include.variant | default: "small" %}
+{% assign badge = include.badge %}
+{% assign badge_tone = include.badge_tone | default: "orange" %}
+{% assign words = project.content | strip_html | number_of_words %}
+<article class="card card--{{ variant }}" data-reveal data-tags="{% for tag in project.tags %}{{ tag | slugify }} {% endfor %}">
+  <a class="card__link" href="{{ project.url }}">
+    <div class="card__img-wrap">
+      {% if project.hero %}
+        <img class="card__img" src="{{ project.hero }}" alt="" loading="lazy" />
+      {% else %}
+        <div class="card__fallback"><span aria-hidden="true">✦</span></div>
+      {% endif %}
+    </div>
+    <div class="card__content">
+      {% if badge %}
+        <span class="card__tag sticker sticker--{{ badge_tone }}">{{ badge }}</span>
+      {% elsif project.tags.first %}
+        <span class="card__tag sticker">{{ project.tags | first }}</span>
+      {% endif %}
+      <div class="card__meta">
+        <time datetime="{{ project.date | date_to_xmlschema }}">{{ project.date | date: "%b %Y" }}</time>
+        <span>{{ words | divided_by: 200 | plus: 1 }} min read</span>
+        {% if project.status %}<span>{{ project.status }}</span>{% endif %}
+      </div>
+      <h3 class="card__title">{{ project.title | default: project.name }}</h3>
+      <p class="card__desc">{{ project.summary }}</p>
+      <span class="card__cta">Read the build <span class="card__arrow">→</span></span>
+    </div>
+  </a>
+</article>

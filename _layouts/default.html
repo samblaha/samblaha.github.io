@@ -1,41 +1,39 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" id="top">
   <head>
     {% include head.html %}
   </head>
-  <body>
-    <div class="bg" aria-hidden="true">
-      <div class="bg__grid"></div>
-      <div class="bg__blob bg__blob--1"></div>
-      <div class="bg__blob bg__blob--2"></div>
-      <div class="bg__blob bg__blob--3"></div>
+  <body class="{% if page.layout == 'home' %}page-home{% endif %}{% if page.collection == 'projects' %} page-project{% endif %}">
+    <a class="skip-link" href="#main">Skip to content</a>
 
-      <!-- Floating workshop doodles -->
-      <svg class="doodle doodle--gear" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
-        <circle cx="12" cy="12" r="3.2"/>
-        <path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1"/>
-      </svg>
-      <svg class="doodle doodle--bolt" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M13 2 4.5 13.5H11L9.5 22 19 10h-6.5L13 2z"/>
-      </svg>
-      <svg class="doodle doodle--wrench" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
-        <path d="M14.7 6.3a4.5 4.5 0 0 0-6 6L3 18l3 3 5.7-5.7a4.5 4.5 0 0 0 6-6L14 13l-3-3 3.7-3.7z"/>
-      </svg>
-      <svg class="doodle doodle--spring" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
-        <path d="M4 18c2-6 4 6 6 0s4 6 6 0 2-6 4-6"/>
-      </svg>
-      <svg class="doodle doodle--chip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
-        <rect x="7" y="7" width="10" height="10" rx="1.5"/>
-        <path d="M9 7V4M15 7V4M9 20v-3M15 20v-3M7 9H4M7 15H4M20 9h-3M20 15h-3"/>
-      </svg>
+    <div class="boot" id="boot" hidden>
+      <div class="boot__crt" aria-hidden="true"></div>
+      <canvas class="boot__scope" id="boot-scope" width="720" height="220" aria-hidden="true"></canvas>
+      <p class="boot__mark">BLAHA LABS <span>// BENCH BIOS 4.7</span></p>
+      <pre class="boot__log" id="boot-log" aria-live="polite"></pre>
+      <div class="boot__actions">
+        <button class="btn btn--solder" type="button" id="boot-enter">Enter the shop</button>
+        <button class="btn btn--ghost" type="button" id="boot-skip">Skip intro</button>
+      </div>
+      <p class="boot__hint">Esc also works. Shown once per session.</p>
+    </div>
+
+    <canvas class="atmosphere" id="atmosphere" aria-hidden="true"></canvas>
+    <div class="lamp" id="lamp" aria-hidden="true"></div>
+
+    <div class="bg" aria-hidden="true">
+      <div class="bg__grain"></div>
+      <div class="bg__vignette"></div>
+      <div class="bg__grid"></div>
     </div>
 
     <div class="content-wrapper">
       <header class="nav-wrap">
         <nav class="nav" aria-label="Primary">
           <a class="nav__logo" href="/">
-            <span class="nav__logo-spark" aria-hidden="true">⚡</span>
-            {{ site.title | default: "Portfolio" }}
+            <span class="led led--live" aria-hidden="true"></span>
+            <span class="nav__logo-mark">{{ site.title | default: "Portfolio" }}</span>
+            <span class="nav__logo-tag">after hours</span>
           </a>
 
           <div class="nav__links">
@@ -44,32 +42,31 @@
             <a class="nav__link" href="/rack/">Rack</a>
             <a class="nav__link" href="/#about">About</a>
           </div>
+
+          <button class="lamp-switch" id="theme-toggle" type="button" aria-label="Toggle shop lights">
+            <span class="lamp-switch__knob" aria-hidden="true"></span>
+            <span class="lamp-switch__label lamp-switch__label--night">Nite</span>
+            <span class="lamp-switch__label lamp-switch__label--day">Day</span>
+          </button>
         </nav>
       </header>
 
-      <div class="theme-float">
-        <button class="theme-float__btn" id="theme-toggle" aria-label="Toggle Dark/Light Mode">
-          <div class="theme-float__icon theme-float__icon--moon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-          </div>
-          <div class="theme-float__icon theme-float__icon--sun">
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-          </div>
-          <div class="theme-float__slider"></div>
-        </button>
-      </div>
-
-      <main class="page">
+      <main class="page" id="main" tabindex="-1">
         {{ content }}
       </main>
 
       <footer class="footer">
+        <div class="footer__telemetry" aria-hidden="true">
+          <span>IRON <em data-iron-temp>187</em>°C</span>
+          <span>SCOPE <em>LOCKED</em></span>
+          <span>CURIOSITY <em>UNCAPPED</em></span>
+        </div>
         <div class="footer__marquee" aria-hidden="true">
           <div class="footer__marquee-track">
-            <span>BUILD&nbsp;·&nbsp;SOLDER&nbsp;·&nbsp;BREAK&nbsp;·&nbsp;FIX&nbsp;·&nbsp;REPEAT&nbsp;·&nbsp;</span>
-            <span>BUILD&nbsp;·&nbsp;SOLDER&nbsp;·&nbsp;BREAK&nbsp;·&nbsp;FIX&nbsp;·&nbsp;REPEAT&nbsp;·&nbsp;</span>
-            <span>BUILD&nbsp;·&nbsp;SOLDER&nbsp;·&nbsp;BREAK&nbsp;·&nbsp;FIX&nbsp;·&nbsp;REPEAT&nbsp;·&nbsp;</span>
-            <span>BUILD&nbsp;·&nbsp;SOLDER&nbsp;·&nbsp;BREAK&nbsp;·&nbsp;FIX&nbsp;·&nbsp;REPEAT&nbsp;·&nbsp;</span>
+            <span>BUILD · SOLDER · BREAK · FIX · REPEAT ·&nbsp;</span>
+            <span>BUILD · SOLDER · BREAK · FIX · REPEAT ·&nbsp;</span>
+            <span>BUILD · SOLDER · BREAK · FIX · REPEAT ·&nbsp;</span>
+            <span>BUILD · SOLDER · BREAK · FIX · REPEAT ·&nbsp;</span>
           </div>
         </div>
         <span class="footer__text">© {{ "now" | date: "%Y" }} {{ site.title | default: "Portfolio" }} — made with solder fumes &amp; questionable decisions.</span>
@@ -77,6 +74,7 @@
     </div>
 
     <script src="/assets/js/theme.js"></script>
+    <script src="/assets/js/bench.js" defer></script>
     <script src="/assets/js/effects.js" defer></script>
   </body>
 </html>

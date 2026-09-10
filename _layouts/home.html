@@ -6,43 +6,91 @@ layout: default
 {% assign oldest_project = site.projects | sort: "date" | first %}
 {% assign project_count = site.projects | size %}
 
+<nav class="stations" aria-label="On this page">
+  <a class="stations__item" href="#projects" data-station="projects">
+    <span class="led" aria-hidden="true"></span>
+    <span>01 Work</span>
+  </a>
+  <a class="stations__item" href="#arcade" data-station="arcade">
+    <span class="led" aria-hidden="true"></span>
+    <span>02 Play</span>
+  </a>
+  <a class="stations__item" href="#ideas" data-station="ideas">
+    <span class="led" aria-hidden="true"></span>
+    <span>03 Ideas</span>
+  </a>
+  <a class="stations__item" href="#about" data-station="about">
+    <span class="led" aria-hidden="true"></span>
+    <span>04 Human</span>
+  </a>
+</nav>
+
 <section class="hero">
-  <div class="hero__badge sticker sticker--mustard" data-reveal>
-    <span class="hero__badge-dot" aria-hidden="true"></span>
-    Open for weird ideas
+  <div class="hero__copy">
+    <div class="hero__badge sticker sticker--solder" data-reveal>
+      <span class="led led--live" aria-hidden="true"></span>
+      Bench is hot · open for weird ideas
+    </div>
+
+    <h1 class="hero__title display-1" data-reveal>
+      I build <span class="marker marker--solder">cool&nbsp;things</span><br />
+      &amp; a respectable amount<br />
+      of <span class="marker marker--phosphor">nonsense</span><span class="hero__period">.</span>
+    </h1>
+
+    <p class="hero__sub" data-reveal>
+      DIY engineer mixing hardware, software &amp; design into projects that are fun,
+      functional, and sometimes delightfully unnecessary. Also: a few games, because
+      the workbench is more fun when it beeps.
+    </p>
+
+    <div class="hero__cta" data-reveal>
+      <a class="btn btn--solder" href="#projects">See the latest builds</a>
+      <a class="btn btn--ghost" href="#arcade">Play a game</a>
+    </div>
+
+    <ul class="hero__stats" data-reveal>
+      <li class="hero__stat">
+        <strong>{{ project_count }}</strong>
+        <span>builds logged</span>
+      </li>
+      <li class="hero__stat">
+        <strong>3</strong>
+        <span>playable games</span>
+      </li>
+      <li class="hero__stat">
+        <strong>{% if oldest_project %}{{ oldest_project.date | date: "%Y" }}→{% else %}Now{% endif %}</strong>
+        <span>still soldering</span>
+      </li>
+    </ul>
   </div>
 
-  <h1 class="hero__title display-1" data-reveal>
-    I build <span class="marker marker--orange">cool&nbsp;things</span><br />
-    &amp; a respectable amount<br />
-    of <span class="marker marker--mustard">nonsense</span><span class="hero__period">.</span>
-  </h1>
-
-  <p class="hero__sub" data-reveal>
-    DIY engineer mixing hardware, software &amp; design into projects that are fun,
-    functional, and sometimes delightfully unnecessary. Also: a few games, because
-    the workbench is more fun when it beeps.
-  </p>
-
-  <div class="hero__cta" data-reveal>
-    <a class="btn btn--orange" href="#projects">See the latest builds ↓</a>
-    <a class="btn btn--ghost" href="#arcade">Play a game</a>
+  <div class="hero__instrument" data-reveal data-tilt-stage>
+    <div class="instrument" data-tilt-inner>
+      <div class="instrument__bezel">
+        <div class="instrument__chrome">
+          <span>CH1 · WORKBENCH</span>
+          <span class="instrument__live"><span class="led led--live"></span> LIVE</span>
+        </div>
+        <canvas class="instrument__scope" id="hero-scope" width="640" height="360" aria-hidden="true"></canvas>
+        <div class="instrument__readouts">
+          <span>2V/div</span>
+          <span>5ms</span>
+          <span>TRIG: PTR</span>
+        </div>
+      </div>
+      <div class="instrument__tray">
+        <div class="knob" data-knob style="--rot: 42deg"><i></i><em>GAIN</em></div>
+        <div class="knob" data-knob style="--rot: -18deg"><i></i><em>TIME</em></div>
+        <div class="knob" data-knob style="--rot: 110deg"><i></i><em>TRIG</em></div>
+        <div class="solder-iron" aria-hidden="true">
+          <span class="solder-iron__tip"></span>
+          <span class="solder-iron__body"></span>
+        </div>
+      </div>
+    </div>
+    <p class="instrument__caption">Pointer is the probe. Move it — the scope follows.</p>
   </div>
-
-  <ul class="hero__stats" data-reveal>
-    <li class="hero__stat">
-      <strong>{{ project_count }}</strong>
-      <span>builds logged</span>
-    </li>
-    <li class="hero__stat">
-      <strong>3</strong>
-      <span>playable games</span>
-    </li>
-    <li class="hero__stat">
-      <strong>{% if oldest_project %}{{ oldest_project.date | date: "%Y" }}→{% else %}Now{% endif %}</strong>
-      <span>still soldering</span>
-    </li>
-  </ul>
 </section>
 
 <div class="ticker" aria-hidden="true">
@@ -57,24 +105,24 @@ layout: default
 {% assign newest = latest_projects | first %}
 <div class="bento">
   <a class="bento__card bento__card--build panel" href="{{ newest.url }}" data-reveal>
-    <span class="bento__label">On the bench</span>
+    <span class="bento__label"><span class="led led--hot" aria-hidden="true"></span> On the bench</span>
     <strong class="bento__title">{{ newest.title }}</strong>
     <span class="bento__cta">Read the latest build →</span>
   </a>
   <a class="bento__card bento__card--play panel" href="#arcade" data-reveal>
-    <span class="bento__label">Free play</span>
+    <span class="bento__label"><span class="led led--live" aria-hidden="true"></span> Free play</span>
     <strong class="bento__title">Workshop arcade</strong>
     <span class="bento__cta">Snake, lasers &amp; memory →</span>
   </a>
   <a class="bento__card bento__card--idea panel" href="#ideas" data-reveal>
-    <span class="bento__label">Idea box</span>
+    <span class="bento__label"><span class="led" aria-hidden="true"></span> Idea box</span>
     <strong class="bento__title">What should I build next?</strong>
     <span class="bento__cta">Drop a vote →</span>
   </a>
 </div>
 {% endif %}
 
-<section id="projects" class="section">
+<section id="projects" class="section" data-station-target="projects">
   <div class="section__head" data-reveal>
     <span class="section__num">01</span>
     <h2 class="display-2">The Workbench</h2>
@@ -88,7 +136,7 @@ layout: default
   <div class="grid" id="home-grid">
     {% for project in latest_projects limit: 6 %}
       {% if forloop.first %}
-        {% include project-card.html project=project variant="large" badge="★ Newest" badge_tone="orange" %}
+        {% include project-card.html project=project variant="large" badge="★ Newest" badge_tone="solder" %}
       {% else %}
         {% include project-card.html project=project variant="small" %}
       {% endif %}
@@ -96,13 +144,13 @@ layout: default
   </div>
 
   <div class="section__foot" data-reveal>
-    <a class="btn btn--mustard" href="/portfolio/">Browse the full portfolio →</a>
+    <a class="btn btn--phosphor" href="/portfolio/">Browse the full portfolio →</a>
   </div>
 </section>
 
 {% include arcade.html num="02" %}
 
-<section id="ideas" class="section section--narrow">
+<section id="ideas" class="section section--narrow" data-station-target="ideas">
   <div class="section__head" data-reveal>
     <span class="section__num">03</span>
     <h2 class="display-2">The Idea Box</h2>
@@ -117,7 +165,7 @@ layout: default
   </div>
 </section>
 
-<section id="about" class="section section--narrow">
+<section id="about" class="section section--narrow" data-station-target="about">
   <div class="section__head" data-reveal>
     <span class="section__num">04</span>
     <h2 class="display-2">The Human</h2>
@@ -129,6 +177,6 @@ layout: default
   <div class="contact panel panel--contact" data-reveal>
     <h3 class="contact__title">Let's build something ridiculous together</h3>
     <p class="contact__sub">Got an idea? Want to collaborate? Just want to argue about 3D printer brands?</p>
-    <a class="btn btn--mustard" href="mailto:email@example.com">Get in touch ✦</a>
+    <a class="btn btn--phosphor" href="mailto:email@example.com">Get in touch ✦</a>
   </div>
 </section>

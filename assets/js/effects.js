@@ -49,7 +49,7 @@
   }
 
   // ===== Confetti sparkle burst on primary actions =====
-  const SPARKLE_COLORS = ['#e0601a', '#d9a52d', '#2a1b12'];
+  const SPARKLE_COLORS = ['#ff6a2a', '#f0b429', '#2ee6a6'];
 
   function sparkleBurst(x, y) {
     if (prefersReduced) return;
@@ -84,7 +84,7 @@
 
   function initSparkles() {
     document.addEventListener('click', (e) => {
-      const target = e.target instanceof Element ? e.target.closest('.btn, .theme-float__btn') : null;
+      const target = e.target instanceof Element ? e.target.closest('.btn, .lamp-switch') : null;
       if (target) sparkleBurst(e.clientX, e.clientY);
     });
   }

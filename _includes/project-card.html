@@ -1,7 +1,7 @@
 {% assign project = include.project %}
 {% assign variant = include.variant | default: "small" %}
 {% assign badge = include.badge %}
-{% assign badge_tone = include.badge_tone | default: "orange" %}
+{% assign badge_tone = include.badge_tone | default: "solder" %}
 {% assign words = project.content | strip_html | number_of_words %}
 <article class="card card--{{ variant }}" data-reveal data-tags="{% for tag in project.tags %}{{ tag | slugify }} {% endfor %}">
   <a class="card__link" href="{{ project.url }}">

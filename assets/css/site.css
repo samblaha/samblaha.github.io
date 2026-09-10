@@ -246,7 +246,7 @@ h1, h2, h3 {
   padding: 150px var(--pad) 80px;
 }
 
-.section { position: relative; margin-top: 120px; }
+.section { position: relative; margin-top: 120px; scroll-margin-top: 120px; }
 .section--narrow { max-width: 800px; }
 
 .section__head {
@@ -441,6 +441,7 @@ h1, h2, h3 {
 
 .hero--page {
   padding: 10px 0 20px;
+  scroll-margin-top: 120px;
 }
 
 .hero--page .hero__title {
@@ -1813,13 +1814,19 @@ a.navcard--older:hover { background: color-mix(in srgb, var(--orange) 18%, var(-
   text-transform: uppercase;
 }
 
-.arcade { margin-top: 8px; }
+.arcade { margin-top: 8px; scroll-margin-top: 120px; }
 
 .arcade__picker {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 14px;
   margin-bottom: 22px;
+  position: sticky;
+  top: 92px;
+  z-index: 40;
+  padding: 10px 0 14px;
+  background: color-mix(in srgb, var(--base) 88%, transparent);
+  backdrop-filter: blur(10px);
 }
 
 .arcade__pick {
@@ -2010,6 +2017,7 @@ a.navcard--older:hover { background: color-mix(in srgb, var(--orange) 18%, var(-
   padding: 16px;
   z-index: 1;
   perspective: 900px;
+  background: #1a120d;
 }
 
 .arcade__match[hidden] { display: none; }
@@ -2038,7 +2046,7 @@ a.navcard--older:hover { background: color-mix(in srgb, var(--orange) 18%, var(-
 .match-card.is-open { transform: rotateY(180deg); background: var(--paper); }
 .match-card.is-done { background: var(--mustard); }
 
-@media (hover: none), (pointer: coarse) {
+@media (pointer: coarse) {
   .arcade__pad:not([hidden]) { display: grid; }
 }
 

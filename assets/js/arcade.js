@@ -269,7 +269,7 @@
       state.y = h * 0.45;
       state.vy = 0;
       state.gates = [];
-      state.spawn = 0;
+      state.spawn = 260;
       state.score = 0;
       state.alive = true;
       state.t = 0;
@@ -278,7 +278,7 @@
 
     function flap() {
       if (!state.alive) return;
-      state.vy = -7.2;
+      state.vy = -6.4;
     }
 
     function spawnGate(w, h) {
@@ -292,23 +292,25 @@
       if (!state.alive) return;
       const step = Math.min(dt, 32) / 16.67;
       state.t += dt;
-      state.vy += 0.42 * step;
+      state.vy += 0.32 * step;
       state.y += state.vy * step;
 
-      const speed = (3.1 + state.score * 0.12) * step;
+      const speed = (2.7 + state.score * 0.1) * step;
       state.spawn -= speed;
       if (state.spawn <= 0) {
         spawnGate(w, h);
-        state.spawn = 220 + Math.random() * 40;
+        state.spawn = 260 + Math.random() * 50;
       }
 
       const px = w * 0.28;
       const pr = 14;
 
-      if (state.y - pr < 0 || state.y + pr > h) {
-        state.alive = false;
-        app.gameOver(state.score);
-        return;
+      if (state.y < pr) {
+        state.y = pr;
+        state.vy = 0;
+      } else if (state.y > h - pr) {
+        state.y = h - pr;
+        state.vy = 0;
       }
 
       for (const g of state.gates) {
@@ -648,6 +650,7 @@
       if (game.onResize) game.onResize(size.w, size.h);
       if (game.start) game.start();
       scoreEl.textContent = '0';
+      if (pad) pad.hidden = !GAMES[currentId].pad;
       screen.focus({ preventScroll: true });
     }
 

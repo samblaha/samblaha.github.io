@@ -20,23 +20,18 @@ layout: default
 
   <p class="hero__sub" data-reveal>
     DIY engineer mixing hardware, software &amp; design into projects that are fun,
-    functional, and sometimes delightfully unnecessary. Also: a few games, because
-    the workbench is more fun when it beeps.
+    functional, and sometimes delightfully unnecessary.
   </p>
 
   <div class="hero__cta" data-reveal>
     <a class="btn btn--orange" href="#projects">See the latest builds ↓</a>
-    <a class="btn btn--ghost" href="#arcade">Play a game</a>
+    <a class="btn btn--ghost" href="#about">Who's building this?</a>
   </div>
 
   <ul class="hero__stats" data-reveal>
     <li class="hero__stat">
       <strong>{{ project_count }}</strong>
       <span>builds logged</span>
-    </li>
-    <li class="hero__stat">
-      <strong>3</strong>
-      <span>playable games</span>
     </li>
     <li class="hero__stat">
       <strong>{% if oldest_project %}{{ oldest_project.date | date: "%Y" }}→{% else %}Now{% endif %}</strong>
@@ -47,9 +42,9 @@ layout: default
 
 <div class="ticker" aria-hidden="true">
   <div class="ticker__track">
-    <span class="ticker__item">HARDWARE ✦ FIRMWARE ✦ 3D PRINTING ✦ LASERS ✦ GAMES ✦ E-PAPER ✦ PROTOTYPES ✦ UX ✦ SOLDER ✦&nbsp;</span>
-    <span class="ticker__item">HARDWARE ✦ FIRMWARE ✦ 3D PRINTING ✦ LASERS ✦ GAMES ✦ E-PAPER ✦ PROTOTYPES ✦ UX ✦ SOLDER ✦&nbsp;</span>
-    <span class="ticker__item">HARDWARE ✦ FIRMWARE ✦ 3D PRINTING ✦ LASERS ✦ GAMES ✦ E-PAPER ✦ PROTOTYPES ✦ UX ✦ SOLDER ✦&nbsp;</span>
+    <span class="ticker__item">HARDWARE ✦ FIRMWARE ✦ 3D PRINTING ✦ LASERS ✦ E-PAPER ✦ PROTOTYPES ✦ UX ✦ SOLDER ✦&nbsp;</span>
+    <span class="ticker__item">HARDWARE ✦ FIRMWARE ✦ 3D PRINTING ✦ LASERS ✦ E-PAPER ✦ PROTOTYPES ✦ UX ✦ SOLDER ✦&nbsp;</span>
+    <span class="ticker__item">HARDWARE ✦ FIRMWARE ✦ 3D PRINTING ✦ LASERS ✦ E-PAPER ✦ PROTOTYPES ✦ UX ✦ SOLDER ✦&nbsp;</span>
   </div>
 </div>
 
@@ -60,11 +55,6 @@ layout: default
     <span class="bento__label">On the bench</span>
     <strong class="bento__title">{{ newest.title }}</strong>
     <span class="bento__cta">Read the latest build →</span>
-  </a>
-  <a class="bento__card bento__card--play panel" href="#arcade" data-reveal>
-    <span class="bento__label">Free play</span>
-    <strong class="bento__title">Workshop arcade</strong>
-    <span class="bento__cta">Snake, lasers &amp; memory →</span>
   </a>
   <a class="bento__card bento__card--idea panel" href="#ideas" data-reveal>
     <span class="bento__label">Idea box</span>
@@ -100,11 +90,9 @@ layout: default
   </div>
 </section>
 
-{% include arcade.html num="02" %}
-
 <section id="ideas" class="section section--narrow">
   <div class="section__head" data-reveal>
-    <span class="section__num">03</span>
+    <span class="section__num">02</span>
     <h2 class="display-2">The Idea Box</h2>
   </div>
   <p class="section__intro" data-reveal>
@@ -119,7 +107,7 @@ layout: default
 
 <section id="about" class="section section--narrow">
   <div class="section__head" data-reveal>
-    <span class="section__num">04</span>
+    <span class="section__num">03</span>
     <h2 class="display-2">The Human</h2>
   </div>
   <div class="prose" data-reveal>

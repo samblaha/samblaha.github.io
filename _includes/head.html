@@ -1,8 +1,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="color-scheme" content="dark light" />
-<meta name="theme-color" content="#f3ead8" media="(prefers-color-scheme: light)" />
-<meta name="theme-color" content="#07080a" media="(prefers-color-scheme: dark)" />
+<meta name="theme-color" content="#07080a" />
 
 {% assign page_title = page.title | default: site.title %}
 {% assign page_desc = page.summary | default: page.description | default: site.description %}
@@ -55,5 +54,7 @@
     var saved = localStorage.getItem("theme");
     var theme = saved === "light" || saved === "dark" ? saved : "dark";
     document.documentElement.setAttribute("data-theme", theme);
+    var themeColor = document.querySelector('meta[name="theme-color"]');
+    if (themeColor) themeColor.setAttribute("content", theme === "light" ? "#ebe2c8" : "#07080a");
   })();
 </script>

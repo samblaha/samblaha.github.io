@@ -4,7 +4,25 @@
 
   const savedTheme = localStorage.getItem('theme');
   const theme = savedTheme === 'light' || savedTheme === 'dark' ? savedTheme : 'dark';
+
+  function syncThemeColor(next) {
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute('content', next === 'light' ? '#ebe2c8' : '#07080a');
+  }
+
+  function syncSwitch(next) {
+    if (!themeToggle) return;
+    const day = next === 'light';
+    themeToggle.setAttribute('aria-checked', day ? 'true' : 'false');
+    themeToggle.setAttribute(
+      'aria-label',
+      day ? 'Shop lights on. Switch to night.' : 'Shop lights off. Switch to day.'
+    );
+  }
+
   html.setAttribute('data-theme', theme);
+  syncThemeColor(theme);
+  syncSwitch(theme);
 
   function syncGiscus(next) {
     const frame = document.querySelector('iframe.giscus-frame');
@@ -14,12 +32,12 @@
   }
 
   if (themeToggle) {
-    themeToggle.setAttribute('aria-pressed', theme === 'light' ? 'true' : 'false');
     themeToggle.addEventListener('click', () => {
       const newTheme = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
       html.setAttribute('data-theme', newTheme);
       localStorage.setItem('theme', newTheme);
-      themeToggle.setAttribute('aria-pressed', newTheme === 'light' ? 'true' : 'false');
+      syncThemeColor(newTheme);
+      syncSwitch(newTheme);
       window.dispatchEvent(new CustomEvent('themechange', { detail: { theme: newTheme } }));
       syncGiscus(newTheme);
     });

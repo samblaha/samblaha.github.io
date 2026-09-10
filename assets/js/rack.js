@@ -5,6 +5,8 @@ const STATE_NAMES = {
   AL: "Alabama", KY: "Kentucky", AZ: "Arizona", FL: "Florida", DC: "Washington, D.C.",
 };
 
+const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
 const rackEl = document.getElementById("rack");
 const detailEl = document.getElementById("detail");
 const statsEl = document.getElementById("stats");
@@ -118,8 +120,10 @@ function makeBall(idx) {
   const btn = document.createElement("button");
   btn.className = "ball";
   btn.type = "button";
-  btn.title = ball.name + (ball.city ? ` — ${ball.city}, ${ball.state}` : "");
-  btn.setAttribute("aria-label", btn.title);
+  let label = ball.name + (ball.city ? ` — ${ball.city}, ${ball.state}` : "");
+  if (ball.uncertain) label += " (best guess from the photo)";
+  btn.title = label;
+  btn.setAttribute("aria-label", label);
 
   appendBallFace(btn, ball);
 
@@ -127,6 +131,7 @@ function makeBall(idx) {
     const flag = document.createElement("span");
     flag.className = "uncertain-flag";
     flag.title = "Best guess from the photo";
+    flag.setAttribute("aria-hidden", "true");
     btn.appendChild(flag);
   }
 
@@ -140,20 +145,26 @@ function selectBall(idx, { flyTo = false, pulse = false } = {}) {
   if (selectedIdx !== null) ballEls.get(selectedIdx)?.classList.remove("selected");
   selectedIdx = idx;
   const el = ballEls.get(idx);
+  if (!el) return;
   el.classList.add("selected");
   if (pulse) {
     el.classList.remove("pulse");
     void el.offsetWidth; // restart animation
     el.classList.add("pulse");
-    el.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    el.scrollIntoView({ behavior: prefersReduced ? "auto" : "smooth", block: "nearest" });
   }
 
   renderDetail(idx);
   highlightChips(idx);
 
   const marker = markersByBall.get(idx);
-  if (marker) {
-    if (flyTo) map.flyTo(marker.getLatLng(), Math.max(map.getZoom(), 8), { duration: 0.8 });
+  if (marker && map) {
+    if (flyTo) {
+      const target = marker.getLatLng();
+      const z = Math.max(map.getZoom(), 8);
+      if (prefersReduced) map.setView(target, z, { animate: false });
+      else map.flyTo(target, z, { duration: 0.8 });
+    }
     marker.openPopup();
   }
 }
@@ -194,7 +205,10 @@ function popupHtml(b) {
 
 // ---------- Map ----------
 function buildMap() {
-  map = L.map("map", { scrollWheelZoom: true });
+  const mapHost = document.getElementById("map");
+  if (!mapHost || typeof L === "undefined") return;
+
+  map = L.map("map", { scrollWheelZoom: false });
   L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}", {
     attribution: "Tiles &copy; Esri &mdash; Esri, HERE, Garmin, OpenStreetMap contributors",
     maxZoom: 19,
@@ -222,7 +236,15 @@ function buildMap() {
     marker.on("click", () => selectBall(i, { pulse: true }));
     markersByBall.set(i, marker);
   }
-  map.fitBounds(bounds.pad(0.12));
+  if (located.length) map.fitBounds(bounds.pad(0.12));
+
+  const container = map.getContainer();
+  container.addEventListener("focus", () => map.scrollWheelZoom.enable());
+  container.addEventListener("blur", () => map.scrollWheelZoom.disable());
+  map.on("click", () => {
+    map.scrollWheelZoom.enable();
+    container.focus({ preventScroll: true });
+  });
 }
 
 // ---------- Course list ----------
@@ -298,10 +320,20 @@ function buildStats() {
 }
 
 buildRack();
-buildMap();
+try {
+  buildMap();
+} catch (err) {
+  map = undefined;
+}
 buildCourseList();
 buildStats();
 
-window.addEventListener("load", () => {
-  map.invalidateSize();
-});
+function refreshMapSize() {
+  if (map) map.invalidateSize();
+}
+
+window.addEventListener("load", refreshMapSize);
+window.addEventListener("themechange", refreshMapSize);
+if (document.fonts && document.fonts.ready) {
+  document.fonts.ready.then(refreshMapSize).catch(() => {});
+}

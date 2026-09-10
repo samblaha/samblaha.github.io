@@ -27,7 +27,14 @@
 
   function loadScores() {
     try {
-      return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}') || {};
+      const raw = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+      if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return {};
+      const out = {};
+      Object.keys(GAMES).forEach(function (key) {
+        const n = Number(raw[key]);
+        if (Number.isFinite(n) && n >= 0) out[key] = Math.floor(n);
+      });
+      return out;
     } catch (err) {
       return {};
     }
@@ -170,7 +177,10 @@
     }
 
     function turn(x, y) {
+      // Ignore a reverse of the heading already in motion, and only queue one
+      // change per step so Down+Left in the same tick can't reverse into the body.
       if (state.dir.x + x === 0 && state.dir.y + y === 0) return;
+      if (state.nextDir.x !== state.dir.x || state.nextDir.y !== state.dir.y) return;
       state.nextDir = { x, y };
     }
 
@@ -198,18 +208,20 @@
         state.score += 10;
         state.step = Math.max(70, state.step - 3);
         app.setScore(state.score);
-        const c = theme();
-        for (let i = 0; i < 14; i++) {
-          const a = Math.random() * Math.PI * 2;
-          state.particles.push({
-            x: next.x + 0.5,
-            y: next.y + 0.5,
-            vx: Math.cos(a) * (2 + Math.random() * 4),
-            vy: Math.sin(a) * (2 + Math.random() * 4),
-            life: 1,
-            color: c.mustard,
-            r: 1.6 + Math.random() * 2,
-          });
+        if (!prefersReduced) {
+          const c = theme();
+          for (let i = 0; i < 14; i++) {
+            const a = Math.random() * Math.PI * 2;
+            state.particles.push({
+              x: next.x + 0.5,
+              y: next.y + 0.5,
+              vx: Math.cos(a) * (2 + Math.random() * 4),
+              vy: Math.sin(a) * (2 + Math.random() * 4),
+              life: 1,
+              color: c.mustard,
+              r: 1.6 + Math.random() * 2,
+            });
+          }
         }
         placeFood();
       } else {
@@ -414,6 +426,17 @@
       state.gates = state.gates.filter((g) => g.x > -50);
     }
 
+    function layout(w, h) {
+      const pr = 14;
+      if (!w || !h) return;
+      state.y = Math.max(pr, Math.min(h - pr, state.y));
+      for (const g of state.gates) {
+        const maxGap = Math.max(96, h - 80);
+        g.gap = Math.min(g.gap, maxGap);
+        g.gapY = Math.max(40, Math.min(g.gapY, h - g.gap - 40));
+      }
+    }
+
     function draw(ctx, w, h, dt) {
       const c = theme();
       ctx.fillStyle = c.dark ? '#071018' : '#141c22';
@@ -484,6 +507,7 @@
     return {
       start: function () {},
       onResize: reset,
+      layout: layout,
       stop: function () {},
       update: function (dt, w, h) {
         if (state.gates.length === 0 && state.alive) reset(w, h);
@@ -515,6 +539,7 @@
     let moves = 0;
     let matched = 0;
     let startedAt = 0;
+    let flipTimer = 0;
 
     function shuffle(list) {
       const a = list.slice();
@@ -527,20 +552,34 @@
       return a;
     }
 
-    function render(board) {
-      board.innerHTML = '';
-      cards.forEach((card, i) => {
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = 'match-card' + (card.open || card.done ? ' is-open' : '') + (card.done ? ' is-done' : '');
-        btn.setAttribute('aria-label', card.open || card.done ? card.icon : 'Face-down chip');
-        btn.innerHTML =
-          '<span class="match-card__face match-card__face--back">✦</span>' +
-          '<span class="match-card__face match-card__face--front">' + card.icon + '</span>';
-        btn.addEventListener('click', function () {
-          flip(i, board);
+    function clearFlipTimer() {
+      if (flipTimer) {
+        window.clearTimeout(flipTimer);
+        flipTimer = 0;
+      }
+    }
+
+    function paint(board) {
+      if (!board) return;
+      if (board.children.length !== cards.length) {
+        board.innerHTML = '';
+        cards.forEach(function (card, i) {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.innerHTML =
+            '<span class="match-card__face match-card__face--back" aria-hidden="true">✦</span>' +
+            '<span class="match-card__face match-card__face--front" aria-hidden="true">' + card.icon + '</span>';
+          btn.addEventListener('click', function () {
+            flip(i, board);
+          });
+          board.appendChild(btn);
         });
-        board.appendChild(btn);
+      }
+      cards.forEach(function (card, i) {
+        const btn = board.children[i];
+        btn.className = 'match-card' + (card.open || card.done ? ' is-open' : '') + (card.done ? ' is-done' : '');
+        btn.disabled = !!card.done;
+        btn.setAttribute('aria-label', card.open || card.done ? 'Chip ' + card.icon : 'Face-down chip');
       });
     }
 
@@ -550,7 +589,8 @@
       if (card.open || card.done) return;
       card.open = true;
       flipped.push(i);
-      render(board);
+      paint(board);
+      if (board.children[i]) board.children[i].focus();
 
       if (flipped.length < 2) return;
 
@@ -569,21 +609,23 @@
           app.flash();
           app.gameOver(score, 'Bench cleared in ' + moves + ' moves.');
         }
-        render(board);
+        paint(board);
       } else {
         locked = true;
-        setTimeout(function () {
+        flipTimer = window.setTimeout(function () {
+          flipTimer = 0;
           a.open = false;
           b.open = false;
           flipped = [];
           locked = false;
-          render(board);
-        }, 650);
+          paint(board);
+        }, prefersReduced ? 0 : 650);
       }
     }
 
     return {
       start: function () {
+        clearFlipTimer();
         const deck = shuffle(MATCH_ICONS.concat(MATCH_ICONS)).map(function (icon) {
           return { icon: icon, open: false, done: false };
         });
@@ -595,9 +637,11 @@
         startedAt = performance.now();
         app.setScore(0);
         app.showMatch(true);
-        render(app.matchBoard);
+        if (app.matchBoard) app.matchBoard.innerHTML = '';
+        paint(app.matchBoard);
       },
       stop: function () {
+        clearFlipTimer();
         app.showMatch(false);
       },
       update: function () {},
@@ -688,6 +732,8 @@
     const hintEl = root.querySelector('[data-arcade-hint]');
     const pad = root.querySelector('[data-arcade-pad]');
     const screen = root.querySelector('.arcade__screen');
+    const liveEl = root.querySelector('[data-arcade-live]');
+    const cabinet = root.querySelector('.arcade__cabinet');
     const picks = Array.from(root.querySelectorAll('[data-game]'));
 
     if (!canvas || !overlay) return;
@@ -699,6 +745,7 @@
     let last = 0;
     let game = null;
     let visible = true;
+    let attractDrawn = false;
 
     const factories = {
       snake: createSnake,
@@ -716,6 +763,7 @@
         matchBoard.hidden = !on;
         canvas.style.opacity = on ? '0' : '1';
         canvas.style.pointerEvents = on ? 'none' : 'auto';
+        canvas.setAttribute('aria-hidden', on ? 'true' : 'false');
       },
       shake: function () {
         if (prefersReduced || !screen) return;
@@ -731,15 +779,20 @@
       },
       gameOver: function (score, extra) {
         running = false;
-        const best = Math.max(score || 0, scores[currentId] || 0);
+        const prev = Number(scores[currentId]);
+        const prior = Number.isFinite(prev) ? prev : 0;
+        const best = Math.max(score || 0, prior);
         scores[currentId] = best;
         saveScores(scores);
         bestEl.textContent = String(best);
         overlay.hidden = false;
         overlayTitle.textContent = 'Game over';
-        overlayMsg.textContent = extra || ('Score ' + (score || 0) + (best === score ? ' — new best!' : ''));
+        overlayMsg.textContent = extra || ('Score ' + (score || 0) + (best === (score || 0) && (score || 0) > prior ? ' — new best!' : ''));
         startBtn.textContent = 'Play again ✦';
         overlay.classList.add('is-over');
+        if (liveEl) {
+          liveEl.textContent = extra || ('Game over. Score ' + (score || 0));
+        }
       },
     };
 
@@ -748,6 +801,9 @@
       titleEl.textContent = meta.title;
       hintEl.textContent = meta.hint;
       bestEl.textContent = String(scores[currentId] || 0);
+      if (screen) {
+        screen.setAttribute('aria-label', meta.title + '. Click, then use the keyboard to play.');
+      }
       if (!running) {
         overlayTitle.textContent = meta.title;
         overlayMsg.textContent = meta.overlay;
@@ -755,6 +811,18 @@
         overlay.classList.remove('is-over');
       }
       if (pad) pad.hidden = !meta.pad;
+      picks.forEach(function (btn) {
+        const on = btn.getAttribute('data-game') === currentId;
+        btn.classList.toggle('is-active', on);
+        btn.setAttribute('aria-selected', on ? 'true' : 'false');
+        btn.tabIndex = on ? 0 : -1;
+      });
+      const activeTab = picks.find(function (btn) {
+        return btn.getAttribute('data-game') === currentId;
+      });
+      if (cabinet && activeTab && activeTab.id) {
+        cabinet.setAttribute('aria-labelledby', activeTab.id);
+      }
     }
 
     function stopGame() {
@@ -768,6 +836,7 @@
       stopGame();
       overlay.hidden = true;
       overlay.classList.remove('is-over');
+      if (liveEl) liveEl.textContent = '';
       const factory = factories[currentId];
       game = factory(app);
       running = true;
@@ -777,7 +846,7 @@
       if (game.start) game.start();
       scoreEl.textContent = '0';
       if (pad) pad.hidden = !GAMES[currentId].pad;
-      screen.focus({ preventScroll: true });
+      if (screen) screen.focus({ preventScroll: true });
     }
 
     function loop(now) {
@@ -790,7 +859,10 @@
           if (game.update) game.update(dt, size.w, size.h);
           if (game.draw) game.draw(size.ctx, size.w, size.h, dt);
         } else if (!overlay.classList.contains('is-over')) {
-          drawAttract(size.ctx, size.w, size.h, now);
+          if (!prefersReduced || !attractDrawn) {
+            drawAttract(size.ctx, size.w, size.h, prefersReduced ? 0 : now);
+            attractDrawn = prefersReduced;
+          }
         }
       }
 
@@ -807,16 +879,22 @@
         scoreEl.textContent = '0';
       }
       syncMeta();
-      picks.forEach(function (btn) {
-        const on = btn.getAttribute('data-game') === currentId;
-        btn.classList.toggle('is-active', on);
-        btn.setAttribute('aria-selected', on ? 'true' : 'false');
-      });
     }
 
-    picks.forEach(function (btn) {
+    picks.forEach(function (btn, i) {
       btn.addEventListener('click', function () {
         selectGame(btn.getAttribute('data-game'));
+      });
+      btn.addEventListener('keydown', function (e) {
+        let next = -1;
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') next = (i + 1) % picks.length;
+        else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') next = (i - 1 + picks.length) % picks.length;
+        else if (e.key === 'Home') next = 0;
+        else if (e.key === 'End') next = picks.length - 1;
+        if (next < 0) return;
+        e.preventDefault();
+        selectGame(picks[next].getAttribute('data-game'));
+        picks[next].focus();
       });
     });
 
@@ -838,10 +916,13 @@
       if (typing) return;
 
       const inArcade = root.contains(document.activeElement) || root.matches(':hover');
+      if (!inArcade) return;
 
       if (!running) {
-        if (e.key === 'Enter' && inArcade) {
-          if (e.target && e.target.closest && e.target.closest('[data-game]')) return;
+        if (e.key === 'Enter') {
+          if (e.target && e.target.closest && (
+            e.target.closest('[data-game]') || e.target.closest('[data-arcade-start]')
+          )) return;
           e.preventDefault();
           startGame();
         }
@@ -857,16 +938,20 @@
         if (!btn) return;
         e.preventDefault();
         const dir = btn.getAttribute('data-pad');
-        if (!running) {
-          startGame();
-          return;
-        }
+        if (!running) startGame();
         if (game && game.pad) game.pad(dir);
       });
     }
 
-    window.addEventListener('resize', function () {
-      sizeCanvas(canvas);
+    function onLayout() {
+      const size = sizeCanvas(canvas);
+      attractDrawn = false;
+      if (running && game && game.layout) game.layout(size.w, size.h);
+    }
+
+    window.addEventListener('resize', onLayout);
+    window.addEventListener('themechange', function () {
+      attractDrawn = false;
     });
 
     if ('IntersectionObserver' in window) {

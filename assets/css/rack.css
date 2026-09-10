@@ -62,6 +62,18 @@
 
 .rack-panel { position: sticky; top: 110px; }
 
+@media (min-width: 1021px) {
+  /* Case is taller than the viewport; without an inner scroll, bottom rows
+     stay clipped while the panel is stuck beside the course list. */
+  .rack-panel {
+    max-height: calc(100vh - 128px);
+    max-height: calc(100dvh - 128px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding-right: 4px;
+  }
+}
+
 @media (max-width: 1020px) {
   .rack-layout { grid-template-columns: 1fr; }
   .rack-panel { position: static; }
@@ -527,7 +539,7 @@
 [data-theme="dark"] .rack-hinge,
 [data-theme="dark"] .rack-ghin { border-color: rgba(241, 228, 200, 0.85); }
 
-[data-theme="dark"] .rack-map { filter: brightness(0.88) saturate(0.92); }
+[data-theme="dark"] .rack-map .leaflet-tile-pane { filter: brightness(0.88) saturate(0.92); }
 
 @media (max-width: 640px) {
   .rack-case { padding: 14px 12px; }
@@ -537,6 +549,24 @@
   .rack-map { height: 340px; }
 }
 
+@media (hover: none) {
+  .ball:hover { transform: none; }
+  .ball.selected { transform: translateY(-5px) scale(1.1); }
+  .course-chip:hover {
+    background: var(--paper);
+    color: var(--ink);
+    transform: none;
+    box-shadow: none;
+  }
+  .course-chip.selected:hover {
+    background: var(--teal);
+    color: #2a1b12;
+    box-shadow: var(--shadow-hard-sm);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .ball.pulse { animation: none; }
+  .ball:hover { transform: none; }
+  .ball.selected { transform: none; }
 }

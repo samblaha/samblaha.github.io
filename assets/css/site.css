@@ -679,6 +679,26 @@ h1, h2, h3 {
   .card--small { grid-column: span 4; }
 }
 
+@media (max-width: 767px) {
+  .grid { gap: 14px; }
+  .grid > .card,
+  .card--large,
+  .card--small { grid-column: span 6; }
+  .card__content { padding: 22px 12px 14px; }
+  .card__title { font-size: 1.05rem; }
+  .card__desc {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    font-size: 0.82rem;
+    margin-bottom: 10px;
+  }
+  .card__img-wrap { aspect-ratio: 4 / 3; }
+  .card__fallback span { font-size: 2.4rem; }
+}
+
 /* ==========================================================================
    Buttons
    ========================================================================== */
@@ -1005,9 +1025,9 @@ html.js .hero [data-reveal] { opacity: 1; transform: none; }
 @media (max-width: 768px) {
   .theme-float { top: auto; bottom: 22px; right: 22px; }
 
-  .nav { padding: 8px 10px 8px 18px; }
-  .nav__links { gap: 2px; }
-  .nav__link { font-size: 0.72rem; padding: 7px 10px; }
+  .nav { padding: 8px 8px 8px 14px; max-width: 100%; }
+  .nav__links { gap: 0; }
+  .nav__link { font-size: 0.68rem; padding: 7px 8px; }
 
   .section { margin-top: 90px; }
   .section__head { flex-wrap: wrap; gap: 14px; }
@@ -1019,9 +1039,9 @@ html.js .hero [data-reveal] { opacity: 1; transform: none; }
 }
 
 @media (max-width: 480px) {
-  .nav__logo { font-size: 1rem; }
-  .nav { padding: 8px 8px 8px 12px; }
-  .nav__link { font-size: 0.65rem; padding: 6px 8px; }
+  .nav__logo { font-size: 0.92rem; }
+  .nav { padding: 8px 6px 8px 10px; }
+  .nav__link { font-size: 0.62rem; padding: 6px 7px; letter-spacing: 0.04em; }
   .hero__cta .btn { width: 100%; justify-content: center; }
 }
 
@@ -1932,7 +1952,9 @@ a.navcard--older:hover { background: color-mix(in srgb, var(--orange) 18%, var(-
   background: #1a120d;
   box-shadow: inset 0 0 0 4px #2a1b12, inset 0 0 40px rgba(0, 0, 0, 0.35);
   outline: none;
-  touch-action: manipulation;
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 [data-theme="dark"] .arcade__screen { border-color: rgba(241, 228, 200, 0.85); }
@@ -1989,24 +2011,39 @@ a.navcard--older:hover { background: color-mix(in srgb, var(--orange) 18%, var(-
   color: var(--muted);
 }
 
+.arcade__overlay .btn { touch-action: manipulation; }
+
 .arcade__pad {
   display: none;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
-  padding: 0 18px 18px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  max-width: 280px;
+  margin: 0 auto;
+  padding: 0 18px 20px;
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
 }
+
+.arcade--pad .arcade__pad:not([hidden]) { display: grid; }
 
 .arcade__pad button {
-  height: 48px;
+  height: 56px;
   border: 2px solid var(--ink);
-  border-radius: 10px;
+  border-radius: 12px;
   background: var(--mustard);
   color: #2a1b12;
+  font-size: 1.15rem;
   font-weight: 800;
   cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
-.arcade__pad-action { background: var(--orange); color: #fbf3e1; grid-column: span 4; }
+.arcade__pad button:active { transform: translate(1px, 1px); background: var(--orange); color: #fbf3e1; }
+
+.arcade__pad-spacer { visibility: hidden; pointer-events: none; }
 
 .arcade__match {
   position: absolute;
@@ -2030,6 +2067,8 @@ a.navcard--older:hover { background: color-mix(in srgb, var(--orange) 18%, var(-
   cursor: pointer;
   transform-style: preserve-3d;
   transition: transform 0.35s var(--snap), background-color 0.25s var(--smooth);
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .match-card__face {
@@ -2060,6 +2099,8 @@ a.navcard--older:hover { background: color-mix(in srgb, var(--orange) 18%, var(-
   .bento { grid-template-columns: 1fr; }
   .section__more { margin-left: 0; }
   .hero__stat { min-width: 0; flex: 1 1 120px; }
+  .arcade__screen { height: min(78vw, 380px); min-height: 240px; }
+  .arcade__picker { top: 78px; }
 }
 
 @media print {

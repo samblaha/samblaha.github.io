@@ -7,14 +7,14 @@
   const GAMES = {
     snake: {
       title: 'Solder Snake',
-      hint: 'Arrows / WASD to steer · eat the solder · don’t hit yourself',
+      hint: 'Swipe the board or use the pad · eat the solder · don’t hit yourself',
       overlay: 'Steer the iron. Eat molten solder. Don’t short the board.',
       pad: true,
     },
     lasers: {
       title: 'Laser Gates',
-      hint: 'Click, tap, or press Space to flap through the gates',
-      overlay: 'A little flyer, a bunch of timing gates. Don’t get sliced.',
+      hint: 'Tap the screen to flap through the gates',
+      overlay: 'A little flyer, a bunch of timing windows. Don’t get sliced.',
       pad: false,
     },
     match: {
@@ -111,11 +111,14 @@
     }
 
     function reset() {
+      const narrow = window.innerWidth < 700;
+      state.cols = narrow ? 16 : 24;
+      state.rows = narrow ? 12 : 16;
       const midY = Math.floor(state.rows / 2);
       state.snake = [
-        { x: 6, y: midY },
-        { x: 5, y: midY },
         { x: 4, y: midY },
+        { x: 3, y: midY },
+        { x: 2, y: midY },
       ];
       state.dir = { x: 1, y: 0 };
       state.nextDir = { x: 1, y: 0 };
@@ -247,6 +250,22 @@
         const map = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
         const d = map[dir];
         if (d) turn(d[0], d[1]);
+      },
+      swipeStart: function (x, y) {
+        state.swipe = { x: x, y: y, locked: false };
+      },
+      swipeMove: function (x, y) {
+        const s = state.swipe;
+        if (!s || s.locked) return;
+        const dx = x - s.x;
+        const dy = y - s.y;
+        if (Math.abs(dx) < 22 && Math.abs(dy) < 22) return;
+        if (Math.abs(dx) > Math.abs(dy)) turn(dx > 0 ? 1 : -1, 0);
+        else turn(0, dy > 0 ? 1 : -1);
+        s.locked = true;
+      },
+      swipeEnd: function () {
+        state.swipe = null;
       },
     };
   }
@@ -617,6 +636,23 @@
       },
     };
 
+    function wantsPad() {
+      if (!GAMES[currentId] || !GAMES[currentId].pad) return false;
+      if (window.innerWidth < 1024) return true;
+      try {
+        if (window.matchMedia('(pointer: coarse)').matches) return true;
+        if (window.matchMedia('(hover: none)').matches) return true;
+      } catch (err) { /* old browsers */ }
+      return false;
+    }
+
+    function syncPad() {
+      if (!pad) return;
+      const show = wantsPad();
+      pad.hidden = !show;
+      root.classList.toggle('arcade--pad', show);
+    }
+
     function syncMeta() {
       const meta = GAMES[currentId];
       titleEl.textContent = meta.title;
@@ -628,7 +664,7 @@
         startBtn.textContent = 'Play ✦';
         overlay.classList.remove('is-over');
       }
-      if (pad) pad.hidden = !meta.pad;
+      syncPad();
     }
 
     function stopGame() {
@@ -650,7 +686,7 @@
       if (game.onResize) game.onResize(size.w, size.h);
       if (game.start) game.start();
       scoreEl.textContent = '0';
-      if (pad) pad.hidden = !GAMES[currentId].pad;
+      syncPad();
       screen.focus({ preventScroll: true });
     }
 
@@ -699,13 +735,46 @@
       startGame();
     });
 
-    screen.addEventListener('pointerdown', function (e) {
-      if (!running || !game || !game.pointer) return;
+    function pointFromEvent(e) {
+      if (e.touches && e.touches[0]) return { x: e.touches[0].clientX, y: e.touches[0].clientY };
+      if (e.changedTouches && e.changedTouches[0]) return { x: e.changedTouches[0].clientX, y: e.changedTouches[0].clientY };
+      return { x: e.clientX, y: e.clientY };
+    }
+
+    function onScreenDown(e) {
       if (e.target.closest('[data-arcade-start]')) return;
       if (matchBoard && !matchBoard.hidden) return;
-      e.preventDefault();
-      game.pointer(e);
-    });
+      if (e.cancelable) e.preventDefault();
+      if (e.pointerId != null && screen.setPointerCapture) {
+        try { screen.setPointerCapture(e.pointerId); } catch (err) { /* Safari quirks */ }
+      }
+      if (!running || !game) return;
+      const p = pointFromEvent(e);
+      if (game.swipeStart) game.swipeStart(p.x, p.y);
+      if (game.pointer) game.pointer(e);
+    }
+
+    function onScreenMove(e) {
+      if (!running || !game || !game.swipeMove) return;
+      if (e.cancelable) e.preventDefault();
+      const p = pointFromEvent(e);
+      game.swipeMove(p.x, p.y);
+    }
+
+    function onScreenUp() {
+      if (game && game.swipeEnd) game.swipeEnd();
+    }
+
+    const gestureOpts = { passive: false };
+    screen.addEventListener('pointerdown', onScreenDown, gestureOpts);
+    screen.addEventListener('pointermove', onScreenMove, gestureOpts);
+    screen.addEventListener('pointerup', onScreenUp);
+    screen.addEventListener('pointercancel', onScreenUp);
+    if (!window.PointerEvent) {
+      screen.addEventListener('touchstart', onScreenDown, gestureOpts);
+      screen.addEventListener('touchmove', onScreenMove, gestureOpts);
+      screen.addEventListener('touchend', onScreenUp);
+    }
 
     window.addEventListener('keydown', function (e) {
       const typing = e.target && /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName);
@@ -726,22 +795,30 @@
     });
 
     if (pad) {
-      pad.addEventListener('pointerdown', function (e) {
+      let lastPadAt = 0;
+      function onPad(e) {
         const btn = e.target.closest('[data-pad]');
         if (!btn) return;
-        e.preventDefault();
+        if (e.cancelable) e.preventDefault();
+        e.stopPropagation();
+        const now = performance.now();
+        if (now - lastPadAt < 70) return;
+        lastPadAt = now;
         const dir = btn.getAttribute('data-pad');
-        if (!running) {
-          startGame();
-          return;
-        }
-        if (game && game.pad) game.pad(dir);
-      });
+        if (!running || !game || !game.pad) return;
+        game.pad(dir);
+      }
+      pad.addEventListener('pointerdown', onPad, { passive: false });
+      pad.addEventListener('touchstart', onPad, { passive: false });
+      pad.addEventListener('click', onPad);
     }
 
-    window.addEventListener('resize', function () {
+    function onResize() {
       sizeCanvas(canvas);
-    });
+      syncPad();
+    }
+    window.addEventListener('resize', onResize);
+    if (window.visualViewport) window.visualViewport.addEventListener('resize', onResize);
 
     if ('IntersectionObserver' in window) {
       const io = new IntersectionObserver(function (entries) {

@@ -59,7 +59,7 @@
       </div>
     </div>
 
-    <div class="arcade__screen" tabindex="0" aria-label="Game screen. Click, then use the keyboard to play.">
+    <div class="arcade__screen" tabindex="0" aria-label="Game screen. Tap Play, then swipe or use the pad.">
       <canvas class="arcade__canvas" data-arcade-canvas width="720" height="450"></canvas>
       <div class="arcade__match" data-arcade-match hidden></div>
       <div class="arcade__overlay" data-arcade-overlay>
@@ -70,14 +70,15 @@
       </div>
     </div>
 
-    <p class="arcade__hint" data-arcade-hint>Arrows / WASD to steer · Enter or click Play to start</p>
+    <p class="arcade__hint" data-arcade-hint>Swipe the board or use the pad · tap Play to start</p>
 
     <div class="arcade__pad" data-arcade-pad hidden>
+      <span class="arcade__pad-spacer" aria-hidden="true"></span>
       <button type="button" data-pad="up" aria-label="Up">▲</button>
+      <span class="arcade__pad-spacer" aria-hidden="true"></span>
       <button type="button" data-pad="left" aria-label="Left">◀</button>
       <button type="button" data-pad="down" aria-label="Down">▼</button>
       <button type="button" data-pad="right" aria-label="Right">▶</button>
-      <button type="button" class="arcade__pad-action" data-pad="action" aria-label="Action">GO</button>
     </div>
   </div>
 </div>

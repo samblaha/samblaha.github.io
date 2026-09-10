@@ -38,6 +38,8 @@
     const enterBtn = document.getElementById('boot-enter');
     const skipBtn = document.getElementById('boot-skip');
     const canvas = document.getElementById('boot-scope');
+    const wrap = document.querySelector('.content-wrapper');
+    const skipLink = document.querySelector('.skip-link');
     const lines = [
       '> POST ................ OK',
       '> IRON HEATER ......... 340°C',
@@ -51,9 +53,11 @@
     let raf = 0;
     let typed = 0;
     let lineTimer = 0;
+    let onKey = function () {};
 
     boot.hidden = false;
     document.documentElement.classList.add('is-booting');
+    if (wrap) wrap.inert = true;
     if (skipBtn) skipBtn.focus();
 
     function finish() {
@@ -62,8 +66,16 @@
       cancelAnimationFrame(raf);
       if (lineTimer) window.clearInterval(lineTimer);
       sessionStorage.setItem(BOOT_KEY, '1');
+      document.removeEventListener('keydown', onKey);
+      if (skipLink) skipLink.removeEventListener('click', finish);
       document.documentElement.classList.remove('is-booting');
+      if (wrap) wrap.inert = false;
+      const active = document.activeElement;
       boot.classList.add('is-out');
+      if (active && boot.contains(active)) {
+        const main = document.getElementById('main');
+        if (main) main.focus({ preventScroll: true });
+      }
       window.setTimeout(function () {
         boot.hidden = true;
         boot.classList.remove('is-out');
@@ -85,10 +97,22 @@
 
     if (canvas) {
       const ctx = canvas.getContext('2d');
+      const sizeBoot = function () {
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        const w = Math.max(240, Math.floor(canvas.clientWidth || 720));
+        const h = Math.max(120, Math.floor(canvas.clientHeight || 160));
+        if (canvas.width !== Math.floor(w * dpr) || canvas.height !== Math.floor(h * dpr)) {
+          canvas.width = Math.floor(w * dpr);
+          canvas.height = Math.floor(h * dpr);
+        }
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        return { w: w, h: h };
+      };
       const loop = function (now) {
         if (done) return;
-        const w = canvas.width;
-        const h = canvas.height;
+        const dim = sizeBoot();
+        const w = dim.w;
+        const h = dim.h;
         const c = palette();
         ctx.fillStyle = 'rgba(4, 10, 8, 0.22)';
         ctx.fillRect(0, 0, w, h);
@@ -125,12 +149,14 @@
         ctx.shadowBlur = 0;
         raf = requestAnimationFrame(loop);
       };
+      sizeBoot();
       ctx.fillStyle = '#041008';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillRect(0, 0, canvas.clientWidth || 720, canvas.clientHeight || 160);
       raf = requestAnimationFrame(loop);
     }
 
-    const onKey = function (e) {
+    onKey = function (e) {
+      if (done) return;
       if (e.key === 'Escape' || e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
         finish();
@@ -139,6 +165,7 @@
     document.addEventListener('keydown', onKey);
     if (enterBtn) enterBtn.addEventListener('click', finish);
     if (skipBtn) skipBtn.addEventListener('click', finish);
+    if (skipLink) skipLink.addEventListener('click', finish);
 
     window.setTimeout(finish, 5600);
 
@@ -394,15 +421,21 @@
 
       if (prefersReduced) {
         drawWave(false);
-      } else if (running) {
-        drawWave(true);
+        return;
       }
 
+      if (running) drawWave(true);
       requestAnimationFrame(draw);
     }
 
     document.addEventListener('visibilitychange', function () {
       running = !document.hidden;
+    });
+    window.addEventListener('resize', function () {
+      if (prefersReduced) requestAnimationFrame(draw);
+    });
+    window.addEventListener('themechange', function () {
+      if (prefersReduced) requestAnimationFrame(draw);
     });
     ctx.fillStyle = '#07140f';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -467,6 +500,8 @@
           links.forEach(function (a) {
             const on = a.getAttribute('data-station') === id;
             a.classList.toggle('is-active', on);
+            if (on) a.setAttribute('aria-current', 'location');
+            else a.removeAttribute('aria-current');
           });
         });
       },

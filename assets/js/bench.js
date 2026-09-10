@@ -302,15 +302,12 @@
     const persist = prefersReduced ? 0.42 : 0.16;
 
     function size() {
-      const rect = canvas.getBoundingClientRect();
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      const w = Math.max(280, Math.floor(rect.width));
-      const h = Math.max(180, Math.floor(rect.height));
+      const w = Math.max(280, Math.floor(canvas.clientWidth || 640));
+      const h = Math.max(180, Math.floor(canvas.clientHeight || 280));
       if (canvas.width !== Math.floor(w * dpr) || canvas.height !== Math.floor(h * dpr)) {
         canvas.width = Math.floor(w * dpr);
         canvas.height = Math.floor(h * dpr);
-        canvas.style.width = w + 'px';
-        canvas.style.height = h + 'px';
       }
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       return { w: w, h: h };
@@ -357,22 +354,22 @@
       ctx.lineTo(w, h / 2);
       ctx.stroke();
 
-      if (!prefersReduced && running) {
-        const t = now / 1000;
+      const t = now / 1000;
+      const drawWave = function (animated) {
         const freq = 6 + mx * 16;
         const amp = (0.18 + (1 - my) * 0.28) * h;
+        const time = animated ? t : 0.8;
         ctx.beginPath();
         ctx.strokeStyle = c.laser;
         ctx.shadowColor = c.laser;
-        ctx.shadowBlur = 10;
+        ctx.shadowBlur = animated ? 10 : 6;
         ctx.lineWidth = 2;
         for (let x = 0; x <= w; x += 2) {
           const nx = x / w;
           const y =
             h / 2 +
-            Math.sin(nx * freq + t * (2.4 + mx * 3)) * amp * 0.55 +
-            Math.sin(nx * freq * 0.33 - t * 1.4) * amp * 0.22 +
-            Math.sin(t * 8 + nx * 40) * (4 + mx * 8);
+            Math.sin(nx * freq + time * (2.4 + mx * 3)) * amp * 0.55 +
+            Math.sin(nx * freq * 0.33 - time * 1.4) * amp * 0.22;
           if (x === 0) ctx.moveTo(x, y);
           else ctx.lineTo(x, y);
         }
@@ -381,18 +378,24 @@
         ctx.beginPath();
         ctx.strokeStyle = c.solder;
         ctx.shadowColor = c.solder;
-        ctx.shadowBlur = 8;
+        ctx.shadowBlur = animated ? 8 : 4;
         ctx.lineWidth = 1.4;
         const duty = 0.35 + my * 0.4;
         for (let x = 0; x <= w; x += 2) {
           const nx = x / w;
-          const wave = (nx * 5 + t * 1.6) % 1;
+          const wave = (nx * 5 + time * 1.6) % 1;
           const y = h / 2 + (wave < duty ? -amp * 0.22 : amp * 0.22);
           if (x === 0) ctx.moveTo(x, y);
           else ctx.lineTo(x, y);
         }
         ctx.stroke();
         ctx.shadowBlur = 0;
+      };
+
+      if (prefersReduced) {
+        drawWave(false);
+      } else if (running) {
+        drawWave(true);
       }
 
       requestAnimationFrame(draw);

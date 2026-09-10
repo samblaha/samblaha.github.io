@@ -44,15 +44,55 @@
   function theme() {
     const s = getComputedStyle(document.documentElement);
     const read = (name, fallback) => (s.getPropertyValue(name) || fallback).trim();
+    const dark = document.documentElement.getAttribute('data-theme') !== 'light';
     return {
-      ink: read('--ink', '#2a1b12'),
-      paper: read('--paper', '#f8f0dc'),
-      orange: read('--orange', '#e0601a'),
-      mustard: read('--mustard', '#d9a52d'),
-      teal: read('--teal', '#2e6b64'),
-      base: read('--base', '#eee2c8'),
-      dark: document.documentElement.getAttribute('data-theme') === 'dark',
+      ink: read('--ink', dark ? '#f3ead8' : '#1c120c'),
+      paper: read('--paper', dark ? '#12151a' : '#f8f0dc'),
+      orange: read('--solder', read('--orange', '#ff6a2a')),
+      mustard: read('--phosphor', read('--mustard', '#f0b429')),
+      teal: read('--laser', read('--teal', '#2ee6a6')),
+      base: read('--base', dark ? '#07080a' : '#eee2c8'),
+      dark: dark,
     };
+  }
+
+  function spawnBurst(list, x, y, color, n) {
+    for (let i = 0; i < n; i++) {
+      const a = Math.random() * Math.PI * 2;
+      const sp = 40 + Math.random() * 140;
+      list.push({
+        x: x,
+        y: y,
+        vx: Math.cos(a) * sp,
+        vy: Math.sin(a) * sp,
+        life: 1,
+        color: color,
+        r: 1.5 + Math.random() * 2.5,
+      });
+    }
+  }
+
+  function stepParticles(list, dt, gravity) {
+    const g = gravity === undefined ? 80 : gravity;
+    for (let i = list.length - 1; i >= 0; i--) {
+      const p = list[i];
+      p.life -= dt / 420;
+      p.x += p.vx * (dt / 1000);
+      p.y += p.vy * (dt / 1000);
+      p.vy += g * (dt / 1000);
+      if (p.life <= 0) list.splice(i, 1);
+    }
+  }
+
+  function drawParticles(ctx, list) {
+    list.forEach(function (p) {
+      ctx.globalAlpha = Math.max(0, p.life);
+      ctx.fillStyle = p.color;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fill();
+    });
+    ctx.globalAlpha = 1;
   }
 
   function roundRect(ctx, x, y, w, h, r) {
@@ -97,6 +137,7 @@
       step: 130,
       alive: true,
       score: 0,
+      particles: [],
     };
 
     function placeFood() {
@@ -123,6 +164,7 @@
       state.step = 130;
       state.alive = true;
       state.score = 0;
+      state.particles = [];
       placeFood();
       app.setScore(0);
     }
@@ -145,6 +187,8 @@
       const hitSelf = state.snake.some((c) => c.x === next.x && c.y === next.y);
       if (hitWall || hitSelf) {
         state.alive = false;
+        app.flash();
+        app.shake();
         app.gameOver(state.score);
         return;
       }
@@ -154,15 +198,28 @@
         state.score += 10;
         state.step = Math.max(70, state.step - 3);
         app.setScore(state.score);
+        const c = theme();
+        for (let i = 0; i < 14; i++) {
+          const a = Math.random() * Math.PI * 2;
+          state.particles.push({
+            x: next.x + 0.5,
+            y: next.y + 0.5,
+            vx: Math.cos(a) * (2 + Math.random() * 4),
+            vy: Math.sin(a) * (2 + Math.random() * 4),
+            life: 1,
+            color: c.mustard,
+            r: 1.6 + Math.random() * 2,
+          });
+        }
         placeFood();
       } else {
         state.snake.pop();
       }
     }
 
-    function draw(ctx, w, h) {
+    function draw(ctx, w, h, dt) {
       const c = theme();
-      ctx.fillStyle = c.dark ? '#1a120d' : '#2a1b12';
+      ctx.fillStyle = c.dark ? '#07140f' : '#1a2418';
       ctx.fillRect(0, 0, w, h);
 
       const pad = 12;
@@ -170,10 +227,10 @@
       const ox = (w - cell * state.cols) / 2;
       const oy = (h - cell * state.rows) / 2;
 
-      ctx.fillStyle = c.dark ? '#26190f' : '#3a2818';
+      ctx.fillStyle = c.dark ? '#0c1c16' : '#243028';
       ctx.fillRect(ox, oy, cell * state.cols, cell * state.rows);
 
-      ctx.strokeStyle = 'rgba(217, 165, 45, 0.12)';
+      ctx.strokeStyle = 'rgba(46, 230, 166, 0.12)';
       ctx.lineWidth = 1;
       ctx.beginPath();
       for (let i = 0; i <= state.cols; i++) {
@@ -188,16 +245,25 @@
 
       const food = state.food;
       const pulse = prefersReduced ? 1 : 0.85 + Math.sin(performance.now() / 180) * 0.15;
+      const fx = ox + (food.x + 0.5) * cell;
+      const fy = oy + (food.y + 0.5) * cell;
       ctx.fillStyle = c.mustard;
+      ctx.shadowColor = c.mustard;
+      ctx.shadowBlur = 16;
       ctx.beginPath();
-      ctx.arc(ox + (food.x + 0.5) * cell, oy + (food.y + 0.5) * cell, (cell * 0.32) * pulse, 0, Math.PI * 2);
+      ctx.arc(fx, fy, (cell * 0.32) * pulse, 0, Math.PI * 2);
       ctx.fill();
+      ctx.shadowBlur = 0;
 
       state.snake.forEach((seg, i) => {
-        ctx.fillStyle = i === 0 ? c.orange : '#f0762d';
+        const heat = 1 - i / Math.max(1, state.snake.length);
+        ctx.fillStyle = i === 0 ? c.orange : 'rgba(255, 106, 42,' + (0.45 + heat * 0.55) + ')';
+        ctx.shadowColor = c.orange;
+        ctx.shadowBlur = i === 0 ? 12 : 0;
         const inset = i === 0 ? 1 : 2.5;
         roundRect(ctx, ox + seg.x * cell + inset, oy + seg.y * cell + inset, cell - inset * 2, cell - inset * 2, 4);
         ctx.fill();
+        ctx.shadowBlur = 0;
         if (i === 0) {
           ctx.fillStyle = c.paper;
           const ex = ox + (seg.x + 0.5 + state.dir.x * 0.18) * cell;
@@ -208,6 +274,18 @@
           ctx.fill();
         }
       });
+
+      if (dt) {
+        stepParticles(state.particles, dt, 1.2);
+        state.particles.forEach(function (p) {
+          ctx.globalAlpha = Math.max(0, p.life);
+          ctx.fillStyle = p.color;
+          ctx.beginPath();
+          ctx.arc(ox + p.x * cell, oy + p.y * cell, p.r, 0, Math.PI * 2);
+          ctx.fill();
+        });
+        ctx.globalAlpha = 1;
+      }
     }
 
     return {
@@ -263,6 +341,7 @@
       score: 0,
       alive: true,
       t: 0,
+      particles: [],
     };
 
     function reset(w, h) {
@@ -273,6 +352,7 @@
       state.score = 0;
       state.alive = true;
       state.t = 0;
+      state.particles = [];
       app.setScore(0);
     }
 
@@ -324,6 +404,8 @@
         const inGap = state.y - pr > g.gapY && state.y + pr < g.gapY + g.gap;
         if (inX && !inGap) {
           state.alive = false;
+          app.flash();
+          app.shake();
           app.gameOver(state.score);
           return;
         }
@@ -332,26 +414,31 @@
       state.gates = state.gates.filter((g) => g.x > -50);
     }
 
-    function draw(ctx, w, h) {
+    function draw(ctx, w, h, dt) {
       const c = theme();
-      ctx.fillStyle = c.dark ? '#1a120d' : '#24180f';
+      ctx.fillStyle = c.dark ? '#071018' : '#141c22';
       ctx.fillRect(0, 0, w, h);
 
-      ctx.fillStyle = c.dark ? 'rgba(46,107,100,0.08)' : 'rgba(46,107,100,0.12)';
+      ctx.fillStyle = c.dark ? 'rgba(46,230,166,0.05)' : 'rgba(46,107,100,0.12)';
       for (let i = 0; i < 6; i++) {
         const x = ((i * 90 - (state.t * 0.04)) % (w + 90)) - 20;
         ctx.fillRect(x, 0, 18, h);
       }
 
       for (const g of state.gates) {
-        ctx.fillStyle = c.teal;
+        ctx.fillStyle = c.dark ? '#0b2a24' : c.teal;
         ctx.fillRect(g.x, 0, 36, g.gapY);
         ctx.fillRect(g.x, g.gapY + g.gap, 36, h - (g.gapY + g.gap));
+        ctx.shadowColor = c.orange;
+        ctx.shadowBlur = 18;
         ctx.fillStyle = c.orange;
         ctx.fillRect(g.x - 4, g.gapY - 8, 44, 8);
         ctx.fillRect(g.x - 4, g.gapY + g.gap, 44, 8);
+        ctx.shadowBlur = 0;
 
-        ctx.strokeStyle = 'rgba(224,96,26,0.55)';
+        ctx.strokeStyle = c.orange;
+        ctx.shadowColor = c.orange;
+        ctx.shadowBlur = 12;
         ctx.lineWidth = 2;
         ctx.setLineDash([4, 6]);
         ctx.beginPath();
@@ -359,17 +446,27 @@
         ctx.lineTo(g.x + 18, g.gapY + g.gap);
         ctx.stroke();
         ctx.setLineDash([]);
+        ctx.shadowBlur = 0;
       }
 
       const px = w * 0.28;
       const py = state.y;
       const rot = Math.max(-0.6, Math.min(0.9, state.vy * 0.08));
+      if (!prefersReduced && state.alive && state.particles.length < 48) {
+        spawnBurst(state.particles, px - 12, py, c.teal, 1);
+      }
+      if (dt) stepParticles(state.particles, dt);
+      drawParticles(ctx, state.particles);
+
       ctx.save();
       ctx.translate(px, py);
       ctx.rotate(rot);
+      ctx.shadowColor = c.orange;
+      ctx.shadowBlur = 16;
       ctx.fillStyle = c.orange;
       roundRect(ctx, -16, -12, 32, 24, 8);
       ctx.fill();
+      ctx.shadowBlur = 0;
       ctx.fillStyle = c.mustard;
       ctx.beginPath();
       ctx.moveTo(12, 0);
@@ -469,6 +566,7 @@
         const score = Math.max(0, 1200 - moves * 30 - elapsed * 4);
         app.setScore(score);
         if (matched === MATCH_ICONS.length) {
+          app.flash();
           app.gameOver(score, 'Bench cleared in ' + moves + ' moves.');
         }
         render(board);
@@ -513,10 +611,10 @@
   /* ------------------------------------------------------------------ */
   function drawAttract(ctx, w, h, t) {
     const c = theme();
-    ctx.fillStyle = c.dark ? '#1a120d' : '#2a1b12';
+    ctx.fillStyle = c.dark ? '#07140f' : '#1a2418';
     ctx.fillRect(0, 0, w, h);
 
-    ctx.strokeStyle = 'rgba(217,165,45,0.15)';
+    ctx.strokeStyle = 'rgba(46,230,166,0.12)';
     ctx.lineWidth = 1;
     const g = 28;
     ctx.beginPath();
@@ -530,12 +628,27 @@
     }
     ctx.stroke();
 
+    ctx.beginPath();
+    ctx.strokeStyle = c.teal;
+    ctx.shadowColor = c.teal;
+    ctx.shadowBlur = 12;
+    ctx.lineWidth = 2;
+    for (let x = 0; x <= w; x += 4) {
+      const y = h * 0.55 + Math.sin(x / 42 + t / 280) * 36 + Math.sin(x / 18 - t / 200) * 12;
+      if (x === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+
     const cx = w / 2 + Math.sin(t / 900) * 30;
     const cy = h / 2 + Math.cos(t / 1100) * 16;
     ctx.save();
     ctx.translate(cx, cy);
     ctx.rotate(t / 800);
     ctx.strokeStyle = c.orange;
+    ctx.shadowColor = c.orange;
+    ctx.shadowBlur = 16;
     ctx.lineWidth = 6;
     ctx.beginPath();
     ctx.arc(0, 0, 42, 0, Math.PI * 2);
@@ -547,6 +660,7 @@
       ctx.fill();
     }
     ctx.restore();
+    ctx.shadowBlur = 0;
 
     ctx.fillStyle = c.mustard;
     ctx.beginPath();
@@ -602,6 +716,18 @@
         matchBoard.hidden = !on;
         canvas.style.opacity = on ? '0' : '1';
         canvas.style.pointerEvents = on ? 'none' : 'auto';
+      },
+      shake: function () {
+        if (prefersReduced || !screen) return;
+        screen.classList.remove('is-shake');
+        void screen.offsetWidth;
+        screen.classList.add('is-shake');
+      },
+      flash: function () {
+        if (!screen) return;
+        screen.classList.remove('is-flash');
+        void screen.offsetWidth;
+        screen.classList.add('is-flash');
       },
       gameOver: function (score, extra) {
         running = false;
@@ -662,7 +788,7 @@
       if (visible) {
         if (running && game) {
           if (game.update) game.update(dt, size.w, size.h);
-          if (game.draw) game.draw(size.ctx, size.w, size.h);
+          if (game.draw) game.draw(size.ctx, size.w, size.h, dt);
         } else if (!overlay.classList.contains('is-over')) {
           drawAttract(size.ctx, size.w, size.h, now);
         }

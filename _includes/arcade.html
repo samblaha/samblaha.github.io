@@ -1,5 +1,5 @@
 {% unless include.bare %}
-<section id="arcade" class="section">
+<section id="arcade" class="section" data-station-target="arcade">
   <div class="section__head" data-reveal>
     <span class="section__num">{{ include.num | default: "02" }}</span>
     <h2 class="display-2">The Arcade</h2>
@@ -40,6 +40,7 @@
     <div class="arcade__marquee" aria-hidden="true">
       <span>BLAHA LABS ARCADE</span>
       <span>FREE PLAY</span>
+      <span>INSERT CURIOSITY</span>
       <span>BLAHA LABS ARCADE</span>
       <span>FREE PLAY</span>
     </div>
@@ -62,11 +63,12 @@
     <div class="arcade__screen" tabindex="0" aria-label="Game screen. Click, then use the keyboard to play.">
       <canvas class="arcade__canvas" data-arcade-canvas width="720" height="450"></canvas>
       <div class="arcade__match" data-arcade-match hidden></div>
+      <div class="arcade__glass" aria-hidden="true"></div>
       <div class="arcade__overlay" data-arcade-overlay>
         <p class="arcade__kicker">Insert curiosity</p>
         <h3 class="arcade__overlay-title" data-arcade-overlay-title>Solder Snake</h3>
         <p class="arcade__overlay-msg" data-arcade-overlay-msg>Steer the iron. Eat molten solder. Don't short the board.</p>
-        <button class="btn btn--orange" type="button" data-arcade-start>Play ✦</button>
+        <button class="btn btn--solder" type="button" data-arcade-start>Play ✦</button>
       </div>
     </div>
 

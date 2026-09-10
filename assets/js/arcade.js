@@ -687,7 +687,12 @@
       if (game.start) game.start();
       scoreEl.textContent = '0';
       syncPad();
-      screen.focus({ preventScroll: true });
+      try {
+        screen.focus({ preventScroll: true });
+      } catch (err) { /* older WebKit */ }
+      if (window.innerWidth < 900) {
+        screen.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      }
     }
 
     function loop(now) {

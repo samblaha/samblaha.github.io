@@ -2090,7 +2090,17 @@ a.navcard--older:hover { background: color-mix(in srgb, var(--orange) 18%, var(-
 }
 
 @media (max-width: 900px) {
-  .arcade__picker { grid-template-columns: 1fr; }
+  .arcade__picker {
+    position: static;
+    top: auto;
+    grid-template-columns: 1fr;
+    padding: 0 0 12px;
+    gap: 8px;
+    background: transparent;
+    backdrop-filter: none;
+  }
+  .arcade__pick { padding: 10px 12px; }
+  .arcade__pick-copy em { display: none; }
   .arcade__hud { grid-template-columns: 1fr 1fr; }
   .arcade__stat--title { grid-column: 1 / -1; text-align: left; }
 }
@@ -2100,7 +2110,12 @@ a.navcard--older:hover { background: color-mix(in srgb, var(--orange) 18%, var(-
   .section__more { margin-left: 0; }
   .hero__stat { min-width: 0; flex: 1 1 120px; }
   .arcade__screen { height: min(78vw, 380px); min-height: 240px; }
-  .arcade__picker { top: 78px; }
+  .arcade__picker { top: auto; }
+  .arcade--pad .arcade__pad {
+    max-width: 220px;
+    margin: 0 auto 0 12px;
+    padding-bottom: 16px;
+  }
 }
 
 @media print {

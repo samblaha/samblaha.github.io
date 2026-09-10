@@ -25,10 +25,21 @@ parts:
 ---
 
 ## Overview
-This MacBook had a shattered screen, a dead battery, and a corrupt hard drive. After replacing the screen and battery, upgrading the hard drive to an SSD, and installing the latest Kali Linux kernel, I had a separate laptop dedicated to practicing ethical hacking.
+This MacBook had a shattered screen, a dead battery, and a corrupt hard drive. After replacing the screen and battery, upgrading the hard drive to an SSD, and installing the latest Kali Linux kernel, I had a separate laptop dedicated to practicing ethical hacking — not a restored Mac, a practice machine.
+
+The photos are the machine after that work: a MacBook Pro (the bezel still says so) running a Linux desktop, MagSafe attached, terminal open as `sam@ALYA`.
 
 ## The rebuild
-1. Replace the shattered screen.
-2. Swap in a new battery.
-3. Upgrade the corrupt hard drive to an SSD.
-4. Install the latest Kali Linux kernel.
+The hardware had to work before the OS mattered:
+
+1. Replace the shattered screen so it was a laptop again, not a paperweight.
+2. Swap the dead battery so it could leave the charger.
+3. Pull the corrupt hard drive and upgrade it to an SSD.
+4. Install the latest Kali Linux kernel on the new drive.
+
+Once those four steps were done, it was a Linux machine that happened to still look like a MacBook. Kali is the point of the box — a dedicated practice environment with the usual security tooling, kept off the daily driver. The hero screenshot is that environment: a terminal paging through nmap's option list on the new screen.
+
+## On the bench
+The wider gallery shot is the same laptop with an Alfa USB wireless adapter plugged in — the small black box with the antenna and the blue LED. That's how this machine actually sits on the bench: Kali on the internal SSD, extra radio over USB when the work needs a dedicated adapter.
+
+> It's still a MacBook Pro on the outside. None of the original three failures survived the rebuild, and the OS isn't macOS anymore.

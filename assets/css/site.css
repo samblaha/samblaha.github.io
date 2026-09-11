@@ -187,6 +187,24 @@ html.is-booting { overflow: hidden; }
 
 .content-wrapper { position: relative; z-index: 1; }
 
+/* Copper-trace cursor — PCB runs + solder pads that fade behind the pointer */
+.copper-trace {
+  position: fixed;
+  inset: 0;
+  z-index: 1150;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+[data-theme="light"] .copper-trace {
+  mix-blend-mode: multiply;
+  opacity: 0.88;
+}
+@media (prefers-reduced-motion: reduce) {
+  .copper-trace { display: none !important; }
+}
+
 /* ==========================================================================
    Boot CRT
    ========================================================================== */
@@ -1681,7 +1699,7 @@ html.js .hero [data-reveal] { opacity: 1; transform: none; }
 }
 
 @media print {
-  .bg, .atmosphere, .lamp, .boot, .nav-wrap, .stations, .footer__marquee, .arcade__glass { display: none; }
+  .bg, .atmosphere, .lamp, .copper-trace, .boot, .nav-wrap, .stations, .footer__marquee, .arcade__glass { display: none; }
   .page { padding: 0; }
   .panel, .card { border: 1px solid #ccc; box-shadow: none; background: white; }
 }

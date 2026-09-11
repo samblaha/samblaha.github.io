@@ -48,7 +48,7 @@
     { id: 'software', label: 'Software', tags: ['Software', 'Web', 'Python', 'UX'] },
     { id: 'ai', label: 'AI', tags: ['AI'] },
     { id: 'games', label: 'Games', tags: ['Retro Gaming'] },
-    { id: 'golf', label: 'Golf', tags: ['Golf'] },
+    { id: 'golf', label: 'Golf', tags: ['Golf'], nameRe: /golf/i },
     { id: 'security', label: 'Security', tags: ['Security', 'Linux', 'Cryptography', 'Quantum'] },
   ];
 
@@ -113,7 +113,11 @@
 
   function themeIdsFor(project) {
     const tags = Array.isArray(project.tags) ? project.tags : [];
-    return THEMES.filter((theme) => theme.tags.some((tag) => tags.indexOf(tag) !== -1)).map((t) => t.id);
+    const title = String(project.title || '') + ' ' + String(project.id || '');
+    return THEMES.filter((theme) => {
+      if (theme.tags.some((tag) => tags.indexOf(tag) !== -1)) return true;
+      return Boolean(theme.nameRe && theme.nameRe.test(title));
+    }).map((t) => t.id);
   }
 
   function primaryTheme(ids) {

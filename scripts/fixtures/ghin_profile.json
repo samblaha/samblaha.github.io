@@ -1,0 +1,21 @@
+{
+  "_comment": "ANONYMIZED FIXTURE — fake golfer. Not a real GHIN profile. PII fields are present only so tests can prove they are stripped from the public export.",
+  "golfers": [
+    {
+      "id": "0000000",
+      "ghin": "0000000",
+      "first_name": "REDACT",
+      "last_name": "ME",
+      "email": "should-not-appear@example.com",
+      "hi_display": "12.4",
+      "low_hi": "11.2",
+      "low_hi_date": "2026-04-01",
+      "rev_date": "2026-06-15",
+      "club_name": "Example Club",
+      "association_name": "Example Association",
+      "state": "OH",
+      "gender": "M",
+      "status": "Active"
+    }
+  ]
+}

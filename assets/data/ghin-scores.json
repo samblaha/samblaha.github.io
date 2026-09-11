@@ -1,0 +1,15 @@
+{
+  "schema": "ghin-rack-scorebook/v1",
+  "_comment": "Empty GHIN scorebook for the ball rack. Run python3 scripts/sync_ghin.py to fill this file. Committing a filled copy publishes those scores on the live site. No name, email, or GHIN number belongs in this file.",
+  "source": "ghin-export",
+  "synced_at": null,
+  "profile": {
+    "handicap_index": null,
+    "low_hi": null,
+    "low_hi_date": null,
+    "rev_date": null
+  },
+  "handicap_history": [],
+  "rounds": [],
+  "course_aliases": {}
+}

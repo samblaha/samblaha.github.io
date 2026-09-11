@@ -305,7 +305,7 @@ function highlightChips(idx) {
 function buildStats() {
   const courses = new Set(BALLS.filter((b) => !b.special).map((b) => b.name));
   const states = new Set(BALLS.filter((b) => b.state).map((b) => b.state));
-  const posted = typeof SCOREBOOK !== "undefined"
+  const posted = typeof SCOREBOOK !== "undefined" && Array.isArray(SCOREBOOK)
     ? SCOREBOOK.length
     : 0;
   const stats = [
@@ -314,19 +314,48 @@ function buildStats() {
     [states.size, "States"],
     [posted, "Posted rounds"],
   ];
+  const hi = typeof handicapIndex === "function" ? handicapIndex() : null;
+  if (hi) stats.push([hi, "Index"]);
   statsEl.innerHTML = stats
     .map(([n, l]) => `<div class="stat"><span class="num">${n}</span><span class="lbl">${l}</span></div>`)
     .join("");
 }
 
-buildRack();
-try {
-  buildMap();
-} catch (err) {
-  map = undefined;
+function paintGhinAside() {
+  const meta = document.querySelector(".rack-ghin__meta");
+  if (!meta) return;
+  const bits = [];
+  const hi = typeof handicapIndex === "function" ? handicapIndex() : null;
+  if (hi) bits.push(`Index ${hi}`);
+  const low = GHIN_PROFILE && GHIN_PROFILE.low_hi;
+  if (low != null && low !== "") bits.push(`Low ${low}`);
+  const rev = GHIN_PROFILE && (GHIN_PROFILE.rev_date || GHIN_PROFILE.low_hi_date);
+  if (rev) bits.push(`Revised ${typeof formatPostedDate === "function" ? formatPostedDate(String(rev).slice(0, 10)) : String(rev).slice(0, 10)}`);
+  const n = typeof SCOREBOOK !== "undefined" && Array.isArray(SCOREBOOK) ? SCOREBOOK.length : 0;
+  if (n) bits.push(`${n} round${n === 1 ? "" : "s"} in the local export`);
+  if (!bits.length) {
+    meta.hidden = true;
+    meta.textContent = "";
+    return;
+  }
+  meta.hidden = false;
+  meta.textContent = bits.join(" · ");
 }
-buildCourseList();
-buildStats();
+
+function initRack() {
+  buildRack();
+  try {
+    buildMap();
+  } catch (err) {
+    map = undefined;
+  }
+  buildCourseList();
+  buildStats();
+  paintGhinAside();
+}
+
+const rackReady = typeof scoresReady === "function" ? scoresReady() : Promise.resolve();
+rackReady.then(initRack, initRack);
 
 function refreshMapSize() {
   if (map) map.invalidateSize();

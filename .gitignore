@@ -7,3 +7,24 @@ vendor/bundle/
 node_modules/
 package.json
 package-lock.json
+
+# Secrets / GHIN credentials — never commit
+.env
+.env.*
+!.env.example
+!**/.env.example
+*.pem
+*.key
+*creds*.json
+.ghin_creds.json
+**/.ghin_creds.json
+ghin_creds.json
+secrets/
+_cache_ghin/
+**/_cache_ghin/
+assets/data/_cache*/
+scripts/.env
+scripts/.cache/
+__pycache__/
+*.pyc
+*.tmp

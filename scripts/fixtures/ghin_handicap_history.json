@@ -1,0 +1,17 @@
+{
+  "_comment": "ANONYMIZED FIXTURE — fake handicap revisions, not a real record.",
+  "handicap_revisions": [
+    {
+      "revision_date": "2026-06-15",
+      "display": "12.4",
+      "low_hi": "11.2",
+      "is_low_hi": false
+    },
+    {
+      "revision_date": "2026-06-01",
+      "display": "12.8",
+      "low_hi": "11.2",
+      "is_low_hi": false
+    }
+  ]
+}

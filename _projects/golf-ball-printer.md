@@ -9,6 +9,8 @@ tags:
 status: "Shipped"
 hero: "/assets/projects/golf-ball-printer/hero.jpg"
 hero_alt: "A golf ball printed with a custom design"
+constellation_links:
+  - virtual-ball-rack
 specs:
   Based on: "An egg printer"
   Redesigned: "Drawing arm sized for a golf ball"

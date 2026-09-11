@@ -1,0 +1,110 @@
+---
+layout: default
+title: Constellation
+description: "A PCB night-sky map of every Blaha Labs build — copper traces, solder pads, phosphor labels."
+permalink: /constellation/
+extra_css: /assets/css/constellation.css
+body_class: page-constellation
+---
+
+{% assign sky_projects = site.projects | sort: "date" %}
+{% assign all_tags = "" | split: "" %}
+{% comment %} Build IDs from slug, falling back to the collection filename. {% endcomment %}
+{% for project in site.projects %}
+  {% for tag in project.tags %}
+    {% assign all_tags = all_tags | push: tag %}
+  {% endfor %}
+{% endfor %}
+{% assign all_tags = all_tags | uniq | sort %}
+
+<section class="hero hero--page sky__hero">
+  <div class="hero__badge sticker sticker--solder" data-reveal>
+    <span class="led led--hot" aria-hidden="true"></span> Board rev A47
+  </div>
+
+  <h1 class="hero__title display-1" data-reveal>
+    The <span class="marker marker--phosphor">constellation</span>
+  </h1>
+
+  <p class="hero__sub" data-reveal>
+    Every logged build as a solder pad on a night-shift PCB. Copper traces follow
+    shared tags and nearby years — hover or tab a pad, click to open the write-up.
+    The <a href="/portfolio/">portfolio</a> is the same catalog as a list.
+  </p>
+</section>
+
+<section class="sky" data-constellation>
+  {% if all_tags.size > 0 %}
+  <div class="filter sky__filters" data-reveal role="group" aria-label="Highlight a constellation by tag">
+    <button class="filter__btn is-active" type="button" data-sky-filter="all">All traces</button>
+    {% for tag in all_tags %}
+      <button class="filter__btn" type="button" data-sky-filter="{{ tag | slugify }}">{{ tag }}</button>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <p class="sky__legend" data-reveal>
+    <span><i class="sky__swatch sky__swatch--tag"></i> Shared-tag traces</span>
+    <span><i class="sky__swatch sky__swatch--time"></i> Chronology jumpers</span>
+    <span><i class="sky__swatch sky__swatch--hand"></i> Hand-soldered links</span>
+    <span>Shipped pads glow laser · in-progress pads run hot</span>
+  </p>
+
+  <div class="skyboard panel" id="skyboard">
+    <div class="skyboard__scroll">
+      <div class="skyboard__stage" id="sky-stage">
+        <p class="skyboard__fallback" id="sky-fallback">The interactive board needs JavaScript. Every build is listed below.</p>
+      </div>
+    </div>
+    <aside class="skycard" id="skycard" hidden>
+      <p class="skycard__kicker" id="skycard-status"></p>
+      <h2 class="skycard__title" id="skycard-title"></h2>
+      <p class="skycard__meta" id="skycard-meta"></p>
+      <p class="skycard__summary" id="skycard-summary"></p>
+      <p class="skycard__tags" id="skycard-tags"></p>
+      <a class="btn btn--solder skycard__go" id="skycard-go" href="#">Read the build →</a>
+    </aside>
+  </div>
+
+  <p class="sky__hint" id="sky-hint">Pointer or Tab selects a pad. Enter opens it. On a phone, tap once to inspect, tap again (or the button) to go.</p>
+  <div class="visually-hidden" id="sky-live" aria-live="polite"></div>
+
+  <details class="sky-index panel">
+    <summary>List view of every pad</summary>
+    <ol class="sky-index__list">
+      {% for project in sky_projects %}
+      <li>
+        <a href="{{ project.url }}">{{ project.title }}</a>
+        <span>{{ project.date | date: "%b %Y" }}{% if project.status %} · {{ project.status }}{% endif %}{% if project.tags %} · {{ project.tags | join: " / " }}{% endif %}</span>
+      </li>
+      {% endfor %}
+    </ol>
+  </details>
+</section>
+
+<script type="application/json" id="constellation-data">
+{
+  "projects": [
+    {% for project in sky_projects %}
+    {% assign pad_id = project.slug %}
+    {% unless pad_id %}
+      {% assign pad_id = project.path | split: "/" | last | split: "." | first %}
+    {% endunless %}
+    {
+      "id": {{ pad_id | jsonify }},
+      "title": {{ project.title | jsonify }},
+      "url": {{ project.url | jsonify }},
+      "summary": {{ project.summary | jsonify }},
+      "status": {{ project.status | default: "" | jsonify }},
+      "date": {{ project.date | date: "%Y-%m-%d" | jsonify }},
+      "year": {{ project.date | date: "%Y" | jsonify }},
+      "label": {{ project.date | date: "%b %Y" | jsonify }},
+      "tags": {% if project.tags %}{{ project.tags | jsonify }}{% else %}[]{% endif %},
+      "hero": {{ project.hero | default: "" | jsonify }},
+      "links": {% if project.constellation_links %}{{ project.constellation_links | jsonify }}{% else %}[]{% endif %}
+    }{% unless forloop.last %},{% endunless %}
+    {% endfor %}
+  ]
+}
+</script>
+<script src="/assets/js/constellation.js" defer></script>

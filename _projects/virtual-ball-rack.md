@@ -12,6 +12,8 @@ hero_alt: "A mahogany display case filled with logo golf balls"
 hero_fit: "contain"
 demo: "/rack/"
 repo: "https://github.com/samblaha/virtual-ball-rack"
+constellation_links:
+  - golf-ball-printer
 specs:
   Layout: "9 × 13 mahogany case, felt shelves"
   Collection: "78 logo balls"

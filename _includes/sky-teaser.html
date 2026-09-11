@@ -1,0 +1,30 @@
+{% assign sky_projects = site.projects | sort: "date" %}
+{% assign sky_count = sky_projects | size %}
+{% if sky_count > 0 %}
+<a class="sky-teaser panel" href="/constellation/" data-reveal>
+  <svg class="sky-teaser__bus" viewBox="0 0 640 64" aria-hidden="true" focusable="false">
+    <path class="sky-teaser__trace" d="M16 32 H624" />
+    {% for project in sky_projects %}
+      {% if sky_count > 1 %}
+        {% assign span = sky_count | minus: 1 %}
+        {% assign cx = forloop.index0 | times: 560 | divided_by: span | plus: 40 %}
+      {% else %}
+        {% assign cx = 320 %}
+      {% endif %}
+      {% assign status_key = project.status | downcase %}
+      {% if status_key contains "progress" or status_key contains "wip" %}
+        {% assign pad_class = "sky-teaser__pad sky-teaser__pad--hot" %}
+      {% else %}
+        {% assign pad_class = "sky-teaser__pad sky-teaser__pad--live" %}
+      {% endif %}
+      <circle class="{{ pad_class }}" cx="{{ cx }}" cy="32" r="7" />
+      <circle class="sky-teaser__hole" cx="{{ cx }}" cy="32" r="2.2" />
+    {% endfor %}
+  </svg>
+  <span class="sky-teaser__copy">
+    <span class="sky-teaser__kicker"><span class="led led--live" aria-hidden="true"></span> The constellation</span>
+    <strong class="sky-teaser__title">{{ sky_count }} builds on one board</strong>
+    <span class="sky-teaser__cta">Copper traces, solder pads, night sky →</span>
+  </span>
+</a>
+{% endif %}

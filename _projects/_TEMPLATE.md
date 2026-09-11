@@ -27,6 +27,8 @@ gallery:
 repo: "https://github.com/your-handle/your-repo"
 demo: "https://example.com"
 comments: true               # set false to hide the discussion panel on this post
+constellation_links: []      # optional: other project slugs to solder onto the /constellation/ map
+
 
 # Optional: rendered as a spec-sheet card above the write-up
 specs:

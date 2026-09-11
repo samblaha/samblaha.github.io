@@ -67,4 +67,4 @@ The committed JSON is an empty schema so the rack stays up without credentials. 
 - Tag filters live on `/portfolio/` (deep-linkable: `/portfolio/?tag=hardware#projects`). Old `/?tag=` links redirect there.
 - Built-in arcade (Solder Snake, Laser Gates, Chip Match) sits on the homepage after projects and at `/arcade/`.
 - Missing optional fields won’t break rendering (no hero/status/repo/demo/gallery is fine).
-- Comments use giscus; see `GISCUS-SETUP.md` to finish wiring the repo and category IDs.
+- The homepage Idea Box is an IR-camera heat strip of unfinished / stub builds already in `_projects/` (local +heat in `localStorage`). Comments still use giscus; see `GISCUS-SETUP.md` — IDs stay empty until a real **Project Ideas** category exists.

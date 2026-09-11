@@ -5,6 +5,20 @@ layout: default
 {% assign latest_projects = site.projects | sort: "date" | reverse %}
 {% assign oldest_project = site.projects | sort: "date" | first %}
 {% assign project_count = site.projects | size %}
+{% assign idea_hot = false %}
+{% assign heat_count = 0 %}
+{% for project in site.projects %}
+  {% assign hero_s = project.hero | default: "" | strip %}
+  {% assign status_s = project.status | default: "" | downcase %}
+  {% assign project_gap = false %}
+  {% assign project_wip = false %}
+  {% if hero_s == "" %}{% assign project_gap = true %}{% endif %}
+  {% if status_s contains "progress" %}{% assign project_wip = true %}{% endif %}
+  {% if project_gap or project_wip %}
+    {% assign idea_hot = true %}
+    {% assign heat_count = heat_count | plus: 1 %}
+  {% endif %}
+{% endfor %}
 
 <nav class="stations" aria-label="On this page">
   <a class="stations__item" href="#projects" data-station="projects">
@@ -15,8 +29,8 @@ layout: default
     <span class="led" aria-hidden="true"></span>
     <span>02 Play</span>
   </a>
-  <a class="stations__item" href="#ideas" data-station="ideas">
-    <span class="led" aria-hidden="true"></span>
+  <a class="stations__item{% if idea_hot %} is-heat{% endif %}" href="#ideas" data-station="ideas">
+    <span class="led{% if idea_hot %} led--hot{% endif %}" aria-hidden="true"></span>
     <span>03 Ideas</span>
   </a>
   <a class="stations__item" href="#about" data-station="about">
@@ -114,10 +128,10 @@ layout: default
     <strong class="bento__title">Workshop arcade</strong>
     <span class="bento__cta">Snake, lasers &amp; memory →</span>
   </a>
-  <a class="bento__card bento__card--idea panel" href="#ideas" data-reveal>
-    <span class="bento__label"><span class="led" aria-hidden="true"></span> Idea box</span>
-    <strong class="bento__title">What should I build next?</strong>
-    <span class="bento__cta">Drop a vote →</span>
+  <a class="bento__card bento__card--idea panel{% if idea_hot %} is-hot{% endif %}" href="#ideas" data-reveal>
+    <span class="bento__label"><span class="led{% if idea_hot %} led--hot{% endif %}" data-idea-bento-led aria-hidden="true"></span> Idea box · IR</span>
+    <strong class="bento__title">What's glowing on the bench?</strong>
+    <span class="bento__cta">Read the heat →</span>
   </a>
   <a class="bento__card bento__card--sky panel" href="/constellation/" data-reveal>
     <span class="bento__label"><span class="led led--live" aria-hidden="true"></span> Star chart</span>
@@ -235,20 +249,118 @@ layout: default
 
 {% include arcade.html num="02" %}
 
-<section id="ideas" class="section section--narrow" data-station-target="ideas">
+<section id="ideas" class="section" data-station-target="ideas">
   <div class="section__head" data-reveal>
     <span class="section__num">03</span>
     <h2 class="display-2">The Idea Box</h2>
   </div>
   <p class="section__intro" data-reveal>
-    Got an idea for a project you'd like to see? Drop it below and upvote the ones
-    you're most excited about — the loudest ideas get built first.
+    An IR camera, not a suggestion form with fake tickets. Heat is unfinished
+    work already logged on this bench — iron still on, missing hero shots,
+    cold joints. Nudge a chip in this browser if you want that iron back.
   </p>
 
-  <div class="panel panel--ideas" data-reveal>
-    {% include giscus.html %}
+  <div class="idea-heat" data-idea-heat data-reveal role="region" aria-label="Idea box heat camera">
+    <div class="instrument idea-heat__instrument">
+      <div class="instrument__bezel">
+        <div class="instrument__chrome">
+          <span>CH3 · IR CAM</span>
+          <span class="instrument__live">
+            <span class="led{% if idea_hot %} led--hot{% endif %}" data-idea-heat-led aria-hidden="true"></span>
+            <span data-idea-heat-live>{% if idea_hot %}HOT{% else %}COLD{% endif %}</span>
+          </span>
+        </div>
+
+        <div class="idea-heat__stage">
+          <canvas class="idea-heat__canvas" data-idea-heat-canvas width="800" height="140" aria-hidden="true"></canvas>
+          <div class="idea-heat__reticle" aria-hidden="true"></div>
+          <div class="idea-heat__scale">
+            <span>COLD</span>
+            <span class="idea-heat__lut" aria-hidden="true"></span>
+            <span>IRON</span>
+          </div>
+        </div>
+
+        <div class="idea-heat__hud">
+          <div class="idea-heat__hud-top">
+            <p class="idea-heat__kicker">Backlog · unfinished joints on this bench</p>
+            <p class="idea-heat__peak" data-idea-heat-peak aria-live="polite">{% if idea_hot %}{{ heat_count }} JOINT{% if heat_count != 1 %}S{% endif %}{% else %}NO JOINTS{% endif %}</p>
+          </div>
+
+          <ul class="idea-heat__chips" data-idea-heat-chips>
+            {% for project in site.projects %}
+              {% assign hero_s = project.hero | default: "" | strip %}
+              {% assign status_s = project.status | default: "" | downcase %}
+              {% assign project_gap = false %}
+              {% assign project_wip = false %}
+              {% if hero_s == "" %}{% assign project_gap = true %}{% endif %}
+              {% if status_s contains "progress" %}{% assign project_wip = true %}{% endif %}
+              {% if project_gap or project_wip %}
+              {% assign heat_id = project.path | split: "/" | last | remove: ".md" %}
+              <li>
+                <article
+                  class="idea-heat__chip"
+                  data-heat-id="{{ heat_id }}"
+                  data-heat-status="{{ project.status | default: '' | escape }}"
+                  data-heat-hero="{% if project_gap %}0{% else %}1{% endif %}"
+                  data-heat-date="{{ project.date | date: '%Y-%m-%d' }}"
+                >
+                  <div class="idea-heat__chip-bar" aria-hidden="true"></div>
+                  <div class="idea-heat__chip-body">
+                    <p class="idea-heat__why">
+                      {% if project_wip %}Iron still on{% endif %}{% if project_wip and project_gap %} · {% endif %}{% if project_gap %}Media gap{% endif %}
+                    </p>
+                    <a class="idea-heat__name" href="{{ project.url }}">{{ project.title }}</a>
+                    {% if project.summary %}<p class="idea-heat__blurb">{{ project.summary }}</p>{% endif %}
+                  </div>
+                  <div class="idea-heat__meter">
+                    <span class="idea-heat__temp"><span data-heat-temp>—</span> <small>GLOW</small></span>
+                    <span class="idea-heat__band" data-heat-band-label>SCAN</span>
+                    <button type="button" class="idea-heat__vote" data-heat-vote aria-pressed="false">+ heat</button>
+                  </div>
+                </article>
+              </li>
+              {% endif %}
+            {% endfor %}
+          </ul>
+        </div>
+
+        <div class="idea-heat__sink" data-idea-heat-sink>
+          <div class="idea-heat__sink-head">
+            <span>Heat sink</span>
+            <span>visitor ideas</span>
+          </div>
+          {% include giscus.html empty="heat" %}
+        </div>
+      </div>
+    </div>
+    <p class="instrument__caption">Phosphor LUT. Glow is status + media gap + a local nudge — votes stay in this browser. No accounts, no invented projects.</p>
   </div>
 </section>
+
+<script type="application/json" id="idea-heat-data">
+[
+{% for project in site.projects %}
+  {% assign hero_s = project.hero | default: "" | strip %}
+  {
+    "id": {{ project.path | split: "/" | last | remove: ".md" | jsonify }},
+    "title": {{ project.title | jsonify }},
+    "url": {{ project.url | jsonify }},
+    "summary": {{ project.summary | default: "" | jsonify }},
+    "status": {{ project.status | default: "" | jsonify }},
+    "date": {{ project.date | date: "%Y-%m-%d" | jsonify }},
+    "year": {{ project.date | date: "%Y" | jsonify }},
+    "hero": {% if hero_s == "" %}false{% else %}true{% endif %},
+    "tag": {{ project.tags | first | default: "" | jsonify }},
+    "tags": {% if project.tags %}{{ project.tags | jsonify }}{% else %}[]{% endif %}
+  }{% unless forloop.last %},{% endunless %}
+{% endfor %}
+]
+</script>
+<script src="/assets/js/idea-heat.js" defer></script>
+<noscript>
+  <p class="idea-heat__noscript">JavaScript paints the sweep and local +heat. The chips above are still the real unfinished joints.</p>
+</noscript>
 
 {% assign career_projects = site.projects | sort: "date" %}
 

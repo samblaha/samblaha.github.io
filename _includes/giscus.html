@@ -1,17 +1,20 @@
-<!-- Giscus Comments - Project Ideas
-     
-     To complete setup:
-     1. Enable GitHub Discussions on your repo
-     2. Create "Project Ideas" category
-     3. Visit https://giscus.app to get your repo-id and category-id
-     4. Replace the empty data-repo-id and data-category-id values below
--->
+{% comment %}
+  Giscus heat sink / project comments.
 
+  Discussions are enabled on samblaha/samblaha.github.io
+  (repo-id MDEwOlJlcG9zaXRvcnkzNTE1MzQxNDU=). There is a default "Ideas"
+  category, but the named "Project Ideas" category from GISCUS-SETUP.md
+  does not exist. IDs stay empty on purpose — do not invent them.
+{% endcomment %}
+{% assign giscus_repo_id = "" %}
+{% assign giscus_category_id = "" %}
+{% assign giscus_category = "Project Ideas" %}
+{% if giscus_repo_id != "" and giscus_category_id != "" %}
 <script src="https://giscus.app/client.js"
         data-repo="samblaha/samblaha.github.io"
-        data-repo-id=""
-        data-category="Project Ideas"
-        data-category-id=""
+        data-repo-id="{{ giscus_repo_id }}"
+        data-category="{{ giscus_category }}"
+        data-category-id="{{ giscus_category_id }}"
         data-mapping="pathname"
         data-strict="0"
         data-reactions-enabled="1"
@@ -23,4 +26,11 @@
         crossorigin="anonymous"
         async>
 </script>
-
+{% elsif include.empty == "heat" %}
+<p class="idea-heat__sink-empty">
+  Sink is dark. Discussions are live on the repo, but the
+  <strong>Project Ideas</strong> category was never cut, so Giscus stays
+  unwired rather than pointing at a made-up ID. The chips above are the
+  real heat — unfinished work already on this bench.
+</p>
+{% endif %}

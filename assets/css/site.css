@@ -1878,7 +1878,6 @@ html.js .hero [data-reveal] { opacity: 1; transform: none; }
 
 @media (max-width: 720px) {
   .career-scope__canvas { height: 176px; }
-  .career-scope__tick:nth-child(even) { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {

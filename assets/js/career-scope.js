@@ -142,7 +142,17 @@
     return values;
   }
 
-  function yearTicks(projects, axis) {
+  function yearTicks(projects, axis, laidOut) {
+    if (laidOut && laidOut.length) {
+      var fromLayout = [];
+      var seenLayout = {};
+      laidOut.forEach(function (item) {
+        if (!item.year || seenLayout[item.year]) return;
+        seenLayout[item.year] = true;
+        fromLayout.push({ year: item.year, t: item.t });
+      });
+      return fromLayout;
+    }
     var seen = {};
     var ticks = [];
     (projects || []).forEach(function (project) {
@@ -269,13 +279,34 @@
     function paintTicks() {
       if (!ticksEl) return;
       ticksEl.innerHTML = '';
-      yearTicks(projects, axis).forEach(function (tick) {
-        var el = documentRef.createElement('span');
-        el.className = 'career-scope__tick';
-        el.textContent = tick.year;
-        el.style.left = tick.t * 100 + '%';
-        ticksEl.appendChild(el);
+      var ticks = yearTicks(projects, axis, laidOut);
+      var width = ticksEl.clientWidth || 320;
+      var minGap = 36;
+      var chosen = [];
+      ticks.forEach(function (tick, index) {
+        var edge = index === 0 || index === ticks.length - 1;
+        if (!edge) return;
+        chosen.push(tick);
       });
+      ticks.forEach(function (tick, index) {
+        var edge = index === 0 || index === ticks.length - 1;
+        if (edge) return;
+        var clash = chosen.some(function (kept) {
+          return Math.abs(kept.t * width - tick.t * width) < minGap;
+        });
+        if (!clash) chosen.push(tick);
+      });
+      chosen
+        .sort(function (a, b) {
+          return a.t - b.t;
+        })
+        .forEach(function (tick) {
+          var el = documentRef.createElement('span');
+          el.className = 'career-scope__tick';
+          el.textContent = tick.year;
+          el.style.left = tick.t * 100 + '%';
+          ticksEl.appendChild(el);
+        });
     }
 
     function placeBlips() {

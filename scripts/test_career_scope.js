@@ -184,6 +184,20 @@ test('markers match real _projects on disk, oldest → newest', () => {
   assert.ok(openPage && openPage.hot, 'OpenPage should stay In progress');
 });
 
+test('year ticks follow the first build of each year', () => {
+  const parsed = Scope.parseProjects([
+    { id: 'a', title: 'A', url: '/p/a/', date: '2019-03-01' },
+    { id: 'b', title: 'B', url: '/p/b/', date: '2019-06-01' },
+    { id: 'c', title: 'C', url: '/p/c/', date: '2026-09-02' },
+  ]);
+  const axis = Scope.axisFor(parsed, Date.UTC(2026, 8, 11));
+  const laid = Scope.layout(parsed, axis);
+  const ticks = Scope.yearTicks(parsed, axis, laid);
+  assert.strictEqual(ticks.map((t) => t.year).join(','), '2019,2026');
+  assert.strictEqual(ticks[0].t, laid[0].t);
+  assert.strictEqual(ticks[1].t, laid[2].t);
+});
+
 test('home layout drives the scope from site.projects, not invented jobs', () => {
   const home = fs.readFileSync(path.join(repo, '_layouts/home.html'), 'utf8');
   const about = home.split('id="about"')[1] || '';

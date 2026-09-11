@@ -230,6 +230,8 @@ test('home layout wires the IR cam without filling fake giscus IDs', () => {
   assert.ok(copper.includes('[data-idea-heat]'));
   assert.ok(giscus.includes('assign giscus_repo_id = ""'));
   assert.ok(giscus.includes('assign giscus_category_id = ""'));
+  assert.ok(giscus.includes('giscus_repo_id != ""'));
+  assert.ok(giscus.includes('giscus_category_id != ""'));
   assert.doesNotMatch(giscus, /data-repo-id="R_/);
   assert.doesNotMatch(giscus, /data-category-id="DIC_/);
   assert.ok(giscus.includes('Project Ideas'));

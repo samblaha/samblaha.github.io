@@ -330,14 +330,18 @@
 }
 
 @media (max-width: 959px) {
+  .constellation-hero .hero__badge { margin-bottom: 10px; }
+  .constellation-hero .hero__title { margin-bottom: 8px; }
+  .constellation-hero .hero__sub { display: none; }
   .constellation__stage {
-    height: min(62vh, 520px);
-    min-height: 360px;
+    height: min(58vh, 520px);
+    min-height: 380px;
   }
   .constellation__hint { display: none; }
   .cnode { width: 48px; height: 48px; }
   .cnode__pad { width: 18px; height: 18px; }
   .constellation__hud.is-idle { display: none; }
+  .constellation__toolbar { gap: 8px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

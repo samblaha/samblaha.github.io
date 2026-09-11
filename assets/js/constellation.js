@@ -482,11 +482,14 @@
       });
       const p = worldToScreen(x / members.length, y / members.length - 36);
       ctx.save();
-      ctx.globalAlpha = filter === theme.id ? 0.8 : 0.28;
-      ctx.fillStyle = THEME_COLOR[theme.id];
+      ctx.globalAlpha = filter === theme.id ? 0.9 : 0.45;
       ctx.font = '700 11px "IBM Plex Mono", ui-monospace, monospace';
-      ctx.letterSpacing = '0.18em';
       ctx.textAlign = 'center';
+      ctx.lineJoin = 'round';
+      ctx.strokeStyle = 'rgba(7,9,13,0.9)';
+      ctx.lineWidth = 5;
+      ctx.strokeText(theme.label.toUpperCase(), p.x, p.y);
+      ctx.fillStyle = THEME_COLOR[theme.id];
       ctx.fillText(theme.label.toUpperCase(), p.x, p.y);
       ctx.restore();
     });
@@ -626,6 +629,9 @@
       label.textContent = node.short;
       link.appendChild(pad);
       link.appendChild(label);
+      link.addEventListener('pointerdown', (event) => {
+        event.stopPropagation();
+      });
       link.addEventListener('pointerenter', () => {
         hoverId = node.id;
         dirty = true;
@@ -665,6 +671,7 @@
   }
 
   stage.addEventListener('pointerdown', (event) => {
+    if (event.target.closest('.cnode')) return;
     if (event.button !== 0 && event.pointerType === 'mouse') return;
     stage.setPointerCapture(event.pointerId);
     pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });

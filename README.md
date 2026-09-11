@@ -44,6 +44,22 @@ If you run into Ruby version errors, upgrade Ruby (recommended) and then re-run 
 - **Newer / older build** navigation at the bottom, and a per-post discussion panel (giscus, `comments: false` to hide).
 - **Sharing**: Open Graph / Twitter card tags using `summary` and `hero`, plus an RSS feed at `/feed.xml`.
 
+## GHIN score sync (Ball Rack)
+
+The rack at `/rack/` reads **local** score data only (`assets/data/scorebook.json`). It never calls GHIN from the browser and never posts a score.
+
+From a private machine (Python 3, stdlib only):
+
+```bash
+export GHIN_EMAIL='you@example.com'   # or GHIN number
+export GHIN_PASSWORD='...'
+python3 scripts/sync_ghin.py
+```
+
+Or run `python3 scripts/sync_ghin.py` in a terminal and enter credentials when prompted. Do not put a GHIN password, email, or GHIN number in HTML, JS, or committed config. See `scripts/README.md`.
+
+The committed JSON is an empty schema so the rack stays up without credentials. After a real sync, commit `assets/data/scorebook.json` only if those rounds should be public. CSV dumps stay in gitignored `golf-data/`.
+
 ## Notes
 - Project URLs are automatically generated from filenames:
   - `_projects/laser-timing-gates.md` → `/p/laser-timing-gates/`

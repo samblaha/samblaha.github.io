@@ -33,6 +33,7 @@
 .rack-stats .stat:nth-child(2) { transform: rotate(1.2deg); }
 .rack-stats .stat:nth-child(3) { transform: rotate(-0.6deg); }
 .rack-stats .stat:nth-child(4) { transform: rotate(0.9deg); }
+.rack-stats .stat:nth-child(5) { transform: rotate(-1.1deg); }
 .rack-stats .stat:hover { transform: rotate(0deg) scale(1.05); }
 
 .rack-stats .num {
@@ -410,6 +411,16 @@
   font-size: 0.88rem;
   line-height: 1.5;
   color: var(--muted);
+}
+
+.rack-ghin__meta {
+  margin-top: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink);
 }
 
 .rack-ghin a { text-decoration: underline; text-underline-offset: 3px; }

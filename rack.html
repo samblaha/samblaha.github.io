@@ -48,11 +48,12 @@ extra_css: /assets/css/rack.css
 </div>
 
 <aside class="rack-ghin panel" data-reveal>
-  <p>
-    Posted scores on this rack come from a local scorebook in the site data — not a live GHIN feed.
-    GHIN does not offer a public scores API (club/vendor licenses only; public lookup is handicap ID, not scorecards).
-    When a round is posted, add it to <code>rack-scores.js</code> and it shows on the matching ball.
+  <p class="rack-ghin__copy">
+    Posted scores on this rack come from a local GHIN export (<code>assets/data/scorebook.json</code>)
+    checked into the site — not a live GHIN feed. The page never calls GHIN and never posts a score.
+    Sync on a private machine with <code>python3 scripts/sync_ghin.py</code>; see <code>scripts/README.md</code>.
   </p>
+  <p class="rack-ghin__meta" hidden></p>
 </aside>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"

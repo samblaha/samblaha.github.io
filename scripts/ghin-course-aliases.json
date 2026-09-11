@@ -1,0 +1,4 @@
+{
+  "_comment": "Optional map of GHIN course_name strings to exact BALLS[].name values from assets/js/rack-data.js. Used by scripts/sync_ghin.py when a GHIN name does not already match a rack ball. Example: {\"OSU GC Scarlet\": \"Ohio State University Golf Club\"}. Keys starting with _ are ignored.",
+  "aliases": {}
+}

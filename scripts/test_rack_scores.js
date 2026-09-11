@@ -66,17 +66,17 @@ test("exact course match", () => {
   assert.ok(ctx.latestScoreLine(scores).includes("Posted 84"));
 });
 
-test("fuzzy GC abbreviation matches rack name", () => {
+test("unmapped GHIN abbreviation does not join in the rack", () => {
   ctx.applyGhinExport({
     rounds: [{ course: "Muirfield Village GC", date: "2025-07-12", score: 84 }],
   });
   const ball = ctx.BALLS.find((b) => b.name === "Muirfield Village Golf Club");
-  assert.strictEqual(ctx.scoresForBall(ball).length, 1);
+  assert.strictEqual(ctx.scoresForBall(ball).length, 0);
 });
 
 test("Barefoot Norman does not also hit Fazio", () => {
   ctx.applyGhinExport({
-    rounds: [{ course: "Barefoot Resort Norman Course", date: "2025-05-01", score: 90 }],
+    rounds: [{ course: "Barefoot Resort & Golf", detail: "Norman Course", date: "2025-05-01", score: 90 }],
   });
   const norman = ctx.BALLS.find((b) => b.name === "Barefoot Resort & Golf" && b.detail === "Norman Course");
   const fazio = ctx.BALLS.find((b) => b.name === "Barefoot Resort & Golf" && b.detail === "Fazio Course");
@@ -116,18 +116,27 @@ test("handicap index from profile", () => {
   assert.strictEqual(ctx.GHIN_PROFILE.low_hi, "11.2");
 });
 
-test("course_aliases remap GHIN names", () => {
+test("loader drops extra GHIN fields from SCOREBOOK", () => {
   ctx.applyGhinExport({
-    course_aliases: { "OSU Scarlet": "Ohio State University Golf Club" },
-    rounds: [{ course: "OSU Scarlet", date: "2025-06-03", score: 88 }],
+    rounds: [{
+      course: "Muirfield Village Golf Club",
+      date: "2025-07-12",
+      score: 84,
+      differential: 12.4,
+      score_id: "secret-id",
+      hole_by_hole: [{ hole: 1, score: 5 }],
+    }],
   });
-  const ball = ctx.BALLS.find((b) => b.name === "Ohio State University Golf Club");
-  assert.strictEqual(ctx.scoresForBall(ball).length, 1);
+  const ball = ctx.BALLS.find((b) => b.name === "Muirfield Village Golf Club");
+  const row = ctx.scoresForBall(ball)[0];
+  assert.strictEqual(row.score, 84);
+  assert.strictEqual(row.score_id, undefined);
+  assert.strictEqual(row.hole_by_hole, undefined);
 });
 
 test("empty committed scorebook file parses", () => {
   const raw = JSON.parse(
-    fs.readFileSync(path.join(repo, "assets/data/ghin-scores.json"), "utf8"),
+    fs.readFileSync(path.join(repo, "assets/data/scorebook.json"), "utf8"),
   );
   ctx.applyGhinExport(raw);
   assertEmptyScorebook();

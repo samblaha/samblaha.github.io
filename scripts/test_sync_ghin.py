@@ -138,22 +138,25 @@ class ExportWrite(unittest.TestCase):
             self.assertEqual(counts["revisions"], 2)
             self.assertEqual(counts["index"], "12.4")
             self.assertEqual(counts["hole_scores"], 18)
+            self.assertEqual(counts["mapped"], 0)
 
-            path = os.path.join(td, "ghin-scores.json")
+            path = os.path.join(td, "scorebook.json")
             with open(path, encoding="utf-8") as f:
                 export = json.load(f)
             blob = json.dumps(export)
             self.assertNotIn("should-not-appear@example.com", blob)
             self.assertNotIn("REDACT", blob)
+            self.assertNotIn("hole_by_hole", blob)
+            self.assertNotIn("score_id", blob)
             self.assertEqual(export["schema"], sg.SCHEMA)
-            self.assertEqual(len(export["rounds"]), 2)
+            # Fixture courses are not on the rack — sanitized scorebook stays empty.
+            self.assertEqual(export["rounds"], [])
             self.assertEqual(export["profile"]["handicap_index"], "12.4")
-            # Fixture courses are not on the rack — names stay as GHIN sent them.
-            courses = {r["course"] for r in export["rounds"]}
-            self.assertIn("WindRose Golf Club", courses)
 
             with open(os.path.join(td, "ghin_scores.csv"), encoding="utf-8") as f:
-                rows = list(csv.DictReader(f))
+                reader = csv.DictReader(f)
+                self.assertEqual(list(reader.fieldnames), sg.SCORE_COLS)
+                rows = list(reader)
             self.assertEqual(len(rows), 2)
 
     def test_mapped_round_uses_rack_name(self):
@@ -182,28 +185,105 @@ class ExportWrite(unittest.TestCase):
         self.assertEqual(r["score"], 84)
         self.assertEqual(r["tee"], "White")
         self.assertEqual(r["date"], "2026-07-12")
+        self.assertEqual(r["differential"], 12.4)
+        self.assertTrue(set(r).issubset(sg.RACK_ROUND_KEYS))
+        self.assertNotIn("score_id", r)
+        self.assertNotIn("hole_by_hole", r)
+        self.assertNotIn("course_name", r)
+        self.assertNotIn("played_at", r)
 
     def test_committed_scorebook_is_empty_schema(self):
-        path = os.path.join(REPO, "assets", "data", "ghin-scores.json")
+        path = os.path.join(REPO, "assets", "data", "scorebook.json")
         with open(path, encoding="utf-8") as f:
             data = json.load(f)
         self.assertEqual(data["rounds"], [])
         self.assertIsNone(data["profile"]["handicap_index"])
         self.assertEqual(data["schema"], sg.SCHEMA)
+        self.assertNotIn("course_aliases", data)
+        self.assertNotIn("handicap_history", data)
+
+
+class CredsFile(unittest.TestCase):
+    def test_email_password_file_triggers_login(self):
+        with tempfile.TemporaryDirectory() as td:
+            path = os.path.join(td, ".ghin_creds.json")
+            with open(path, "w", encoding="utf-8") as f:
+                json.dump({"email": "a@b.c", "password": "sekrit", "ghin_id": "123"}, f)
+            orig_path, orig_login = sg.CREDS_PATH, sg.ghin_login
+            sg.CREDS_PATH = path
+            seen = {}
+
+            def fake_login(email, password):
+                seen["email"] = email
+                seen["pw"] = password
+                return "tok123", "123"
+
+            sg.ghin_login = fake_login
+            env_keys = ("GHIN_BEARER", "GHIN_ID", "GHIN_EMAIL", "GHIN_PASSWORD", "GHIN_TOKEN")
+            saved = {k: os.environ.pop(k, None) for k in env_keys}
+            try:
+                tok, ghin = sg.load_credentials(prompt=False)
+                self.assertEqual((tok, ghin), ("tok123", "123"))
+                self.assertEqual(seen["pw"], "sekrit")
+            finally:
+                sg.CREDS_PATH = orig_path
+                sg.ghin_login = orig_login
+                for k, v in saved.items():
+                    if v is None:
+                        os.environ.pop(k, None)
+                    else:
+                        os.environ[k] = v
+
+    def test_bearer_fallback_from_file(self):
+        with tempfile.TemporaryDirectory() as td:
+            path = os.path.join(td, ".ghin_creds.json")
+            with open(path, "w", encoding="utf-8") as f:
+                json.dump({"bearer_token": "Bearer eyJabc", "ghin_id": "999"}, f)
+            orig_path, orig_login = sg.CREDS_PATH, sg.ghin_login
+            sg.CREDS_PATH = path
+            sg.ghin_login = lambda *_a, **_k: (_ for _ in ()).throw(AssertionError("should not login"))
+            env_keys = ("GHIN_BEARER", "GHIN_ID", "GHIN_EMAIL", "GHIN_PASSWORD", "GHIN_TOKEN")
+            saved = {k: os.environ.pop(k, None) for k in env_keys}
+            try:
+                tok, ghin = sg.load_credentials(prompt=False)
+                self.assertEqual(tok, "eyJabc")
+                self.assertEqual(ghin, "999")
+            finally:
+                sg.CREDS_PATH = orig_path
+                sg.ghin_login = orig_login
+                for k, v in saved.items():
+                    if v is None:
+                        os.environ.pop(k, None)
+                    else:
+                        os.environ[k] = v
 
 
 class ReadOnlyGuard(unittest.TestCase):
     def test_script_has_no_score_posting(self):
         with open(os.path.join(HERE, "sync_ghin.py"), encoding="utf-8") as f:
             src = f.read()
+        with open(os.path.join(REPO, "assets", "js", "rack-scores.js"), encoding="utf-8") as f:
+            rack_js = f.read()
         lower = src.lower()
         self.assertNotIn("post_score", lower)
         self.assertNotIn("post_round", lower)
         self.assertNotIn("submit_score", lower)
         self.assertIn("READ-ONLY", src)
+        self.assertNotIn("api2.ghin.com", rack_js)
+        self.assertNotIn("firebaseinstallations", rack_js.lower())
+        self.assertNotIn("golfer_login", rack_js.lower())
         self.assertIn("/golfers/{ghin}/scores.json", src)
+        self.assertIn("/golfers/{ghin}/handicap_history.json", src)
         self.assertIn("golfer_login.json", src)
         self.assertIn('method="GET"', src)
+        self.assertEqual(
+            sg.SCORE_COLS,
+            [
+                "played_at", "course_name", "holes", "adjusted_gross_score", "course_rating",
+                "slope_rating", "differential", "score_type", "status", "used", "exceptional",
+                "posted_at", "score_id",
+            ],
+        )
 
 
 if __name__ == "__main__":

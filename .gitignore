@@ -8,21 +8,24 @@ node_modules/
 package.json
 package-lock.json
 
-# Secrets / GHIN credentials — never commit
+# Secrets / GHIN credentials — never commit (Cog)
 .env
+*.env
 .env.*
 !.env.example
 !**/.env.example
-*.pem
-*.key
+*_creds.json
 *creds*.json
 .ghin_creds.json
 **/.ghin_creds.json
 ghin_creds.json
-secrets/
-_cache_ghin/
-**/_cache_ghin/
+golf-data/
+_cache*/
+**/_cache*/
 assets/data/_cache*/
+secrets/
+*.pem
+*.key
 scripts/.env
 scripts/.cache/
 __pycache__/

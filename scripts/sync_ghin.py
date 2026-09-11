@@ -7,11 +7,11 @@ password), pulls score history + handicap-index history, and writes local files
 the rack page loads. Never posts a score.
 
 Credentials (never written into this repo or any frontend file):
-    GHIN_EMAIL or GHIN_ID     email or GHIN number
-    GHIN_PASSWORD             password
-    Optional: GHIN_ID if login does not return a golfer id
+    env GHIN_EMAIL + GHIN_PASSWORD
+    fallback env GHIN_BEARER + GHIN_ID
+    optional local ~/.ghin_creds.json (chmod 600, gitignored)
+    TTY prompt if still missing
 
-    If env vars are missing and stdin is a TTY, the script prompts.
     Do not put a password in HTML, JS, committed JSON, or git.
 
 Usage (from the repo root):
@@ -22,10 +22,10 @@ Usage (from the repo root):
         --history-json scripts/fixtures/ghin_handicap_history.json
 
 Outputs (default: assets/data/):
-    ghin-scores.json            rack scorebook (this is what the live page fetches)
-    ghin_scores.csv             golf-reports-compatible posted-score table
+    scorebook.json              sanitized SCOREBOOK the live rack fetches
+    ghin_scores.csv             golf-reports posted-score table
     ghin_handicap_history.csv   index revisions
-    ghin_hole_scores.csv        per-hole rows when GHIN included them
+    ghin_hole_scores.csv        per-hole rows when GHIN included them (local CSV)
 """
 
 from __future__ import annotations
@@ -59,6 +59,8 @@ _RETRY_CODES = (500, 502, 503, 504)
 SCHEMA = "ghin-rack-scorebook/v1"
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO_ROOT = os.path.dirname(HERE)
+CREDS_PATH = os.path.expanduser("~/.ghin_creds.json")
+RACK_ROUND_KEYS = ("course", "date", "score", "differential", "detail", "tee", "holes", "notes")
 
 SCORE_COLS = [
     "played_at", "course_name", "holes", "adjusted_gross_score", "course_rating",
@@ -439,41 +441,35 @@ def _json_num(v):
 
 def build_rack_rounds(score_rows: list[dict], hole_rows: list[dict],
                       balls: list[dict], aliases: dict[str, str]) -> list[dict]:
-    holes_by_id: dict[Any, list[dict]] = {}
-    for h in hole_rows:
-        sid = h.get("score_id")
-        holes_by_id.setdefault(sid, []).append({
-            "hole": h.get("hole_number"),
-            "par": _json_num(h.get("par")),
-            "score": _json_num(h.get("raw_score")),
-            "adjusted": _json_num(h.get("adjusted_gross_score")),
-        })
+    """Sanitized SCOREBOOK rows. Only rounds mapped onto BALLS[].name.
 
+    Public fields: course/date/score/differential, plus optional
+    detail/tee/holes/notes. No score_id, GHIN#, name, email, or hole_by_hole.
+    hole_rows is accepted so the CSV writer can still emit per-hole data;
+    it is not copied into the public JSON.
+    """
+    del hole_rows  # CSV-only; never shipped in scorebook.json
     rounds = []
     for s in score_rows:
         course, detail = match_ball(s.get("course_name") or "", balls, aliases)
-        ghin_name = s.get("course_name") or ""
-        rec = {
-            "course": course or ghin_name,
+        if not course:
+            continue
+        rec: dict[str, Any] = {
+            "course": course,
             "date": s.get("played_at") or "",
             "score": _json_num(s.get("adjusted_gross_score")),
-            "tee": s.get("tee") or None,
-            "differential": _json_num(s.get("differential")),
-            "holes": _json_num(s.get("holes")) or 18,
         }
+        diff = _json_num(s.get("differential"))
+        if diff is not None:
+            rec["differential"] = diff
         if detail:
             rec["detail"] = detail
-        notes_bits = []
-        if s.get("score_type"):
-            notes_bits.append(str(s["score_type"]))
-        if course and ghin_name and course != ghin_name:
-            notes_bits.append(f"GHIN: {ghin_name}")
-        if notes_bits:
-            rec["notes"] = " · ".join(notes_bits)
-        hbh = holes_by_id.get(s.get("score_id")) or []
-        if hbh:
-            rec["hole_by_hole"] = sorted(hbh, key=lambda r: r.get("hole") or 0)
-        rounds.append(rec)
+        if s.get("tee"):
+            rec["tee"] = s.get("tee")
+        holes = _json_num(s.get("holes"))
+        if holes is not None:
+            rec["holes"] = holes
+        rounds.append({k: rec[k] for k in RACK_ROUND_KEYS if k in rec})
     return rounds
 
 
@@ -481,7 +477,7 @@ def empty_export() -> dict:
     return {
         "schema": SCHEMA,
         "_comment": (
-            "Empty GHIN scorebook for the ball rack. Run python3 scripts/sync_ghin.py "
+            "Empty sanitized SCOREBOOK for the ball rack. Run python3 scripts/sync_ghin.py "
             "to fill this file. Committing a filled copy publishes those scores on the "
             "live site. No name, email, or GHIN number belongs in this file."
         ),
@@ -493,9 +489,7 @@ def empty_export() -> dict:
             "low_hi_date": None,
             "rev_date": None,
         },
-        "handicap_history": [],
         "rounds": [],
-        "course_aliases": {},
     }
 
 
@@ -504,7 +498,6 @@ def build_export(data: dict, balls: list[dict], aliases: dict[str, str],
     from datetime import datetime, timezone
     scores = build_scores(data.get("scores"))
     holes = build_hole_scores(data.get("scores"))
-    hist = build_history(data.get("history"))
     prof = build_profile(data.get("profile"))
     rounds = build_rack_rounds(scores, holes, balls, aliases)
     export = empty_export()
@@ -515,9 +508,7 @@ def build_export(data: dict, balls: list[dict], aliases: dict[str, str],
     )
     export["synced_at"] = synced_at or datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     export["profile"] = prof
-    export["handicap_history"] = hist
     export["rounds"] = rounds
-    export["course_aliases"] = aliases
     return export
 
 
@@ -549,13 +540,13 @@ def write_outputs(out_dir: str, data: dict, balls: list[dict], aliases: dict[str
     write_csv(os.path.join(out_dir, "ghin_scores.csv"), SCORE_COLS, scores)
     write_csv(os.path.join(out_dir, "ghin_handicap_history.csv"), HIST_COLS, hist)
     write_csv(os.path.join(out_dir, "ghin_hole_scores.csv"), HOLE_SCORE_COLS, holes)
-    write_json(os.path.join(out_dir, "ghin-scores.json"), export)
+    write_json(os.path.join(out_dir, "scorebook.json"), export)
     return {
         "scores": len(scores),
         "revisions": len(hist),
         "index": export["profile"].get("handicap_index"),
         "hole_scores": len(holes),
-        "mapped": sum(1 for r in export["rounds"] if r.get("course")),
+        "mapped": len(export["rounds"]),
     }
 
 
@@ -571,15 +562,28 @@ def _env(*names: str) -> Optional[str]:
     return None
 
 
+def _read_creds_file() -> dict:
+    """Optional local ~/.ghin_creds.json — never committed, never shipped to Pages."""
+    if not os.path.isfile(CREDS_PATH):
+        return {}
+    try:
+        with open(CREDS_PATH, encoding="utf-8") as f:
+            data = json.load(f)
+    except (OSError, json.JSONDecodeError) as e:
+        sys.exit(f"Error: could not read {CREDS_PATH}: {e}")
+    return data if isinstance(data, dict) else {}
+
+
 def load_credentials(prompt: bool = True) -> tuple[str, str]:
-    """Return (token, ghin_id). Prompts only when stdin is a TTY."""
-    email = _env("GHIN_EMAIL", "GHIN_USER", "GHIN_USERNAME")
-    password = _env("GHIN_PASSWORD")
-    ghin = _env("GHIN_ID", "GHIN_NUMBER")
-    token = _env("GHIN_BEARER", "GHIN_TOKEN")
+    """Return (token, ghin_id). Env, then ~/.ghin_creds.json, then TTY prompt."""
+    c = _read_creds_file()
+    email = _env("GHIN_EMAIL", "GHIN_USER", "GHIN_USERNAME") or c.get("email") or c.get("email_or_ghin") or c.get("username")
+    password = _env("GHIN_PASSWORD") or c.get("password")
+    ghin = _env("GHIN_ID", "GHIN_NUMBER") or c.get("ghin_id") or c.get("ghin") or c.get("golfer_id")
+    token = _env("GHIN_BEARER", "GHIN_TOKEN") or c.get("bearer_token") or c.get("token")
 
     if token:
-        token = token.strip()
+        token = str(token).strip()
         for pre in ("Bearer:", "Bearer"):
             if token.startswith(pre):
                 token = token[len(pre):].strip()
@@ -590,7 +594,7 @@ def load_credentials(prompt: bool = True) -> tuple[str, str]:
         password = getpass.getpass("GHIN password: ")
 
     if email and password:
-        fresh, gid = ghin_login(email, password)
+        fresh, gid = ghin_login(str(email), str(password))
         if fresh:
             token = fresh
             ghin = ghin or gid
@@ -602,7 +606,8 @@ def load_credentials(prompt: bool = True) -> tuple[str, str]:
             "  export GHIN_EMAIL='you@example.com'\n"
             "  export GHIN_PASSWORD='...'\n"
             "  python3 scripts/sync_ghin.py\n"
-            "Or run in a terminal to be prompted. Never put credentials in HTML/JS."
+            "Or put email/password (or bearer_token + ghin_id) in ~/.ghin_creds.json "
+            "(chmod 600). Never put credentials in HTML/JS."
         )
     return token, str(ghin)
 
@@ -624,7 +629,7 @@ def main(argv: Optional[list[str]] = None) -> int:
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     p.add_argument("--out-dir", default=os.path.join(REPO_ROOT, "assets", "data"),
-                   help="Directory for ghin-scores.json / CSVs (default: assets/data)")
+                   help="Directory for scorebook.json / CSVs (default: assets/data)")
     p.add_argument("--rack-data", default=os.path.join(REPO_ROOT, "assets", "js", "rack-data.js"),
                    help="Path to rack-data.js for course-name matching")
     p.add_argument("--aliases", default=os.path.join(HERE, "ghin-course-aliases.json"),
@@ -656,7 +661,7 @@ def main(argv: Optional[list[str]] = None) -> int:
         f"BUILT: ghin_scores={counts['scores']}, handicap_revisions={counts['revisions']}, "
         f"index={counts['index']}, hole_scores={counts['hole_scores']}"
     )
-    print(f"Rack file -> {os.path.join(args.out_dir, 'ghin-scores.json')}")
+    print(f"Rack file -> {os.path.join(args.out_dir, 'scorebook.json')}")
     print("READ-ONLY: nothing was posted to GHIN.")
     return 0
 

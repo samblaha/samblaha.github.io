@@ -46,7 +46,7 @@ If you run into Ruby version errors, upgrade Ruby (recommended) and then re-run 
 
 ## GHIN score sync (Ball Rack)
 
-The rack at `/rack/` reads **local** score data only (`assets/data/ghin-scores.json`). It never calls GHIN from the browser and never posts a score.
+The rack at `/rack/` reads **local** score data only (`assets/data/scorebook.json`). It never calls GHIN from the browser and never posts a score.
 
 From a private machine (Python 3, stdlib only):
 
@@ -58,7 +58,7 @@ python3 scripts/sync_ghin.py
 
 Or run `python3 scripts/sync_ghin.py` in a terminal and enter credentials when prompted. Do not put a GHIN password, email, or GHIN number in HTML, JS, or committed config. See `scripts/README.md`.
 
-The committed JSON is an empty schema so the rack stays up without credentials. After a real sync, commit `assets/data/ghin-scores.json` only if those rounds should be public.
+The committed JSON is an empty schema so the rack stays up without credentials. After a real sync, commit `assets/data/scorebook.json` only if those rounds should be public.
 
 ## Notes
 - Project URLs are automatically generated from filenames:

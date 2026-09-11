@@ -57,4 +57,5 @@ node scripts/test_arcade_pass.js
 node scripts/test_career_scope.js
 node scripts/test_multimeter.js
 node scripts/test_idea_heat.js
+node scripts/test_build_log_ticker.js
 ```

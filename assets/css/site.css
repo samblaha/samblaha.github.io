@@ -847,40 +847,233 @@ h1, h2, h3 {
 }
 
 /* ==========================================================================
-   Ticker
+   Ticker — CH2 build log (thermal-printer strip under the hero)
    ========================================================================== */
 .ticker {
+  --ticker-ink: #f3ead8;
+  --ticker-mute: rgba(243, 234, 216, 0.55);
+  --ticker-solder: #ff6a2a;
+  --ticker-laser: #3dffc5;
+  --ticker-phosphor: #f0b429;
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  margin: 8px 0 28px;
+  padding: 10px 0 14px;
+}
+
+.ticker__bleed {
   position: relative;
   left: 50%;
   width: 100vw;
+  max-width: 100vw;
   transform: translateX(-50%) rotate(-0.8deg);
-  background: var(--solder);
-  border-top: var(--border-w) solid color-mix(in srgb, var(--ink) 50%, transparent);
-  border-bottom: var(--border-w) solid color-mix(in srgb, var(--ink) 50%, transparent);
-  padding: 12px 0;
   overflow: hidden;
-  margin: 8px 0 28px;
-  box-shadow: 0 0 40px rgba(255, 106, 42, 0.25);
+  background:
+    linear-gradient(180deg, rgba(255, 106, 42, 0.16), transparent 18%),
+    linear-gradient(0deg, rgba(255, 106, 42, 0.12), transparent 16%),
+    #0a0604;
+  border-top: 2px solid var(--ticker-solder);
+  border-bottom: 2px solid var(--ticker-solder);
+  box-shadow:
+    0 0 40px rgba(255, 106, 42, 0.22),
+    inset 0 1px 0 rgba(255, 246, 234, 0.08);
+  color: var(--ticker-ink);
+}
+
+.ticker__chrome {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px 18px;
+  flex-wrap: wrap;
+  padding: 8px 18px 6px;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ticker-mute);
+  background: #07080a;
+  border-bottom: 1px solid rgba(255, 106, 42, 0.28);
+}
+
+.ticker__caption {
+  margin: 0;
+  flex: 1 1 180px;
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  text-transform: none;
+  color: rgba(243, 234, 216, 0.62);
+}
+
+.ticker__live {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--ticker-laser);
+  margin-left: auto;
+}
+
+.ticker__viewport {
+  position: relative;
+  overflow: hidden;
+  padding: 10px 0 12px;
 }
 
 .ticker__track {
   display: flex;
-  white-space: nowrap;
-  animation: tickerScroll 26s linear infinite;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px 0;
+  width: 100%;
+}
+
+.ticker.is-ready:not(.is-static) .ticker__track {
+  flex-wrap: nowrap;
+  justify-content: flex-start;
   width: max-content;
+  animation: buildLogScroll var(--ticker-s, 34s) linear infinite;
+}
+
+.ticker.is-ready.is-paused .ticker__track,
+.ticker.is-ready:hover .ticker__track,
+.ticker.is-ready:focus-within .ticker__track {
+  animation-play-state: paused;
+}
+
+.ticker__seq {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px 0;
+}
+
+.ticker.is-ready:not(.is-static) .ticker__seq {
+  flex-wrap: nowrap;
+  justify-content: flex-start;
 }
 
 .ticker__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 4px;
+  padding: 4px 10px;
   font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  color: var(--ticker-ink);
+  white-space: nowrap;
+  border-radius: 4px;
+}
+
+.ticker__item:hover,
+.ticker__item:focus-visible {
+  color: #fff6ea;
+  background: rgba(255, 106, 42, 0.12);
+}
+
+.ticker__item:focus-visible {
+  outline: 2px solid var(--ticker-laser);
+  outline-offset: 2px;
+}
+
+.ticker__year {
   font-weight: 700;
-  font-size: 0.9rem;
-  letter-spacing: 0.16em;
-  color: #1c120c;
+  letter-spacing: 0.12em;
+  color: var(--ticker-phosphor);
+}
+
+.ticker__sep {
+  color: var(--ticker-mute);
+}
+
+.ticker__title {
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.ticker__tag {
+  color: var(--ticker-laser);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-size: 0.68rem;
+}
+
+.ticker__stamp {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 6px 0;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  border-radius: 2px;
+}
+
+.ticker__stamp--ship {
+  color: #04140f;
+  background: var(--ticker-laser);
+}
+
+.ticker__stamp--wip {
+  color: #fff6ea;
+  background: var(--ticker-solder);
+}
+
+.ticker__stamp--log {
+  color: var(--ticker-phosphor);
+  background: transparent;
+  box-shadow: inset 0 0 0 1px rgba(240, 180, 41, 0.45);
+}
+
+.ticker__gem {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 10px;
+  color: var(--ticker-solder);
+  font-size: 0.72rem;
+  pointer-events: none;
+}
+
+.ticker__noscript {
+  margin: 8px var(--pad) 0;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--muted2);
 }
 
 @keyframes tickerScroll {
   from { transform: translateX(0); }
   to   { transform: translateX(-33.333%); }
+}
+
+@keyframes buildLogScroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ticker.is-ready .ticker__track,
+  .ticker .ticker__track {
+    animation: none !important;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+    transform: none;
+  }
+  .ticker__seq[aria-hidden="true"],
+  .ticker__seq[data-build-log-clone] {
+    display: none !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .ticker__item { font-size: 0.72rem; gap: 6px; padding: 4px 8px; }
+  .ticker__caption { flex-basis: 100%; }
 }
 
 /* ==========================================================================

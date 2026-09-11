@@ -107,13 +107,70 @@ layout: default
   </div>
 </section>
 
-<div class="ticker" aria-hidden="true">
-  <div class="ticker__track">
-    <span class="ticker__item">HARDWARE ✦ FIRMWARE ✦ 3D PRINTING ✦ LASERS ✦ GAMES ✦ E-PAPER ✦ PROTOTYPES ✦ UX ✦ SOLDER ✦&nbsp;</span>
-    <span class="ticker__item">HARDWARE ✦ FIRMWARE ✦ 3D PRINTING ✦ LASERS ✦ GAMES ✦ E-PAPER ✦ PROTOTYPES ✦ UX ✦ SOLDER ✦&nbsp;</span>
-    <span class="ticker__item">HARDWARE ✦ FIRMWARE ✦ 3D PRINTING ✦ LASERS ✦ GAMES ✦ E-PAPER ✦ PROTOTYPES ✦ UX ✦ SOLDER ✦&nbsp;</span>
+{% if latest_projects.size > 0 %}
+<div class="ticker" data-build-log role="region" aria-label="Scrolling build log of logged projects">
+  <div class="ticker__bleed">
+    <div class="ticker__chrome">
+      <span>CH2 · BUILD LOG</span>
+      <p class="ticker__caption">Scrolling build log of logged projects.</p>
+      <span class="ticker__live">
+        <span class="led" data-build-log-led aria-hidden="true"></span>
+        <span data-build-log-live>HOLD</span>
+      </span>
+    </div>
+    <div class="ticker__viewport" data-build-log-viewport>
+      <div class="ticker__track" data-build-log-track>
+        <div class="ticker__seq" data-build-log-seq>
+          {% for project in latest_projects %}
+            {% assign status_s = project.status | default: "" | downcase %}
+            {% assign stamp = "LOG" %}
+            {% assign stamp_tone = "log" %}
+            {% if status_s contains "progress" or status_s contains "wip" %}
+              {% assign stamp = "WIP" %}
+              {% assign stamp_tone = "wip" %}
+            {% elsif status_s contains "ship" or status_s contains "done" or status_s contains "complete" %}
+              {% assign stamp = "SHIP" %}
+              {% assign stamp_tone = "ship" %}
+            {% endif %}
+            <a class="ticker__item" href="{{ project.url }}">
+              <time class="ticker__year" datetime="{{ project.date | date: '%Y-%m-%d' }}">{{ project.date | date: "%Y" }}</time>
+              <span class="ticker__sep" aria-hidden="true">·</span>
+              <span class="ticker__title">{{ project.title }}</span>
+              <span class="ticker__stamp ticker__stamp--{{ stamp_tone }}">{{ stamp }}</span>
+              {% if project.tags and project.tags.size > 0 %}
+              <span class="ticker__sep" aria-hidden="true">·</span>
+              <span class="ticker__tag">{{ project.tags | first }}</span>
+              {% endif %}
+            </a>
+            <span class="ticker__gem" aria-hidden="true">✦</span>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
   </div>
 </div>
+<script type="application/json" id="build-log-data">
+[
+{% for project in latest_projects %}
+  {
+    "id": {{ project.path | split: "/" | last | remove: ".md" | jsonify }},
+    "title": {{ project.title | jsonify }},
+    "url": {{ project.url | jsonify }},
+    "summary": {{ project.summary | default: "" | jsonify }},
+    "status": {{ project.status | default: "" | jsonify }},
+    "date": {{ project.date | date: "%Y-%m-%d" | jsonify }},
+    "year": {{ project.date | date: "%Y" | jsonify }},
+    "tag": {{ project.tags | first | default: "" | jsonify }},
+    "tags": {% if project.tags %}{{ project.tags | jsonify }}{% else %}[]{% endif %}
+  }{% unless forloop.last %},{% endunless %}
+{% endfor %}
+]
+</script>
+<script src="/assets/js/build-log-ticker.js" defer></script>
+<noscript>
+  <p class="ticker__noscript">The strip holds still without JavaScript. Every stamp still opens a logged write-up.</p>
+</noscript>
+{% endif %}
 
 {% if latest_projects.size > 0 %}
 {% assign newest = latest_projects | first %}

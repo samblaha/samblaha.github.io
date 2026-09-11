@@ -134,17 +134,70 @@ layout: default
     <a class="section__more" href="/constellation/">Open the constellation →</a>
   </div>
   <p class="section__intro" data-reveal>
-    The six newest builds, fresh off the bench. Hunt by tag in the
+    The six newest builds, fresh off the bench. Probe a card with the meter —
+    year, stack, or continuity from the log. Hunt by tag in the
     <a href="/portfolio/">portfolio</a>, or read the whole sky as a
     <a href="/constellation/">project constellation</a>.
   </p>
 
+  <div class="dmm" data-dmm data-reveal role="region" aria-label="Workbench multimeter">
+    <div class="instrument dmm__instrument">
+      <div class="instrument__bezel">
+        <div class="instrument__chrome">
+          <span>CH1 · DMM</span>
+          <span class="instrument__live">
+            <span class="led" data-dmm-led aria-hidden="true"></span>
+            <span data-dmm-live-label>LEADS OPEN</span>
+          </span>
+        </div>
+
+        <div class="dmm__face">
+          <div class="dmm__lcd" data-dmm-lcd data-continuity="open" aria-live="polite">
+            <div class="dmm__lcd-top">
+              <span class="dmm__range" data-dmm-range>OPEN</span>
+              <span class="dmm__unit" data-dmm-unit></span>
+            </div>
+            <div class="dmm__digits-wrap">
+              <span class="dmm__ghost" aria-hidden="true">88888888</span>
+              <span class="dmm__digits" data-dmm-digits>----</span>
+            </div>
+            <p class="dmm__label" data-dmm-label>Probe a build</p>
+          </div>
+
+          <div class="dmm__controls">
+            <div class="dmm__dial" data-dmm-dial aria-hidden="true">
+              <i></i>
+              <span>YR</span>
+              <span>Ω</span>
+              <span>V</span>
+            </div>
+            <div class="dmm__modes" role="radiogroup" aria-label="Meter range">
+              <button type="button" class="dmm__mode is-active" data-dmm-mode="year" role="radio" aria-checked="true">Year</button>
+              <button type="button" class="dmm__mode" data-dmm-mode="tag" role="radio" aria-checked="false">Tag</button>
+              <button type="button" class="dmm__mode" data-dmm-mode="status" role="radio" aria-checked="false">Stat</button>
+            </div>
+            <svg class="dmm__gauge" viewBox="0 0 100 58" aria-hidden="true">
+              <path class="dmm__arc" d="M12 50 A38 38 0 0 1 88 50" fill="none" />
+              <line class="dmm__needle" data-dmm-needle x1="50" y1="50" x2="50" y2="16" />
+            </svg>
+          </div>
+        </div>
+
+        <div class="dmm__jacks">
+          <span>COM</span>
+          <span>V · Ω · CONT</span>
+        </div>
+      </div>
+    </div>
+    <p class="instrument__caption">Leads are open. Hover a pad — the digits come from the write-up, not a made-up spec. Arrow keys step the probe.</p>
+  </div>
+
   <div class="grid" id="home-grid">
     {% for project in latest_projects limit: 6 %}
       {% if forloop.first %}
-        {% include project-card.html project=project variant="large" badge="★ Newest" badge_tone="solder" %}
+        {% include project-card.html project=project variant="large" badge="★ Newest" badge_tone="solder" probe=true %}
       {% else %}
-        {% include project-card.html project=project variant="small" %}
+        {% include project-card.html project=project variant="small" probe=true %}
       {% endif %}
     {% endfor %}
   </div>
@@ -154,6 +207,31 @@ layout: default
     <a class="btn btn--ghost" href="/constellation/">Open the constellation →</a>
   </div>
 </section>
+
+{% if latest_projects.size > 0 %}
+<script type="application/json" id="dmm-data">
+[
+{% for project in latest_projects limit: 6 %}
+  {% unless forloop.first %},{% endunless %}
+  {
+    "id": {{ project.path | split: "/" | last | remove: ".md" | jsonify }},
+    "title": {{ project.title | jsonify }},
+    "url": {{ project.url | jsonify }},
+    "summary": {{ project.summary | default: "" | jsonify }},
+    "status": {{ project.status | default: "" | jsonify }},
+    "date": {{ project.date | date: "%Y-%m-%d" | jsonify }},
+    "year": {{ project.date | date: "%Y" | jsonify }},
+    "tag": {{ project.tags | first | default: "" | jsonify }},
+    "tags": {% if project.tags %}{{ project.tags | jsonify }}{% else %}[]{% endif %}
+  }
+{% endfor %}
+]
+</script>
+<script src="/assets/js/multimeter.js" defer></script>
+<noscript>
+  <p class="dmm__noscript">The meter needs JavaScript. The cards still open every logged build.</p>
+</noscript>
+{% endif %}
 
 {% include arcade.html num="02" %}
 

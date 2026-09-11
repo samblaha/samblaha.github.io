@@ -3,8 +3,17 @@
 {% assign badge = include.badge %}
 {% assign badge_tone = include.badge_tone | default: "solder" %}
 {% assign words = project.content | strip_html | number_of_words %}
-<article class="card card--{{ variant }}" data-reveal data-tags="{% for tag in project.tags %}{{ tag | slugify }} {% endfor %}">
-  <a class="card__link" href="{{ project.url }}">
+{% assign probe_id = project.path | split: "/" | last | remove: ".md" %}
+<article
+  class="card card--{{ variant }}"
+  data-reveal
+  data-tags="{% for tag in project.tags %}{{ tag | slugify }} {% endfor %}"
+  {% if include.probe %}data-probe-id="{{ probe_id }}"{% endif %}
+>
+  <a class="card__link" href="{{ project.url }}"{% if include.probe %} data-probe-target{% endif %}>
+    {% if include.probe %}
+    <span class="card__pad" aria-hidden="true" title="Probe pad"></span>
+    {% endif %}
     <div class="card__img-wrap">
       {% if project.hero %}
         <img class="card__img" src="{{ project.hero }}" alt="" loading="lazy" />

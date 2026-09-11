@@ -55,4 +55,5 @@ python3 -m unittest scripts.test_sync_ghin
 node scripts/test_rack_scores.js
 node scripts/test_arcade_pass.js
 node scripts/test_career_scope.js
+node scripts/test_multimeter.js
 ```

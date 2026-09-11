@@ -1884,6 +1884,342 @@ html.js .hero [data-reveal] { opacity: 1; transform: none; }
   .career-scope__instrument { transform: none; }
 }
 
+/* ==========================================================================
+   Workbench DMM — probe the homepage builds
+   ========================================================================== */
+.dmm {
+  min-width: 0;
+  margin: 0 0 36px;
+}
+
+.dmm__instrument { transform: none; }
+
+.dmm__face {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(180px, 0.85fr);
+  gap: 14px;
+  align-items: stretch;
+  padding: 14px;
+  background: #07140f;
+}
+
+.dmm__lcd {
+  position: relative;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 6px;
+  min-height: 132px;
+  padding: 12px 14px 10px;
+  border-radius: 10px;
+  background:
+    linear-gradient(180deg, rgba(61, 255, 197, 0.06), transparent 42%),
+    #04150f;
+  box-shadow:
+    inset 0 0 0 1px rgba(61, 255, 197, 0.18),
+    inset 0 18px 40px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+}
+
+.dmm__lcd::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0 2px,
+    rgba(4, 10, 8, 0.18) 2px 3px
+  );
+  opacity: 0.45;
+}
+
+.dmm__lcd-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(61, 255, 197, 0.7);
+}
+
+.dmm__range {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dmm__unit {
+  flex-shrink: 0;
+  color: var(--phosphor);
+}
+
+.dmm__digits-wrap {
+  position: relative;
+  min-height: 1.15em;
+}
+
+.dmm__ghost,
+.dmm__digits {
+  font-family: var(--font-mono);
+  font-size: clamp(1.8rem, 4.2vw, 2.6rem);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.12em;
+  line-height: 1.15;
+  white-space: nowrap;
+}
+
+.dmm__ghost {
+  position: absolute;
+  inset: 0;
+  color: rgba(61, 255, 197, 0.1);
+  pointer-events: none;
+}
+
+.dmm__digits {
+  position: relative;
+  color: var(--laser);
+  text-shadow: 0 0 14px rgba(61, 255, 197, 0.35);
+}
+
+.dmm[data-dmm-tone="phosphor"] .dmm__digits {
+  color: var(--phosphor);
+  text-shadow: 0 0 14px rgba(240, 180, 41, 0.4);
+}
+
+.dmm[data-dmm-tone="solder"] .dmm__digits {
+  color: var(--solder);
+  text-shadow: 0 0 16px rgba(255, 106, 42, 0.45);
+}
+
+.dmm[data-dmm-tone="copper"] .dmm__digits {
+  color: #e0a36a;
+  text-shadow: 0 0 12px rgba(196, 122, 58, 0.4);
+}
+
+.dmm[data-dmm-tone="idle"] .dmm__digits {
+  color: rgba(61, 255, 197, 0.45);
+  text-shadow: none;
+}
+
+.dmm__lcd[data-continuity="spike"] {
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 106, 42, 0.45),
+    inset 0 0 28px rgba(255, 106, 42, 0.18);
+}
+
+.dmm__lcd[data-continuity="closed"] {
+  box-shadow:
+    inset 0 0 0 1px rgba(61, 255, 197, 0.45),
+    inset 0 0 28px rgba(61, 255, 197, 0.12);
+}
+
+.dmm__label {
+  margin: 0;
+  max-width: 100%;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  line-height: 1.35;
+  color: rgba(243, 234, 216, 0.78);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dmm__controls {
+  display: grid;
+  grid-template-rows: auto auto 1fr;
+  justify-items: center;
+  gap: 10px;
+  padding: 4px 4px 0;
+}
+
+.dmm__dial {
+  --dmm-rot: -48deg;
+  position: relative;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background:
+    conic-gradient(from var(--dmm-rot), #2a2f36, #111318 38%, #4a515c 42%, #111318 46%, #2a2f36);
+  border: 2px solid rgba(243, 234, 216, 0.2);
+  box-shadow: inset 0 0 0 8px #0c0e12, 0 8px 16px rgba(0, 0, 0, 0.4);
+}
+
+.dmm__dial i {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 3px;
+  height: 14px;
+  background: var(--solder);
+  border-radius: 1px;
+  transform: translate(-50%, -50%) rotate(var(--dmm-rot)) translateY(-22px);
+  transition: transform 0.35s var(--ease-out-expo);
+}
+
+.dmm__dial span {
+  position: absolute;
+  font-family: var(--font-mono);
+  font-size: 0.52rem;
+  letter-spacing: 0.08em;
+  color: rgba(243, 234, 216, 0.55);
+}
+
+.dmm__dial span:nth-of-type(1) { left: 6px; top: 28px; }
+.dmm__dial span:nth-of-type(2) { left: 50%; bottom: 6px; transform: translateX(-50%); }
+.dmm__dial span:nth-of-type(3) { right: 8px; top: 28px; }
+
+.dmm__modes {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+}
+
+.dmm__mode {
+  min-height: 44px;
+  min-width: 44px;
+  padding: 8px 12px;
+  border: 1px solid rgba(243, 234, 216, 0.2);
+  border-radius: 999px;
+  background: #0a0c10;
+  color: rgba(243, 234, 216, 0.72);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.dmm__mode:hover,
+.dmm__mode.is-active {
+  color: #04140f;
+  background: var(--laser);
+  border-color: var(--laser);
+}
+
+.dmm[data-dmm-tone="solder"] .dmm__mode.is-active {
+  background: var(--solder);
+  border-color: var(--solder);
+  color: #1c120c;
+}
+
+.dmm[data-dmm-tone="phosphor"] .dmm__mode.is-active,
+.dmm[data-dmm-tone="copper"] .dmm__mode.is-active {
+  background: var(--phosphor);
+  border-color: var(--phosphor);
+  color: #1c120c;
+}
+
+.dmm__gauge {
+  width: 120px;
+  height: 70px;
+  overflow: visible;
+}
+
+.dmm__arc {
+  stroke: rgba(61, 255, 197, 0.28);
+  stroke-width: 3;
+}
+
+.dmm__needle {
+  stroke: var(--solder);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  transform-box: view-box;
+  transform-origin: 50px 50px;
+  transform: rotate(-72deg);
+  transition: transform 0.45s var(--ease-out-expo);
+}
+
+.dmm[data-dmm-tone="laser"] .dmm__needle { stroke: var(--laser); }
+.dmm[data-dmm-tone="phosphor"] .dmm__needle { stroke: var(--phosphor); }
+
+.dmm__jacks {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 14px 12px;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(243, 234, 216, 0.45);
+  background: #0a0c10;
+}
+
+.dmm__jacks span::before {
+  content: "";
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-right: 8px;
+  border-radius: 50%;
+  background: #1a120c;
+  box-shadow: inset 0 0 0 2px var(--copper), 0 0 0 1px rgba(243, 234, 216, 0.2);
+  vertical-align: -1px;
+}
+
+.dmm__noscript {
+  margin: 0 0 24px;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.card__pad {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 3;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 50%, #2a1c12 0 28%, transparent 30%),
+    radial-gradient(circle at 50% 50%, var(--copper) 0 42%, #1a120c 44% 62%, var(--copper) 64% 72%, transparent 74%);
+  box-shadow: 0 0 0 1px rgba(196, 122, 58, 0.45), 0 6px 14px rgba(0, 0, 0, 0.35);
+  pointer-events: none;
+}
+
+.card__link { position: relative; }
+
+.card.is-probed {
+  box-shadow: 0 0 0 1px var(--laser), 0 22px 50px color-mix(in srgb, var(--laser) 22%, transparent);
+}
+
+[data-theme="light"] .card.is-probed {
+  box-shadow: 10px 10px 0 var(--laser);
+}
+
+.card.is-probed .card__pad {
+  box-shadow: 0 0 0 2px var(--laser), 0 0 16px rgba(61, 255, 197, 0.45);
+}
+
+.card.is-probed[data-probe-id] .card__title { color: var(--card-accent); }
+
+@media (max-width: 720px) {
+  .dmm__face {
+    grid-template-columns: 1fr;
+    padding: 12px;
+  }
+  .dmm__controls { grid-template-rows: auto auto auto; }
+  .dmm__modes { width: 100%; }
+  .dmm__mode { flex: 1 1 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dmm__instrument { transform: none; }
+  .dmm__needle { transition: none; }
+  .dmm__dial,
+  .dmm__dial i { transition: none; }
+}
+
 .project__header { padding-bottom: 60px; margin-bottom: 60px; position: relative; }
 .project__header::after {
   content: "";

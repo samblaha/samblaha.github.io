@@ -2,6 +2,19 @@
 
 To enable the Project Ideas comment section with upvoting, follow these steps:
 
+## Current status (Idea Box heat, 2026-09)
+
+Checked against the live GitHub repo and [giscus.app](https://giscus.app):
+
+| Piece | Status |
+| --- | --- |
+| GitHub Discussions | **On** |
+| Repo id | `MDEwOlJlcG9zaXRvcnkzNTE1MzQxNDU=` (real) |
+| Category named **Project Ideas** | **Missing** |
+| Default **Ideas** category | Exists (`DIC_kwDOFPP8Qc4C0DyV`) — not used |
+
+`_includes/giscus.html` therefore still has **empty** `data-repo-id` / `data-category-id`. The homepage Idea Box uses a local IR heat strip of unfinished `_projects/` instead of inventing a category ID. Fill the IDs only after you create a **Project Ideas** category and copy the values from giscus.app.
+
 ## 1. Enable GitHub Discussions
 
 1. Go to your repository: https://github.com/samblaha/samblaha.github.io
@@ -32,13 +45,16 @@ To enable the Project Ideas comment section with upvoting, follow these steps:
 
 ## 5. Update the Configuration
 
-Edit `_includes/giscus.html` and replace the empty values:
-- `data-repo-id=""` → paste your repo ID
-- `data-category-id=""` → paste your category ID
+Edit `_includes/giscus.html` and replace the empty Liquid assigns:
+
+- `giscus_repo_id` → paste your repo ID
+- `giscus_category_id` → paste your **Project Ideas** category ID (not the default Ideas category)
+
+Do not paste a made-up ID. The include only loads `client.js` when both values are non-empty.
 
 ## Theme Configuration
 
-The comment section automatically adapts to your site's light/dark theme using `data-theme="preferred_color_scheme"`.
+The comment section automatically adapts to your site's light/dark theme using `data-theme="preferred_color_scheme"` / `transparent_dark`, and `theme.js` posts the lamp-switch to the iframe.
 
 ## Features
 
@@ -47,4 +63,3 @@ The comment section automatically adapts to your site's light/dark theme using `
 - ✅ Comments and discussion on each idea
 - ✅ GitHub authentication required (prevents spam)
 - ✅ Fully responsive design
-

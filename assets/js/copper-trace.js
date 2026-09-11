@@ -10,6 +10,7 @@
     '#constellation-stage, .constellation__stage, .constellation__canvas,' +
     '[data-career-scope], .career-scope__stage, .career-scope__canvas,' +
     '[data-dmm], .dmm__lcd, .dmm__instrument,' +
+    '[data-idea-heat], .idea-heat__canvas, .idea-heat__instrument,' +
     '.lightbox, input, textarea, select, [contenteditable="true"]';
 
   const LIFE = 900;

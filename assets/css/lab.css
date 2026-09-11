@@ -1,0 +1,332 @@
+/* After-hours lab — gated back-room station */
+
+.lab-locked {
+  min-height: min(70vh, 640px);
+  display: grid;
+  place-items: center;
+}
+
+.lab-lock {
+  position: relative;
+  max-width: 560px;
+  padding: 48px 36px 40px;
+  text-align: center;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(61, 255, 197, 0.12), transparent 55%),
+    #071018;
+  color: #fbf3e1;
+  border-color: color-mix(in srgb, var(--laser) 40%, var(--border));
+}
+
+.lab-lock__crt {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(transparent 0 2px, rgba(0, 0, 0, 0.22) 2px 3px);
+  opacity: 0.55;
+}
+
+.lab-lock__scan {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 28%;
+  background: linear-gradient(180deg, transparent, rgba(61, 255, 197, 0.12), transparent);
+  animation: labScan 4.5s linear infinite;
+}
+
+.lab-lock__kicker,
+.lab-lock__title,
+.lab-lock__copy,
+.lab-lock__status {
+  position: relative;
+}
+
+.lab-lock__kicker {
+  margin: 0 0 12px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--laser);
+}
+
+.lab-lock__title {
+  color: var(--phosphor);
+  text-shadow: 0 0 18px rgba(240, 180, 41, 0.35);
+  margin-bottom: 16px;
+}
+
+.lab-lock__copy {
+  color: rgba(251, 243, 225, 0.78);
+  margin: 0 auto 18px;
+  max-width: 42ch;
+}
+
+.lab-lock__status {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--solder);
+  margin-bottom: 22px;
+}
+
+.lab-open { position: relative; }
+
+.lab-boot {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 18px;
+  padding: var(--pad);
+  background: #05070a;
+  color: #9affd8;
+  font-family: var(--font-mono);
+}
+
+.lab-boot[hidden] { display: none; }
+
+.lab-boot__mark {
+  margin: 0;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--laser);
+  text-shadow: 0 0 18px rgba(61, 255, 197, 0.45);
+}
+.lab-boot__mark span { opacity: 0.45; }
+
+.lab-boot__log {
+  margin: 0;
+  min-height: 12em;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  white-space: pre-wrap;
+}
+
+.lab-hero { margin-bottom: 36px; }
+
+.lab-bench {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 22px;
+  margin-bottom: 22px;
+}
+
+.lab-station {
+  padding: 0 0 22px;
+  background:
+    linear-gradient(180deg, #1c140e 0%, var(--paper) 18%);
+  border-color: color-mix(in srgb, var(--copper) 50%, var(--border));
+}
+
+.lab-station__chrome {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 16px;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #fff6ea;
+  background: var(--solder);
+}
+
+.lab-station__live { display: inline-flex; align-items: center; gap: 8px; }
+
+.lab-station__title {
+  margin: 18px 18px 6px;
+  font-size: 1.35rem;
+}
+
+.lab-station__hint {
+  margin: 0 18px 16px;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.lab-doodle {
+  position: relative;
+  margin: 0 18px 14px;
+  border: var(--border-w) solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  background: #07140f;
+  box-shadow: inset 0 0 0 3px #04100c, 0 0 40px rgba(61, 255, 197, 0.08);
+  touch-action: none;
+}
+
+.lab-doodle__canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  cursor: crosshair;
+}
+
+.lab-doodle__glass {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(transparent 0 2px, rgba(0, 0, 0, 0.14) 2px 3px),
+    radial-gradient(ellipse at center, transparent 42%, rgba(0, 0, 0, 0.42) 100%);
+}
+
+.lab-doodle__tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  padding: 0 18px;
+}
+
+.lab-doodle__readout {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--laser);
+}
+
+.lab-drawer {
+  list-style: none;
+  margin: 0 14px;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.lab-bin {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto auto;
+  column-gap: 12px;
+  padding: 10px 12px;
+  border: var(--border-w) solid var(--border);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--base) 55%, var(--paper));
+}
+
+.lab-bin:hover {
+  border-color: color-mix(in srgb, var(--laser) 50%, var(--border));
+  transform: translate(-2px, -2px);
+}
+
+.lab-bin__id {
+  grid-row: 1 / span 2;
+  align-self: center;
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border-radius: 6px;
+  background: var(--phosphor);
+  color: #1c120c;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 0.78rem;
+}
+
+.lab-bin__name {
+  font-family: var(--font-display);
+  font-weight: 700;
+}
+
+.lab-bin em {
+  grid-column: 2;
+  font-style: normal;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+
+.lab-station--probe { padding-bottom: 22px; }
+
+.lab-probe {
+  display: grid;
+  grid-template-columns: 1fr 1.1fr;
+  gap: 16px;
+  padding: 0 18px;
+}
+
+.lab-probe__pads {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.lab-pad {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  border: var(--border-w) solid var(--border);
+  border-radius: 10px;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+}
+
+.lab-pad.is-live {
+  border-color: color-mix(in srgb, var(--laser) 55%, transparent);
+  color: var(--laser);
+  box-shadow: 0 0 18px rgba(61, 255, 197, 0.12);
+}
+
+.lab-pad__led {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--muted2);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.35);
+}
+
+.lab-pad.is-live .lab-pad__led {
+  background: var(--laser);
+  box-shadow: 0 0 10px var(--laser);
+}
+
+.lab-probe__scope {
+  margin: 0;
+  min-height: 9.5em;
+  padding: 14px 16px;
+  border-radius: 10px;
+  background: #07140f;
+  color: #9affd8;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  line-height: 1.55;
+  white-space: pre-wrap;
+  box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.35);
+}
+
+.lab-noscript {
+  margin-top: 28px;
+  font-family: var(--font-mono);
+  color: var(--muted);
+}
+
+@keyframes labScan {
+  from { transform: translateY(-40%); }
+  to { transform: translateY(220%); }
+}
+
+@media (max-width: 860px) {
+  .lab-bench,
+  .lab-probe { grid-template-columns: 1fr; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lab-lock__scan { animation: none; opacity: 0.35; }
+  .lab-bin:hover { transform: none; }
+}

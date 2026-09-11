@@ -1396,6 +1396,140 @@ html.js .arcade[data-reveal].in-view {
 }
 
 /* ==========================================================================
+   Arcade season card
+   ========================================================================== */
+.pass {
+  margin-top: 22px;
+  padding: 22px 22px 20px;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--solder) 14%, transparent), transparent 28%),
+    var(--paper);
+  border-color: color-mix(in srgb, var(--copper) 50%, var(--border));
+}
+
+.pass__head { margin-bottom: 16px; }
+
+.pass__kicker {
+  margin: 0 0 6px;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--solder);
+}
+
+.pass__title {
+  font-size: clamp(1.35rem, 2.4vw, 1.8rem);
+  margin-bottom: 8px;
+}
+
+.pass__lede {
+  margin: 0 0 10px;
+  max-width: 48ch;
+  color: var(--muted);
+}
+
+.pass__progress {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--laser);
+}
+
+.pass__stamps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.pass__stamp {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto auto;
+  gap: 2px 10px;
+  padding: 12px;
+  border: var(--border-w) dashed color-mix(in srgb, var(--copper) 55%, var(--border));
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--base) 40%, transparent);
+}
+
+.pass__stamp.is-punched {
+  border-style: solid;
+  border-color: color-mix(in srgb, var(--phosphor) 55%, var(--border));
+  background: color-mix(in srgb, var(--phosphor) 12%, transparent);
+}
+
+.pass__badge {
+  grid-row: 1 / span 2;
+  align-self: center;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.pass__stamp.is-punched .pass__badge { color: var(--phosphor); }
+
+.pass__copy { min-width: 0; }
+.pass__copy strong {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 1rem;
+}
+.pass__copy em {
+  display: block;
+  font-style: normal;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--muted);
+}
+
+.pass__mark {
+  grid-column: 2;
+  margin-top: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted2);
+}
+
+.pass__stamp.is-punched .pass__mark { color: var(--phosphor); }
+
+.pass__cta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 16px;
+  margin-top: 16px;
+}
+
+.pass__cta-note {
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.pass--teaser {
+  padding: 16px 16px 14px;
+}
+
+.pass--teaser .pass__lede { display: none; }
+.pass--teaser .pass__title { font-size: 1.15rem; }
+.pass--teaser .pass__cta .btn { padding: 10px 16px; }
+
+@media (max-width: 900px) {
+  .pass__stamps { grid-template-columns: 1fr; }
+}
+
+/* ==========================================================================
    Footer
    ========================================================================== */
 .footer {
@@ -1446,6 +1580,29 @@ html.js .arcade[data-reveal].in-view {
   padding: 0 var(--pad);
   display: inline-block;
 }
+
+.footer__lab {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 16px var(--pad) 0;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--laser);
+  opacity: 0.55;
+}
+
+.footer__lab span { opacity: 0.7; letter-spacing: 0.12em; }
+
+.footer__lab:hover {
+  opacity: 1;
+  color: var(--phosphor);
+}
+
+html:not(.is-lab-open) .footer__lab[hidden] { display: none; }
 
 /* ==========================================================================
    Reveal

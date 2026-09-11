@@ -1677,6 +1677,214 @@ html.js .hero [data-reveal] { opacity: 1; transform: none; }
 .contact__title { font-size: clamp(1.5rem, 3vw, 2.1rem); margin-bottom: 12px; }
 .contact__sub { color: var(--muted); margin: 0 auto 30px; max-width: 480px; }
 
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ==========================================================================
+   Career scope — About station timebase
+   ========================================================================== */
+.about-bench {
+  display: grid;
+  gap: 28px;
+}
+
+.about-bench .prose { max-width: 42rem; }
+
+.career-scope { min-width: 0; }
+
+.career-scope__instrument { transform: none; }
+
+.career-scope__stage {
+  position: relative;
+  background: #07140f;
+  isolation: isolate;
+}
+
+.career-scope__canvas {
+  display: block;
+  width: 100%;
+  height: min(34vw, 240px);
+  min-height: 168px;
+  background: #07140f;
+}
+
+.career-scope__markers {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  pointer-events: none;
+}
+
+.career-scope:not(.is-ready) .career-scope__markers {
+  position: static;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px 12px 16px;
+  pointer-events: auto;
+}
+
+.career-scope:not(.is-ready) .career-scope__markers li {
+  position: static;
+  transform: none;
+}
+
+.career-scope:not(.is-ready) .career-scope__blip {
+  width: auto;
+  height: auto;
+  min-height: 44px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(61, 255, 197, 0.12);
+  color: #f3ead8;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+}
+
+.career-scope:not(.is-ready) .career-scope__blip .sr-only {
+  position: static;
+  width: auto;
+  height: auto;
+  margin: 0;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+}
+
+.career-scope.is-ready .career-scope__markers li {
+  position: absolute;
+  transform: translate(-50%, -50%);
+}
+
+.career-scope__blip {
+  position: relative;
+  display: block;
+  width: 44px;
+  height: 44px;
+  pointer-events: auto;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+}
+
+.career-scope__blip::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--laser);
+  box-shadow: 0 0 12px var(--laser);
+  transform: translate(-50%, -50%);
+}
+
+.career-scope__blip.is-hot::before {
+  background: var(--solder);
+  box-shadow: 0 0 14px var(--solder);
+}
+
+.career-scope__blip.is-active::before,
+.career-scope__blip:focus-visible::before {
+  width: 13px;
+  height: 13px;
+}
+
+.career-scope__timebase {
+  position: relative;
+  height: 30px;
+  background: #0a0c10;
+  overflow: hidden;
+}
+
+.career-scope__tick {
+  position: absolute;
+  top: 8px;
+  transform: translateX(-50%);
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  color: var(--laser);
+  white-space: nowrap;
+}
+
+.career-scope__hud {
+  display: grid;
+  gap: 6px;
+  padding: 14px 16px 16px;
+  background: #0a0c10;
+  border-top: 1px solid rgba(61, 255, 197, 0.12);
+}
+
+.career-scope__kicker {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(243, 234, 216, 0.55);
+}
+
+.career-scope__title {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.92rem;
+  line-height: 1.35;
+  color: #f3ead8;
+}
+
+.career-scope__summary {
+  margin: 0;
+  max-width: 62ch;
+  font-size: 0.88rem;
+  line-height: 1.45;
+  color: rgba(243, 234, 216, 0.72);
+}
+
+.career-scope__open {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  margin-top: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--laser);
+  text-decoration: underline wavy rgba(61, 255, 197, 0.55) 1px;
+  text-underline-offset: 4px;
+}
+
+.career-scope__open:hover { color: var(--phosphor); }
+
+.career-scope__noscript {
+  margin: 12px 0 0;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+@media (max-width: 720px) {
+  .career-scope__canvas { height: 176px; }
+  .career-scope__tick:nth-child(even) { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .career-scope__instrument { transform: none; }
+}
+
 .project__header { padding-bottom: 60px; margin-bottom: 60px; position: relative; }
 .project__header::after {
   content: "";

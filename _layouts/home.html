@@ -172,13 +172,59 @@ layout: default
   </div>
 </section>
 
-<section id="about" class="section section--narrow" data-station-target="about">
+{% assign career_projects = site.projects | sort: "date" %}
+
+<section id="about" class="section" data-station-target="about">
   <div class="section__head" data-reveal>
     <span class="section__num">04</span>
     <h2 class="display-2">The Human</h2>
   </div>
-  <div class="prose" data-reveal>
-    {{ content }}
+  <div class="about-bench">
+    <div class="prose" data-reveal>
+      {{ content }}
+    </div>
+
+    {% if career_projects.size > 0 %}
+    {% assign newest_logged = career_projects | last %}
+    <div class="career-scope" data-career-scope data-reveal>
+      <div class="instrument career-scope__instrument">
+        <div class="instrument__bezel">
+          <div class="instrument__chrome">
+            <span>CH4 · Career scope</span>
+            <span class="instrument__live"><span class="led led--live" aria-hidden="true"></span> {{ career_projects.size }} BUILDS</span>
+          </div>
+
+          <div class="career-scope__stage" data-career-stage>
+            <canvas class="career-scope__canvas" data-career-canvas width="960" height="280" aria-hidden="true"></canvas>
+            <ol class="career-scope__markers" data-career-markers>
+              {% for project in career_projects %}
+              <li>
+                <a
+                  class="career-scope__blip{% if project.status == 'In progress' %} is-hot{% endif %}"
+                  href="{{ project.url }}"
+                  data-career-id="{{ project.path | split: '/' | last | remove: '.md' }}"
+                  data-career-year="{{ project.date | date: '%Y' }}"
+                >
+                  <span class="sr-only">{{ project.date | date: "%Y" }} · {{ project.title }}{% if project.status %} · {{ project.status }}{% endif %}</span>
+                </a>
+              </li>
+              {% endfor %}
+            </ol>
+          </div>
+
+          <div class="career-scope__timebase" data-career-ticks aria-hidden="true"></div>
+
+          <div class="career-scope__hud" data-career-hud>
+            <p class="career-scope__kicker" data-career-kicker>Timebase · oldest on the left</p>
+            <p class="career-scope__title" data-career-title>Probe a blip</p>
+            <p class="career-scope__summary" data-career-summary>Every spike is a logged write-up. Pointer is the probe.</p>
+            <a class="career-scope__open" data-career-open href="{{ newest_logged.url }}">Open the write-up →</a>
+          </div>
+        </div>
+      </div>
+      <p class="instrument__caption">Build career, not a résumé — every spike is a logged write-up. Tab a spike, Enter opens the log.</p>
+    </div>
+    {% endif %}
   </div>
 
   <div class="contact panel panel--contact" data-reveal>
@@ -187,3 +233,27 @@ layout: default
     <a class="btn btn--phosphor" href="mailto:email@example.com">Get in touch ✦</a>
   </div>
 </section>
+
+{% if career_projects.size > 0 %}
+<script type="application/json" id="career-scope-data">
+[
+{% for project in career_projects %}
+  {
+    "id": {{ project.path | split: "/" | last | remove: ".md" | jsonify }},
+    "title": {{ project.title | jsonify }},
+    "url": {{ project.url | jsonify }},
+    "summary": {{ project.summary | default: "" | jsonify }},
+    "status": {{ project.status | default: "" | jsonify }},
+    "date": {{ project.date | date: "%Y-%m-%d" | jsonify }},
+    "year": {{ project.date | date: "%Y" | jsonify }},
+    "tag": {{ project.tags | first | default: "" | jsonify }},
+    "tags": {% if project.tags %}{{ project.tags | jsonify }}{% else %}[]{% endif %}
+  }{% unless forloop.last %},{% endunless %}
+{% endfor %}
+]
+</script>
+<script src="/assets/js/career-scope.js" defer></script>
+<noscript>
+  <p class="career-scope__noscript">JavaScript draws the phosphor trace. The spikes above still link to every logged build.</p>
+</noscript>
+{% endif %}

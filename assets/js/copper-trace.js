@@ -8,6 +8,7 @@
     '[data-arcade-canvas], .arcade__screen, .arcade__match, .arcade__overlay, .arcade__pad,' +
     '.leaflet-container, .leaflet-pane, .leaflet-control,' +
     '#constellation-stage, .constellation__stage, .constellation__canvas,' +
+    '[data-career-scope], .career-scope__stage, .career-scope__canvas,' +
     '.lightbox, input, textarea, select, [contenteditable="true"]';
 
   const LIFE = 900;

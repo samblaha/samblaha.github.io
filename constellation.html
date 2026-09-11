@@ -1,0 +1,133 @@
+---
+layout: default
+title: Project Constellation
+description: "A night-sky PCB of every Blaha Labs build. Nodes are real projects; copper traces are shared themes."
+permalink: /constellation/
+extra_css: /assets/css/constellation.css
+---
+
+{% assign sky_projects = site.projects | sort: "date" %}
+
+<section class="hero hero--page constellation-hero">
+  <div class="hero__badge sticker sticker--solder" data-reveal>
+    <span class="led led--live" aria-hidden="true"></span> CH2 · Star chart
+  </div>
+
+  <h1 class="hero__title display-1" data-reveal>
+    Project <span class="marker marker--phosphor">Constellation</span>
+  </h1>
+
+  <p class="hero__sub" data-reveal>
+    Every build on the bench, plotted as a night-sky PCB. Stars are real write-ups.
+    Copper traces are shared themes — hardware, software, AI, games, golf, security.
+    Pan, zoom, tab to a pad, click through to the log.
+  </p>
+</section>
+
+<div class="constellation" data-constellation>
+  <div class="constellation__toolbar" data-reveal>
+    <div class="constellation__filters" role="group" aria-label="Highlight a constellation">
+      <button class="filter__btn is-active" type="button" data-sky-filter="all">All traces</button>
+      <button class="filter__btn" type="button" data-sky-filter="hardware">Hardware</button>
+      <button class="filter__btn" type="button" data-sky-filter="software">Software</button>
+      <button class="filter__btn" type="button" data-sky-filter="ai">AI</button>
+      <button class="filter__btn" type="button" data-sky-filter="games">Games</button>
+      <button class="filter__btn" type="button" data-sky-filter="golf">Golf</button>
+      <button class="filter__btn" type="button" data-sky-filter="security">Security</button>
+    </div>
+    <div class="constellation__tools">
+      <button class="btn btn--ghost constellation__tool" type="button" data-sky-fit>Fit</button>
+      <button class="btn btn--ghost constellation__tool" type="button" data-sky-zoom-in aria-label="Zoom in">+</button>
+      <button class="btn btn--ghost constellation__tool" type="button" data-sky-zoom-out aria-label="Zoom out">−</button>
+    </div>
+  </div>
+
+  <div class="constellation__instrument panel">
+    <div class="constellation__chrome">
+      <span>CH2 · STAR CHART</span>
+      <span class="constellation__live"><span class="led led--live" aria-hidden="true"></span> SCOPE LOCK</span>
+    </div>
+
+    <div
+      class="constellation__stage"
+      id="constellation-stage"
+      tabindex="0"
+      role="application"
+      aria-label="Interactive project constellation. Drag to pan, scroll or pinch to zoom, tab to a build, Enter to open."
+    >
+      <canvas id="constellation-sky" class="constellation__canvas" aria-hidden="true"></canvas>
+      <div class="constellation__world" id="constellation-world"></div>
+      <div class="constellation__hint" id="constellation-hint">
+        Drag to pan · scroll to zoom · tab a pad · Enter opens the build
+      </div>
+    </div>
+
+    <div class="constellation__readouts" aria-hidden="true">
+      <span>NODES <em data-sky-nodes>0</em></span>
+      <span>TRACES <em data-sky-traces>0</em></span>
+      <span>NET <em data-sky-net>ALL</em></span>
+      <span>ZOOM <em data-sky-zoom>1.0×</em></span>
+    </div>
+  </div>
+
+  <aside class="constellation__hud panel is-idle" id="constellation-hud">
+    <p class="constellation__hud-kicker" id="constellation-hud-kicker"></p>
+    <h2 class="constellation__hud-title" id="constellation-hud-title"></h2>
+    <p class="constellation__hud-summary" id="constellation-hud-summary"></p>
+    <div class="constellation__hud-tags" id="constellation-hud-tags"></div>
+    <a class="btn btn--solder" id="constellation-open" href="#">Open the build log →</a>
+  </aside>
+
+  <p class="constellation__caption">
+    Keyboard: arrows pan, <kbd>+</kbd>/<kbd>−</kbd> zoom, <kbd>0</kbd> fits the chart,
+    <kbd>Tab</kbd> hops pads, <kbd>Enter</kbd> opens a build. The map stays still if you
+    prefer reduced motion.
+  </p>
+</div>
+
+<section class="section section--flush constellation-index" aria-labelledby="constellation-index-title">
+  <div class="section__head" data-reveal>
+    <span class="section__num">DIR</span>
+    <h2 class="display-2" id="constellation-index-title">Build directory</h2>
+    <a class="section__more" href="/portfolio/">Grid view →</a>
+  </div>
+  <p class="section__intro" data-reveal>
+    Same stars, linear readout. If the sky isn’t your style, this list is the whole bench.
+  </p>
+  <ol class="constellation-index__list" data-reveal>
+    {% for project in sky_projects reversed %}
+      <li>
+        <a class="constellation-index__link" href="{{ project.url }}" data-sky-index="{{ project.path | split: '/' | last | remove: '.md' }}">
+          <span class="constellation-index__name">{{ project.title }}</span>
+          <span class="constellation-index__meta">
+            <time datetime="{{ project.date | date_to_xmlschema }}">{{ project.date | date: "%Y" }}</time>
+            {% if project.tags %} · {{ project.tags | join: " / " }}{% endif %}
+          </span>
+        </a>
+      </li>
+    {% endfor %}
+  </ol>
+</section>
+
+<script type="application/json" id="constellation-data">
+[
+{% for project in sky_projects %}
+  {
+    "id": {{ project.path | split: "/" | last | remove: ".md" | jsonify }},
+    "title": {{ project.title | jsonify }},
+    "url": {{ project.url | jsonify }},
+    "summary": {{ project.summary | default: "" | jsonify }},
+    "status": {{ project.status | default: "" | jsonify }},
+    "date": {{ project.date | date: "%Y-%m-%d" | jsonify }},
+    "year": {{ project.date | date: "%Y" | jsonify }},
+    "tags": {% if project.tags %}{{ project.tags | jsonify }}{% else %}[]{% endif %},
+    "hero": {{ project.hero | default: "" | jsonify }}
+  }{% unless forloop.last %},{% endunless %}
+{% endfor %}
+]
+</script>
+<script src="/assets/js/constellation.js" defer></script>
+
+<noscript>
+  <p class="constellation__noscript">JavaScript draws the star chart. The directory above still lists every build.</p>
+</noscript>

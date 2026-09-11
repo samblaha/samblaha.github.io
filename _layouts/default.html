@@ -37,9 +37,10 @@
           </a>
 
           <div class="nav__links">
-            <a class="nav__link" href="/portfolio/">Work</a>
-            <a class="nav__link" href="/arcade/">Play</a>
-            <a class="nav__link" href="/rack/">Rack</a>
+            <a class="nav__link{% if page.url == '/portfolio/' %} is-current{% endif %}" href="/portfolio/">Work</a>
+            <a class="nav__link{% if page.url == '/constellation/' %} is-current{% endif %}" href="/constellation/">Sky</a>
+            <a class="nav__link{% if page.url == '/arcade/' %} is-current{% endif %}" href="/arcade/">Play</a>
+            <a class="nav__link{% if page.url == '/rack/' %} is-current{% endif %}" href="/rack/">Rack</a>
             <a class="nav__link" href="/#about">About</a>
           </div>
 

@@ -21,7 +21,12 @@ specs:
 ---
 
 ## Overview
-This is a delta 3D printer completely built and designed from scratch to my specific specifications.
+This is a delta 3D printer I designed and built from scratch, to my own specifications, instead of assembling a kit. Three vertical posts, three pairs of arms, one effector carrying the hotend. The finished machine sits on the bench with a set of white chess pieces on the circular bed.
 
 ## Why a delta
-Instead of XYZ rods, delta printers support the extruder with three arms attached to three vertical posts arranged in a triangle. Moving the effector this way allows for higher print speeds than a conventional Cartesian frame.
+Instead of XYZ rods, a delta keeps the bed still and supports the extruder with three arms attached to three vertical posts arranged in a triangle. The arms stay a fixed length; the carriages slide up and down the posts, and the effector is where they meet. Moving the hotend that way is a lighter motion system than a bed-slinger or a heavy gantry, which is why I built it this way — higher print speeds than a conventional Cartesian frame.
+
+## The machine
+The frame is aluminum extrusion with printed corner brackets at the base and a printed plate up top for the electronics. A small LCD and knob sit next to a Bowden extruder; filament feeds down a PTFE tube to the hotend. Each carriage rides a post and connects to the effector with a pair of parallel rods, zip-tied together. Hotend wiring drops with the arms. The bed is a circular heated plate — the HOT marking sits under the chess pieces.
+
+It's a from-scratch build, so the cable management is lab wiring: bundles, zip ties, and a nest of leads under the top plate. The CAD work is in the printed parts and the overall geometry. The interesting bit is the kinematics, not a polished harness.

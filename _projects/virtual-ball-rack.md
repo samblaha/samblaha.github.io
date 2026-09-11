@@ -7,6 +7,7 @@ tags:
   - Software
   - Web
 status: "Shipped"
+constellation: "The Fairway"
 hero: "/assets/projects/virtual-ball-rack/hero.svg"
 hero_alt: "A mahogany display case filled with logo golf balls"
 hero_fit: "contain"

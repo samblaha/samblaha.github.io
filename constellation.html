@@ -1,0 +1,101 @@
+---
+layout: default
+title: The Constellation
+description: "A PCB of the night sky — every pad is a build, copper traces connect related work."
+permalink: /constellation/
+body_class: page-constellation
+extra_css: /assets/css/constellation.css
+---
+
+{% assign pads = site.projects | sort: "date" %}
+{% assign newest = pads | reverse | first %}
+{% assign oldest = pads | first %}
+{% assign sky_groups = "" | split: "" %}
+{% for project in site.projects %}
+  {% if project.constellation %}
+    {% assign sky_groups = sky_groups | push: project.constellation %}
+  {% endif %}
+{% endfor %}
+{% assign sky_groups = sky_groups | uniq | sort %}
+
+<section class="hero hero--page">
+  <div class="hero__badge sticker sticker--solder" data-reveal>
+    <span class="led led--live" aria-hidden="true"></span> Sky map · PCB rev C47
+  </div>
+
+  <h1 class="hero__title display-1" data-reveal>
+    The <span class="marker marker--phosphor">Constellation</span>
+  </h1>
+
+  <p class="hero__sub" data-reveal>
+    Every build as a solder pad on a night-sky board. Copper traces hop
+    related work — Pi kits, the golf fairway, a crypto loop. Hover a pad,
+    tab to walk the board, click to open the write-up.
+  </p>
+
+  <ul class="hero__stats" data-reveal>
+    <li class="hero__stat">
+      <strong>{{ pads.size }}</strong>
+      <span>pads on the board</span>
+    </li>
+    <li class="hero__stat">
+      <strong>{{ sky_groups.size }}</strong>
+      <span>named traces</span>
+    </li>
+    <li class="hero__stat">
+      <strong>{% if oldest %}{{ oldest.date | date: "%Y" }}→{{ newest.date | date: "%Y" }}{% else %}Now{% endif %}</strong>
+      <span>still soldering</span>
+    </li>
+  </ul>
+</section>
+
+<section class="sky" data-sky aria-label="Project constellation">
+  <div class="sky-toolbar" data-reveal>
+    <div class="filter sky-toolbar__filters" role="group" aria-label="Highlight a constellation">
+      <button class="filter__btn is-active" type="button" data-sky-filter="all" aria-pressed="true">All pads</button>
+    </div>
+    <p class="sky-toolbar__hint" id="sky-hint">
+      Hover or focus a pad for the card. Click opens the build.
+      On a phone, first tap inspects, second tap goes.
+    </p>
+  </div>
+
+  <figure class="sky-board panel" data-sky-board>
+    <canvas class="sky-stars" id="sky-stars" aria-hidden="true"></canvas>
+    <svg class="sky-svg" id="sky-svg" viewBox="0 0 1600 900" role="group" aria-labelledby="sky-board-title sky-hint">
+      <title id="sky-board-title">Constellation board of Blaha Labs builds</title>
+    </svg>
+    <div class="sky-card" id="sky-card" hidden>
+      <p class="sky-card__kicker" data-sky-card-kicker></p>
+      <h2 class="sky-card__title" data-sky-card-title></h2>
+      <p class="sky-card__meta" data-sky-card-meta></p>
+      <p class="sky-card__summary" data-sky-card-summary></p>
+      <a class="sky-card__go" data-sky-card-go href="#">Open the pad <span aria-hidden="true">→</span></a>
+    </div>
+    <p class="sky-board__caption">
+      FR4 · copper pour · phosphor silkscreen. The hot pad is still on the iron.
+    </p>
+  </figure>
+
+  <div class="sky-index-wrap" data-reveal>
+    <h2 class="sky-index__heading">Pad index</h2>
+    <p class="sky-index__lede">Same builds as the board, oldest first — a list if you’d rather not chase traces.</p>
+    <ol class="sky-index">
+      {% for project in pads %}
+        {% assign slug = project.path | split: "/" | last | replace: ".md", "" %}
+        <li class="sky-index__item">
+          <a class="sky-index__link" href="{{ project.url }}" data-sky-index="{{ slug }}">
+            <span class="sky-index__ref" aria-hidden="true">U{{ forloop.index }}</span>
+            <span class="sky-index__copy">
+              <strong>{{ project.title }}</strong>
+              <em>{% if project.constellation %}{{ project.constellation }} · {% endif %}{{ project.date | date: "%Y" }}{% if project.status %} · {{ project.status }}{% endif %}</em>
+            </span>
+          </a>
+        </li>
+      {% endfor %}
+    </ol>
+  </div>
+</section>
+
+{% include constellation-data.html %}
+<script src="/assets/js/constellation.js" defer></script>

@@ -3,7 +3,7 @@
   <head>
     {% include head.html %}
   </head>
-  <body class="{% if page.layout == 'home' %}page-home{% endif %}{% if page.collection == 'projects' %} page-project{% endif %}">
+  <body class="{% if page.layout == 'home' %}page-home{% endif %}{% if page.collection == 'projects' %} page-project{% endif %}{% if page.body_class %} {{ page.body_class }}{% endif %}">
     <a class="skip-link" href="#main">Skip to content</a>
 
     <div class="boot" id="boot" hidden>
@@ -38,6 +38,7 @@
 
           <div class="nav__links">
             <a class="nav__link" href="/portfolio/">Work</a>
+            <a class="nav__link" href="/constellation/">Sky</a>
             <a class="nav__link" href="/arcade/">Play</a>
             <a class="nav__link" href="/rack/">Rack</a>
             <a class="nav__link" href="/#about">About</a>

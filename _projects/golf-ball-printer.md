@@ -7,6 +7,9 @@ tags:
   - CAD
   - Hardware
 status: "Shipped"
+constellation: "Fab Bench"
+links:
+  - virtual-ball-rack
 hero: "/assets/projects/golf-ball-printer/hero.jpg"
 hero_alt: "A golf ball printed with a custom design"
 specs:

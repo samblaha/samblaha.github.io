@@ -1,0 +1,25 @@
+{%- comment -%}
+  JSON payload for the constellation map. Built from the projects collection
+  so the board never invents pads — new write-ups show up automatically.
+{%- endcomment -%}
+<script type="application/json" id="sky-data">
+[
+{%- assign pads = site.projects | sort: "date" -%}
+{%- for project in pads -%}
+  {%- assign slug = project.path | split: "/" | last | replace: ".md", "" -%}
+  {
+    "id": {{ slug | jsonify }},
+    "title": {{ project.title | jsonify }},
+    "url": {{ project.url | jsonify }},
+    "summary": {{ project.summary | jsonify }},
+    "status": {{ project.status | default: "" | jsonify }},
+    "date": {{ project.date | date: "%Y-%m-%d" | jsonify }},
+    "year": {{ project.date | date: "%Y" | jsonify }},
+    "tags": {% if project.tags %}{{ project.tags | jsonify }}{% else %}[]{% endif %},
+    "constellation": {{ project.constellation | default: "" | jsonify }},
+    "links": {% if project.links %}{{ project.links | jsonify }}{% else %}[]{% endif %},
+    "hero": {{ project.hero | default: "" | jsonify }}
+  }{% unless forloop.last %},{% endunless %}
+{%- endfor -%}
+]
+</script>

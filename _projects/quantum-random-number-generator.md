@@ -7,6 +7,7 @@ tags:
   - Python
   - Cryptography
 status: "Shipped"
+constellation: "Crypto Loop"
 repo: "https://github.com/samblaha/QRNG"
 specs:
   Framework: "IBM Qiskit"

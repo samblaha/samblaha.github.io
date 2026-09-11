@@ -7,6 +7,9 @@ tags:
   - Hardware
   - Linux
 status: "Shipped"
+constellation: "Security Trace"
+links:
+  - pi-pentester
 hero: "/assets/projects/kali-macbook/hero.jpg"
 hero_alt: "The rebuilt MacBook running Kali Linux"
 gallery:

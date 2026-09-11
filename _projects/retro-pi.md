@@ -7,6 +7,9 @@ tags:
   - Retro Gaming
   - Hardware
 status: "Shipped"
+constellation: "Pi Nebula"
+links:
+  - guppy
 hero: "/assets/projects/retro-pi/hero.jpg"
 hero_alt: "The Retro Pi console"
 gallery:

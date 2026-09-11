@@ -7,6 +7,9 @@ tags:
   - Raspberry Pi
   - Python
 status: "Shipped"
+constellation: "Pi Nebula"
+links:
+  - laser-timing-gates
 hero: "/assets/projects/guppy/hero.jpg"
 hero_alt: "Guppy, the Raspberry Pi AI assistant"
 repo: "https://github.com/samblaha/Guppy"

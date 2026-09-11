@@ -8,6 +8,7 @@ tags:
   - UX
   - AI
 status: "In progress"
+constellation: "Night Page"
 repo: "https://github.com/samblaha/DIYEreader"
 demo: ""
 specs:

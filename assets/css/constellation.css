@@ -1,0 +1,493 @@
+/* ==========================================================================
+   CONSTELLATION — PCB night-sky map of builds
+   Copper traces, solder pads, phosphor silkscreen. Tokens from site.css.
+   ========================================================================== */
+
+.page-constellation .page {
+  max-width: 1240px;
+}
+
+.sky {
+  margin-top: 12px;
+}
+
+.sky-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: 16px 28px;
+  margin-bottom: 18px;
+}
+
+.sky-toolbar__filters { margin: 0; }
+
+.sky-toolbar__hint {
+  margin: 0;
+  max-width: 420px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  line-height: 1.45;
+  letter-spacing: 0.02em;
+  color: var(--muted);
+}
+
+.sky-board {
+  position: relative;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  isolation: isolate;
+  background:
+    radial-gradient(ellipse at 18% 8%, color-mix(in srgb, var(--laser) 16%, transparent), transparent 42%),
+    radial-gradient(ellipse at 86% 14%, color-mix(in srgb, var(--solder) 14%, transparent), transparent 38%),
+    radial-gradient(ellipse at 70% 88%, color-mix(in srgb, var(--phosphor) 10%, transparent), transparent 40%),
+    linear-gradient(180deg, #0b100e 0%, #070a09 100%);
+}
+
+[data-theme="light"] .sky-board {
+  background:
+    radial-gradient(ellipse at 20% 10%, color-mix(in srgb, var(--copper) 22%, transparent), transparent 44%),
+    radial-gradient(ellipse at 80% 20%, color-mix(in srgb, var(--solder) 12%, transparent), transparent 40%),
+    linear-gradient(180deg, #d7c7a0 0%, #cbb892 100%);
+}
+
+.sky-board::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0 2px,
+    rgba(0, 0, 0, 0.09) 2px 3px
+  );
+  opacity: 0.28;
+  mix-blend-mode: multiply;
+}
+
+[data-theme="light"] .sky-board::after { opacity: 0.12; }
+
+.sky-stars {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.sky-svg {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: auto;
+  min-height: 420px;
+  overflow: visible;
+}
+
+.sky-board__caption {
+  position: relative;
+  z-index: 2;
+  margin: 0;
+  padding: 8px 16px 14px;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted2);
+}
+
+/* ----- SVG parts (styled so Day/Nite tokens just work) ----- */
+
+.sky-edge {
+  fill: none;
+  stroke: color-mix(in srgb, var(--copper) 75%, var(--ink));
+  stroke-width: 3;
+}
+
+.sky-keepout {
+  fill: none;
+  stroke: color-mix(in srgb, var(--copper) 35%, transparent);
+  stroke-width: 1;
+  stroke-dasharray: 5 7;
+}
+
+.sky-hole {
+  fill: var(--base);
+  stroke: var(--copper);
+  stroke-width: 4;
+}
+
+.sky-fiducial {
+  fill: none;
+  stroke: var(--laser);
+  stroke-width: 1.4;
+  opacity: 0.7;
+}
+
+.sky-via {
+  fill: color-mix(in srgb, var(--copper) 55%, #1a120c);
+  stroke: none;
+}
+
+.sky-year-bus {
+  fill: none;
+  stroke: color-mix(in srgb, var(--copper) 70%, var(--ink));
+  stroke-width: 2.2;
+}
+
+.sky-year-tick {
+  stroke: var(--copper);
+  stroke-width: 1.6;
+}
+
+.sky-year-label {
+  fill: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 0.14em;
+}
+
+.sky-silk {
+  fill: none;
+  stroke: color-mix(in srgb, var(--laser) 45%, transparent);
+  stroke-width: 1.2;
+  stroke-dasharray: 3 8;
+  stroke-linecap: round;
+}
+
+[data-theme="light"] .sky-silk {
+  stroke: color-mix(in srgb, var(--ink) 35%, transparent);
+}
+
+.sky-cluster-name {
+  fill: color-mix(in srgb, var(--laser) 80%, var(--ink));
+  font-family: var(--font-mono);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  opacity: 0.72;
+}
+
+[data-theme="light"] .sky-cluster-name {
+  fill: var(--copper);
+  opacity: 0.85;
+}
+
+.sky-trace {
+  fill: none;
+  stroke: var(--copper);
+  stroke-width: 3.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.92;
+  filter: drop-shadow(0 0 5px color-mix(in srgb, var(--copper) 55%, transparent));
+}
+
+.sky-trace.is-dim { opacity: 0.12; filter: none; }
+.sky-trace.is-hot {
+  stroke: var(--solder);
+  stroke-width: 4;
+  filter: drop-shadow(0 0 8px var(--solder));
+}
+
+.sky-trace.is-draw {
+  stroke-dasharray: var(--len, 400);
+  stroke-dashoffset: var(--len, 400);
+  animation: sky-draw 1.15s var(--ease-out-expo) forwards;
+}
+
+.sky-electron {
+  fill: var(--phosphor);
+  filter: drop-shadow(0 0 6px var(--phosphor));
+  pointer-events: none;
+}
+
+.sky-pad {
+  cursor: pointer;
+}
+
+.sky-pad__hit {
+  fill: transparent;
+  stroke: none;
+}
+
+.sky-pad__ring {
+  fill: color-mix(in srgb, var(--copper) 88%, #5a3314);
+  stroke: color-mix(in srgb, var(--phosphor) 35%, var(--copper));
+  stroke-width: 2;
+}
+
+.sky-pad__via {
+  fill: #07080a;
+}
+
+[data-theme="light"] .sky-pad__via { fill: #2a1d12; }
+
+.sky-pad__glow {
+  fill: var(--laser);
+  opacity: 0.18;
+}
+
+.sky-pad.is-shipped .sky-pad__glow { fill: var(--laser); }
+.sky-pad.is-hot .sky-pad__glow {
+  fill: var(--solder);
+  opacity: 0.32;
+}
+.sky-pad.is-hot .sky-pad__ring {
+  fill: var(--solder);
+  stroke: var(--phosphor);
+}
+
+.sky-pad.is-on .sky-pad__ring {
+  stroke: var(--laser);
+  stroke-width: 2.6;
+}
+.sky-pad.is-on .sky-pad__glow { opacity: 0.45; }
+
+.sky-pad.is-dim { opacity: 0.18; }
+.sky-pad.is-dim .sky-pad__glow { opacity: 0; }
+
+.sky-pad__ref {
+  fill: var(--muted2);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-anchor: middle;
+}
+
+.sky-pad__label {
+  fill: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-anchor: middle;
+  paint-order: stroke fill;
+  stroke: var(--base);
+  stroke-width: 5px;
+  stroke-linejoin: round;
+}
+
+[data-theme="dark"] .sky-pad__label {
+  fill: #f6edd4;
+  text-shadow: 0 0 12px color-mix(in srgb, var(--phosphor) 50%, transparent);
+}
+
+.sky-pad.is-hot .sky-pad__label { fill: var(--phosphor); }
+
+.sky-titleblock {
+  fill: color-mix(in srgb, var(--paper) 55%, transparent);
+  stroke: var(--copper);
+  stroke-width: 1.4;
+}
+
+.sky-titleblock__text {
+  fill: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+}
+
+.sky-titleblock__name {
+  fill: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+}
+
+.sky-probe {
+  fill: none;
+  stroke: var(--laser);
+  stroke-width: 1.2;
+  opacity: 0.55;
+  pointer-events: none;
+}
+.sky-probe.is-off { display: none; }
+
+.sky-pad:focus-visible .sky-pad__ring {
+  stroke: var(--laser);
+  stroke-width: 3;
+}
+
+/* Hover / focus pulse — skipped when reduced motion is on via the MQ below */
+.sky-pad.is-hot .sky-pad__glow {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: sky-breathe 2.4s ease-in-out infinite;
+}
+
+@keyframes sky-breathe {
+  50% { opacity: 0.55; }
+}
+
+@keyframes sky-draw {
+  to { stroke-dashoffset: 0; }
+}
+
+/* ----- Hover card ----- */
+
+.sky-card {
+  position: absolute;
+  z-index: 5;
+  width: min(320px, calc(100% - 28px));
+  padding: 16px 16px 14px;
+  border-radius: var(--r-md);
+  background: color-mix(in srgb, var(--paper) 92%, transparent);
+  border: var(--border-w) solid var(--border);
+  box-shadow: var(--shadow-hard);
+  backdrop-filter: blur(10px);
+  pointer-events: auto;
+}
+
+.sky-card[hidden] { display: none; }
+
+.sky-card__kicker {
+  margin: 0 0 6px;
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--solder);
+}
+
+.sky-card__title {
+  margin: 0 0 8px;
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  line-height: 1.15;
+}
+
+.sky-card__meta {
+  margin: 0 0 8px;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--muted);
+}
+
+.sky-card__summary {
+  margin: 0 0 12px;
+  font-size: 0.88rem;
+  line-height: 1.4;
+  color: var(--muted);
+}
+
+.sky-card__go {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--laser);
+}
+
+[data-theme="light"] .sky-card__go { color: var(--solder); }
+
+.sky-card__go:hover { text-decoration: underline; }
+
+/* ----- Index list (a11y + mobile) ----- */
+
+.sky-index-wrap { margin-top: 42px; }
+
+.sky-index__heading {
+  margin: 0 0 8px;
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+}
+
+.sky-index__lede {
+  margin: 0 0 18px;
+  color: var(--muted);
+  max-width: 52ch;
+}
+
+.sky-index {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 10px;
+}
+
+.sky-index__link {
+  display: flex;
+  gap: 12px;
+  align-items: baseline;
+  padding: 12px 14px;
+  border-radius: var(--r-sm);
+  border: var(--border-w) solid var(--border);
+  background: var(--paper);
+  transition: transform 0.2s var(--snap), box-shadow 0.2s var(--snap);
+}
+
+.sky-index__link:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: var(--shadow-hard-sm);
+}
+
+.sky-index__ref {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--copper);
+  min-width: 2.2em;
+}
+
+.sky-index__copy {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sky-index__copy strong {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+}
+
+.sky-index__copy em {
+  font-style: normal;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+
+.sky-index__item.is-dim { opacity: 0.28; }
+.sky-index__item.is-on .sky-index__link {
+  box-shadow: 0 0 0 1px var(--laser), var(--shadow-hard-sm);
+}
+
+@media (max-width: 720px) {
+  .sky-toolbar__hint { max-width: none; }
+  .sky-svg { min-height: 360px; }
+  .sky-board {
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+  }
+  .sky-svg { min-width: 780px; }
+  .sky-card {
+    position: static;
+    width: auto;
+    max-width: none;
+    margin: 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sky-pad.is-hot .sky-pad__glow { animation: none; }
+  .sky-trace.is-draw {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+  .sky-invite:hover { transform: none; }
+}

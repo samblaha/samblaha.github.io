@@ -7,6 +7,9 @@ tags:
   - Cryptography
   - Software
 status: "Shipped"
+constellation: "Crypto Loop"
+links:
+  - quantum-random-number-generator
 hero: "/assets/projects/caesar-cipher/hero.png"
 hero_alt: "The Caesar cipher app encrypting and decrypting a message"
 specs:

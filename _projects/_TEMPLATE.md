@@ -28,6 +28,11 @@ repo: "https://github.com/your-handle/your-repo"
 demo: "https://example.com"
 comments: true               # set false to hide the discussion panel on this post
 
+# Optional: sky-map grouping on /constellation/
+# constellation: "Pi Nebula"
+# links:
+#   - related-project-slug
+
 # Optional: rendered as a spec-sheet card above the write-up
 specs:
   MCU: "ESP32-S3"

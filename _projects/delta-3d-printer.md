@@ -7,6 +7,9 @@ tags:
   - Hardware
   - CAD
 status: "Shipped"
+constellation: "Fab Bench"
+links:
+  - golf-ball-printer
 hero: "/assets/projects/delta-3d-printer/hero.jpg"
 hero_fit: "contain"
 hero_alt: "The finished delta 3D printer"

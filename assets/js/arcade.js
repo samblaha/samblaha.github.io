@@ -607,7 +607,15 @@
         app.setScore(score);
         if (matched === MATCH_ICONS.length) {
           app.flash();
-          app.gameOver(score, 'Bench cleared in ' + moves + ' moves.');
+          const challenge = window.BlahaArcadePass && window.BlahaArcadePass.challengeForGame
+            ? window.BlahaArcadePass.challengeForGame('match')
+            : null;
+          const limit = challenge && challenge.maxMoves ? challenge.maxMoves : 12;
+          const tidy = moves <= limit;
+          const msg = tidy
+            ? 'Bench cleared in ' + moves + ' moves.'
+            : 'Bench cleared in ' + moves + ' moves. Season card wants ' + limit + ' or fewer.';
+          app.gameOver(score, msg, { moves: moves, cleared: true });
         }
         paint(board);
       } else {
@@ -777,7 +785,7 @@
         void screen.offsetWidth;
         screen.classList.add('is-flash');
       },
-      gameOver: function (score, extra) {
+      gameOver: function (score, extra, meta) {
         running = false;
         const prev = Number(scores[currentId]);
         const prior = Number.isFinite(prev) ? prev : 0;
@@ -787,11 +795,26 @@
         bestEl.textContent = String(best);
         overlay.hidden = false;
         overlayTitle.textContent = 'Game over';
-        overlayMsg.textContent = extra || ('Score ' + (score || 0) + (best === (score || 0) && (score || 0) > prior ? ' — new best!' : ''));
+        let msg = extra || ('Score ' + (score || 0) + (best === (score || 0) && (score || 0) > prior ? ' — new best!' : ''));
+        const run = Object.assign({ score: score || 0 }, meta || {});
+        if (meta && meta.cleared) overlayTitle.textContent = 'Bench cleared';
+        if (typeof window.BlahaArcadePass === 'object' && window.BlahaArcadePass.noteRun) {
+          const result = window.BlahaArcadePass.noteRun(currentId, run);
+          window.BlahaArcadePass.paintPassBoards(result.pass);
+          if (result.punched && result.punched.length) {
+            const names = result.punched.map(window.BlahaArcadePass.stampLabel).join(', ');
+            msg = (msg ? msg + ' ' : '') + 'Stamp punched: ' + names + '.';
+            if (result.justUnlocked) {
+              overlayTitle.textContent = 'Season card complete';
+              msg += ' The back room is open.';
+            }
+          }
+        }
+        overlayMsg.textContent = msg;
         startBtn.textContent = 'Play again ✦';
         overlay.classList.add('is-over');
         if (liveEl) {
-          liveEl.textContent = extra || ('Game over. Score ' + (score || 0));
+          liveEl.textContent = msg;
         }
       },
     };

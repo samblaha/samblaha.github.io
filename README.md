@@ -58,7 +58,7 @@ python3 scripts/sync_ghin.py
 
 Or run `python3 scripts/sync_ghin.py` in a terminal and enter credentials when prompted. Do not put a GHIN password, email, or GHIN number in HTML, JS, or committed config. See `scripts/README.md`.
 
-The committed JSON is an empty schema so the rack stays up without credentials. After a real sync, commit `assets/data/scorebook.json` only if those rounds should be public.
+The committed JSON is an empty schema so the rack stays up without credentials. After a real sync, commit `assets/data/scorebook.json` only if those rounds should be public. CSV dumps stay in gitignored `golf-data/`.
 
 ## Notes
 - Project URLs are automatically generated from filenames:

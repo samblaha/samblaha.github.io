@@ -21,11 +21,9 @@ Usage (from the repo root):
         --profile-json scripts/fixtures/ghin_profile.json \\
         --history-json scripts/fixtures/ghin_handicap_history.json
 
-Outputs (default: assets/data/):
-    scorebook.json              sanitized SCOREBOOK the live rack fetches
-    ghin_scores.csv             golf-reports posted-score table
-    ghin_handicap_history.csv   index revisions
-    ghin_hole_scores.csv        per-hole rows when GHIN included them (local CSV)
+Outputs:
+    assets/data/scorebook.json     sanitized SCOREBOOK the live rack fetches
+    golf-data/*.csv                local dumps (gitignored; not the Pages tree)
 """
 
 from __future__ import annotations
@@ -60,6 +58,8 @@ SCHEMA = "ghin-rack-scorebook/v1"
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO_ROOT = os.path.dirname(HERE)
 CREDS_PATH = os.path.expanduser("~/.ghin_creds.json")
+DEFAULT_SCOREBOOK_DIR = os.path.join(REPO_ROOT, "assets", "data")
+DEFAULT_CSV_DIR = os.path.join(REPO_ROOT, "golf-data")
 RACK_ROUND_KEYS = ("course", "date", "score", "differential", "detail", "tee", "holes", "notes")
 
 SCORE_COLS = [
@@ -532,21 +532,25 @@ def write_json(path: str, obj: Any) -> None:
     os.replace(tmp, path)
 
 
-def write_outputs(out_dir: str, data: dict, balls: list[dict], aliases: dict[str, str]) -> dict:
+def write_outputs(data: dict, balls: list[dict], aliases: dict[str, str],
+                  scorebook_dir: str, csv_dir: str) -> dict:
     scores = build_scores(data.get("scores"))
     holes = build_hole_scores(data.get("scores"))
     hist = build_history(data.get("history"))
     export = build_export(data, balls, aliases)
-    write_csv(os.path.join(out_dir, "ghin_scores.csv"), SCORE_COLS, scores)
-    write_csv(os.path.join(out_dir, "ghin_handicap_history.csv"), HIST_COLS, hist)
-    write_csv(os.path.join(out_dir, "ghin_hole_scores.csv"), HOLE_SCORE_COLS, holes)
-    write_json(os.path.join(out_dir, "scorebook.json"), export)
+    os.makedirs(csv_dir, exist_ok=True)
+    write_csv(os.path.join(csv_dir, "ghin_scores.csv"), SCORE_COLS, scores)
+    write_csv(os.path.join(csv_dir, "ghin_handicap_history.csv"), HIST_COLS, hist)
+    write_csv(os.path.join(csv_dir, "ghin_hole_scores.csv"), HOLE_SCORE_COLS, holes)
+    write_json(os.path.join(scorebook_dir, "scorebook.json"), export)
     return {
         "scores": len(scores),
         "revisions": len(hist),
         "index": export["profile"].get("handicap_index"),
         "hole_scores": len(holes),
         "mapped": len(export["rounds"]),
+        "scorebook": os.path.join(scorebook_dir, "scorebook.json"),
+        "csv_dir": csv_dir,
     }
 
 
@@ -628,8 +632,10 @@ def main(argv: Optional[list[str]] = None) -> int:
         description=__doc__,
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
-    p.add_argument("--out-dir", default=os.path.join(REPO_ROOT, "assets", "data"),
-                   help="Directory for scorebook.json / CSVs (default: assets/data)")
+    p.add_argument("--scorebook-dir", default=DEFAULT_SCOREBOOK_DIR,
+                   help="Directory for sanitized scorebook.json (default: assets/data)")
+    p.add_argument("--csv-dir", default=DEFAULT_CSV_DIR,
+                   help="Directory for GHIN CSV dumps (default: golf-data/, gitignored)")
     p.add_argument("--rack-data", default=os.path.join(REPO_ROOT, "assets", "js", "rack-data.js"),
                    help="Path to rack-data.js for course-name matching")
     p.add_argument("--aliases", default=os.path.join(HERE, "ghin-course-aliases.json"),
@@ -656,12 +662,16 @@ def main(argv: Optional[list[str]] = None) -> int:
         token, ghin = load_credentials(prompt=True)
         data = fetch(token, ghin)
 
-    counts = write_outputs(args.out_dir, data, balls, aliases)
+    counts = write_outputs(
+        data, balls, aliases,
+        scorebook_dir=args.scorebook_dir, csv_dir=args.csv_dir,
+    )
     print(
         f"BUILT: ghin_scores={counts['scores']}, handicap_revisions={counts['revisions']}, "
         f"index={counts['index']}, hole_scores={counts['hole_scores']}"
     )
-    print(f"Rack file -> {os.path.join(args.out_dir, 'scorebook.json')}")
+    print(f"Rack file -> {counts['scorebook']}")
+    print(f"CSV dumps -> {counts['csv_dir']}  (gitignored; do not commit)")
     print("READ-ONLY: nothing was posted to GHIN.")
     return 0
 

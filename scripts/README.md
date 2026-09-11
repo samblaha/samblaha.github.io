@@ -22,16 +22,16 @@ Optional: copy `scripts/.env.example` to `scripts/.env` (gitignored) and source 
 
 ## What it writes
 
-Default output directory: `assets/data/`
-
 | File | Purpose |
 | --- | --- |
-| `scorebook.json` | **What the rack fetches.** Sanitized SCOREBOOK (`course`/`date`/`score`/`differential`, optional `detail`/`tee`/`holes`/`notes`) plus a redacted handicap profile. |
-| `ghin_scores.csv` | Posted scores (golf-reports columns, including `score_id`). |
-| `ghin_handicap_history.csv` | Handicap index over time. |
-| `ghin_hole_scores.csv` | Per-hole rows when GHIN included them. |
+| `assets/data/scorebook.json` | **What the rack fetches.** Sanitized SCOREBOOK (`course`/`date`/`score`/`differential`, optional `detail`/`tee`/`holes`/`notes`) plus a redacted handicap profile. |
+| `golf-data/ghin_scores.csv` | Posted scores (golf-reports columns, including `score_id`). Gitignored. |
+| `golf-data/ghin_handicap_history.csv` | Handicap index over time. Gitignored. |
+| `golf-data/ghin_hole_scores.csv` | Per-hole rows when GHIN included them. Gitignored. |
 
-The empty `scorebook.json` in this repo is the schema. After a real sync, commit that file only if you want those rounds public on the site. Unmapped GHIN courses stay in the CSV only.
+**Commit vs local:** commit `assets/data/scorebook.json` only if those rounds should be public. CSVs default to gitignored `golf-data/` and stay on your machine, same as credentials (`~/.ghin_creds.json`, `.env`). Do not copy dumps into `assets/data/`. A header-only `assets/data/ghin_scores.csv` is the column schema; sync does not overwrite it.
+
+Override paths with `--scorebook-dir` / `--csv-dir` if needed. Unmapped GHIN courses stay in the local CSV only.
 
 ## Offline / fixtures (no GHIN login)
 

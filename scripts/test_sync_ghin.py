@@ -133,7 +133,7 @@ class ExportWrite(unittest.TestCase):
         }
         balls = sg.load_rack_balls(RACK_DATA)
         with tempfile.TemporaryDirectory() as td:
-            counts = sg.write_outputs(td, data, balls, {})
+            counts = sg.write_outputs(data, balls, {}, scorebook_dir=td, csv_dir=td)
             self.assertEqual(counts["scores"], 2)
             self.assertEqual(counts["revisions"], 2)
             self.assertEqual(counts["index"], "12.4")
@@ -201,6 +201,14 @@ class ExportWrite(unittest.TestCase):
         self.assertEqual(data["schema"], sg.SCHEMA)
         self.assertNotIn("course_aliases", data)
         self.assertNotIn("handicap_history", data)
+
+    def test_default_csv_dir_is_not_the_pages_tree(self):
+        self.assertEqual(sg.DEFAULT_CSV_DIR, os.path.join(REPO, "golf-data"))
+        self.assertEqual(sg.DEFAULT_SCOREBOOK_DIR, os.path.join(REPO, "assets", "data"))
+        gitignore_path = os.path.join(REPO, ".gitignore")
+        with open(gitignore_path, encoding="utf-8") as f:
+            gitignore = f.read()
+        self.assertIn("golf-data/", gitignore)
 
 
 class CredsFile(unittest.TestCase):

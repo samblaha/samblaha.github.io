@@ -20,9 +20,13 @@ package-lock.json
 **/.ghin_creds.json
 ghin_creds.json
 golf-data/
+scripts/out/
 _cache*/
 **/_cache*/
 assets/data/_cache*/
+# Accidental CSV dumps next to the public scorebook (header-only ghin_scores.csv is tracked)
+assets/data/ghin_handicap_history.csv
+assets/data/ghin_hole_scores.csv
 secrets/
 *.pem
 *.key

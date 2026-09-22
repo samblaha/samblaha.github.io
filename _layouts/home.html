@@ -2,448 +2,152 @@
 layout: default
 ---
 
-{% assign latest_projects = site.projects | sort: "date" | reverse %}
-{% assign oldest_project = site.projects | sort: "date" | first %}
-{% assign project_count = site.projects | size %}
-{% assign idea_hot = false %}
-{% assign heat_count = 0 %}
-{% for project in site.projects %}
-  {% assign hero_s = project.hero | default: "" | strip %}
-  {% assign status_s = project.status | default: "" | downcase %}
-  {% assign project_gap = false %}
-  {% assign project_wip = false %}
-  {% if hero_s == "" %}{% assign project_gap = true %}{% endif %}
-  {% if status_s contains "progress" %}{% assign project_wip = true %}{% endif %}
-  {% if project_gap or project_wip %}
-    {% assign idea_hot = true %}
-    {% assign heat_count = heat_count | plus: 1 %}
-  {% endif %}
-{% endfor %}
+{% assign garage_projects = site.projects | sort: "date" | reverse %}
+{% assign featured_projects = site.projects | where_exp: "project", "project.garage_slot" %}
 
-<nav class="stations" aria-label="On this page">
-  <a class="stations__item" href="#projects" data-station="projects">
-    <span class="led" aria-hidden="true"></span>
-    <span>01 Work</span>
-  </a>
-  <a class="stations__item" href="#arcade" data-station="arcade">
-    <span class="led" aria-hidden="true"></span>
-    <span>02 Play</span>
-  </a>
-  <a class="stations__item{% if idea_hot %} is-heat{% endif %}" href="#ideas" data-station="ideas">
-    <span class="led{% if idea_hot %} led--hot{% endif %}" aria-hidden="true"></span>
-    <span>03 Ideas</span>
-  </a>
-  <a class="stations__item" href="#about" data-station="about">
-    <span class="led" aria-hidden="true"></span>
-    <span>04 Human</span>
-  </a>
-</nav>
-
-<section class="hero">
-  <div class="hero__copy">
-    <div class="hero__badge sticker sticker--solder" data-reveal>
-      <span class="led led--live" aria-hidden="true"></span>
-      Bench is hot · open for weird ideas
-    </div>
-
-    <h1 class="hero__title display-1" data-reveal>
-      I build <span class="marker marker--solder">cool&nbsp;things</span><br />
-      &amp; a respectable amount<br />
-      of <span class="marker marker--phosphor">nonsense</span><span class="hero__period">.</span>
-    </h1>
-
-    <p class="hero__sub" data-reveal>
-      DIY engineer mixing hardware, software &amp; design into projects that are fun,
-      functional, and sometimes delightfully unnecessary. Also: a few games, because
-      the workbench is more fun when it beeps.
-    </p>
-
-    <div class="hero__cta" data-reveal>
-      <a class="btn btn--solder" href="#projects">See the latest builds</a>
-      <a class="btn btn--ghost" href="#arcade">Play a game</a>
-    </div>
-
-    <ul class="hero__stats" data-reveal>
-      <li class="hero__stat">
-        <strong>{{ project_count }}</strong>
-        <span>builds logged</span>
-      </li>
-      <li class="hero__stat">
-        <strong>3</strong>
-        <span>playable games</span>
-      </li>
-      <li class="hero__stat">
-        <strong>{% if oldest_project %}{{ oldest_project.date | date: "%Y" }}→{% else %}Now{% endif %}</strong>
-        <span>still soldering</span>
-      </li>
-    </ul>
+<section class="garage" data-garage aria-labelledby="garage-title">
+  <header class="neon-header">
+    <h1 id="garage-title">Sam Blaha <span> / Blaha Labs</span></h1>
+    <button type="button" data-open-inventory>Project index <span aria-hidden="true">↗</span></button>
+  </header>
+  <div class="neon-stage" data-three-stage>
+    <canvas class="garage-canvas" data-three-canvas tabindex="0" aria-label="Interactive 3D garage. Drag to orbit a full 360 degrees, scroll to zoom, or click the Blaha Cola machine outside the right wall to browse projects. Arrow keys rotate, plus and minus zoom, Home resets."></canvas>
+    <p class="scene-status" data-scene-status role="status">INITIALIZING LAB</p>
+    <span class="scene-tooltip" data-scene-tooltip hidden></span>
   </div>
-
-  <div class="hero__instrument" data-reveal data-tilt-stage>
-    <div class="instrument" data-tilt-inner>
-      <div class="instrument__bezel">
-        <div class="instrument__chrome">
-          <span>CH1 · WORKBENCH</span>
-          <span class="instrument__live"><span class="led led--live"></span> LIVE</span>
-        </div>
-        <canvas class="instrument__scope" id="hero-scope" width="640" height="360" aria-hidden="true"></canvas>
-        <div class="instrument__readouts">
-          <span>2V/div</span>
-          <span>5ms</span>
-          <span>TRIG: PTR</span>
-        </div>
-      </div>
-      <div class="instrument__tray">
-        <div class="knob" data-knob style="--rot: 42deg"><i></i><em>GAIN</em></div>
-        <div class="knob" data-knob style="--rot: -18deg"><i></i><em>TIME</em></div>
-        <div class="knob" data-knob style="--rot: 110deg"><i></i><em>TRIG</em></div>
-        <div class="solder-iron" aria-hidden="true">
-          <span class="solder-iron__tip"></span>
-          <span class="solder-iron__body"></span>
-        </div>
-      </div>
-    </div>
-    <p class="instrument__caption">Pointer is the probe. Move it — the scope follows.</p>
-  </div>
-</section>
-
-<div class="ticker" aria-hidden="true">
-  <div class="ticker__track">
-    <span class="ticker__item">HARDWARE ✦ FIRMWARE ✦ 3D PRINTING ✦ LASERS ✦ GAMES ✦ E-PAPER ✦ PROTOTYPES ✦ UX ✦ SOLDER ✦&nbsp;</span>
-    <span class="ticker__item">HARDWARE ✦ FIRMWARE ✦ 3D PRINTING ✦ LASERS ✦ GAMES ✦ E-PAPER ✦ PROTOTYPES ✦ UX ✦ SOLDER ✦&nbsp;</span>
-    <span class="ticker__item">HARDWARE ✦ FIRMWARE ✦ 3D PRINTING ✦ LASERS ✦ GAMES ✦ E-PAPER ✦ PROTOTYPES ✦ UX ✦ SOLDER ✦&nbsp;</span>
-  </div>
-</div>
-
-{% if latest_projects.size > 0 %}
-{% assign newest = latest_projects | first %}
-<div class="bento">
-  <a class="bento__card bento__card--build panel" href="{{ newest.url }}" data-reveal>
-    <span class="bento__label"><span class="led led--hot" aria-hidden="true"></span> On the bench</span>
-    <strong class="bento__title">{{ newest.title }}</strong>
-    <span class="bento__cta">Read the latest build →</span>
-  </a>
-  <a class="bento__card bento__card--play panel" href="#arcade" data-reveal>
-    <span class="bento__label"><span class="led led--live" aria-hidden="true"></span> Free play</span>
-    <strong class="bento__title">Workshop arcade</strong>
-    <span class="bento__cta">Snake, lasers &amp; memory →</span>
-  </a>
-  <a class="bento__card bento__card--idea panel{% if idea_hot %} is-hot{% endif %}" href="#ideas" data-reveal>
-    <span class="bento__label"><span class="led{% if idea_hot %} led--hot{% endif %}" data-idea-bento-led aria-hidden="true"></span> Idea box · IR</span>
-    <strong class="bento__title">What's glowing on the bench?</strong>
-    <span class="bento__cta">Read the heat →</span>
-  </a>
-  <a class="bento__card bento__card--sky panel" href="/constellation/" data-reveal>
-    <span class="bento__label"><span class="led led--live" aria-hidden="true"></span> Star chart</span>
-    <strong class="bento__title">Project Constellation</strong>
-    <span class="bento__cta">Read the night sky →</span>
-  </a>
-</div>
-{% endif %}
-
-<section id="projects" class="section" data-station-target="projects">
-  <div class="section__head" data-reveal>
-    <span class="section__num">01</span>
-    <h2 class="display-2">The Workbench</h2>
-    <a class="section__more" href="/constellation/">Open the constellation →</a>
-  </div>
-  <p class="section__intro" data-reveal>
-    The six newest builds, fresh off the bench. Probe a card with the meter —
-    year, stack, or continuity from the log. Hunt by tag in the
-    <a href="/portfolio/">portfolio</a>, or read the whole sky as a
-    <a href="/constellation/">project constellation</a>.
-  </p>
-
-  <div class="dmm" data-dmm data-reveal role="region" aria-label="Workbench multimeter">
-    <div class="instrument dmm__instrument">
-      <div class="instrument__bezel">
-        <div class="instrument__chrome">
-          <span>CH1 · DMM</span>
-          <span class="instrument__live">
-            <span class="led" data-dmm-led aria-hidden="true"></span>
-            <span data-dmm-live-label>LEADS OPEN</span>
-          </span>
-        </div>
-
-        <div class="dmm__face">
-          <div class="dmm__lcd" data-dmm-lcd data-continuity="open" aria-live="polite">
-            <div class="dmm__lcd-top">
-              <span class="dmm__range" data-dmm-range>OPEN</span>
-              <span class="dmm__unit" data-dmm-unit></span>
-            </div>
-            <div class="dmm__digits-wrap">
-              <span class="dmm__ghost" aria-hidden="true">88888888</span>
-              <span class="dmm__digits" data-dmm-digits>----</span>
-            </div>
-            <p class="dmm__label" data-dmm-label>Probe a build</p>
-          </div>
-
-          <div class="dmm__controls">
-            <div class="dmm__dial" data-dmm-dial aria-hidden="true">
-              <i></i>
-              <span>YR</span>
-              <span>Ω</span>
-              <span>V</span>
-            </div>
-            <div class="dmm__modes" role="radiogroup" aria-label="Meter range">
-              <button type="button" class="dmm__mode is-active" data-dmm-mode="year" role="radio" aria-checked="true">Year</button>
-              <button type="button" class="dmm__mode" data-dmm-mode="tag" role="radio" aria-checked="false">Tag</button>
-              <button type="button" class="dmm__mode" data-dmm-mode="status" role="radio" aria-checked="false">Stat</button>
-            </div>
-            <svg class="dmm__gauge" viewBox="0 0 100 58" aria-hidden="true">
-              <path class="dmm__arc" d="M12 50 A38 38 0 0 1 88 50" fill="none" />
-              <line class="dmm__needle" data-dmm-needle x1="50" y1="50" x2="50" y2="16" />
-            </svg>
-          </div>
-        </div>
-
-        <div class="dmm__jacks">
-          <span>COM</span>
-          <span>V · Ω · CONT</span>
-        </div>
-      </div>
-    </div>
-    <p class="instrument__caption">Leads are open. Hover a pad — the digits come from the write-up, not a made-up spec. Arrow keys step the probe.</p>
-  </div>
-
-  <div class="grid" id="home-grid">
-    {% for project in latest_projects limit: 6 %}
-      {% if forloop.first %}
-        {% include project-card.html project=project variant="large" badge="★ Newest" badge_tone="solder" probe=true %}
-      {% else %}
-        {% include project-card.html project=project variant="small" probe=true %}
-      {% endif %}
+  <nav class="scene-access" aria-label="Workshop navigation">
+    <button type="button" data-enter-arcade>Project dispenser</button>
+    <button type="button" data-open-about>About Sam</button>
+    <a href="/portfolio/">Build logs</a>
+    <button type="button" data-enter-garage>Explore the lab</button>
+    {% for project in featured_projects %}
+    <button type="button" data-project="{{ project.slug }}" data-slot="{{ project.garage_slot }}">{{ project.garage_label | default: project.title }}</button>
     {% endfor %}
+  </nav>
+  <div class="camera-controls" aria-label="Camera controls">
+    <button type="button" data-camera="left" aria-label="Rotate garage left">↶</button>
+    <button type="button" data-camera="reset">Reset view</button>
+    <button type="button" data-camera="right" aria-label="Rotate garage right">↷</button>
   </div>
-
-  <div class="section__foot" data-reveal>
-    <a class="btn btn--phosphor" href="/portfolio/">Browse the full portfolio →</a>
-    <a class="btn btn--ghost" href="/constellation/">Open the constellation →</a>
+  <div class="arcade-hud" data-arcade-hud hidden>
+    <p class="arcade-hud__status" data-arcade-status aria-live="polite">Choose a build to get started</p>
+    <ol class="arcade-hud__grid" data-arcade-grid></ol>
+    <div class="arcade-hud__row">
+      <button type="button" data-arcade-back>Go back</button>
+      <button type="button" data-arcade-select hidden>Dispense build</button>
+    </div>
+  </div>
+  <footer class="neon-footer">
+    <button type="button" data-open-contact>Say hello ↗</button>
+    <button class="neon-explore" type="button" data-enter-garage><span data-explore-label>Drag to orbit 360° · scroll to zoom</span></button>
+    <button type="button" data-sound aria-pressed="false">Sound off</button>
+  </footer>
+  <div class="neon-mobile">
+    <p class="neon-mobile__eyebrow">Welcome to my workshop</p>
+    <h2>Useful tools.<br>Curious builds.</h2>
+    <p>Hardware, software, and ideas brought to life.</p>
+    <button type="button" data-enter-arcade>Open the project dispenser ↗</button>
+    <button type="button" data-open-inventory>Explore the builds ↗</button>
+    <nav aria-label="Quick navigation"><button type="button" data-open-about>About Sam</button><a href="/portfolio/">Build logs</a><button type="button" data-open-contact>Contact</button></nav>
   </div>
 </section>
 
-{% if latest_projects.size > 0 %}
-<script type="application/json" id="dmm-data">
+<div class="garage-panel" data-project-panel hidden>
+  <button tabindex="-1" class="garage-panel__backdrop" type="button" data-close-project aria-label="Close project details"></button>
+  <section class="garage-panel__sheet build-reader" role="dialog" aria-modal="true" aria-labelledby="project-panel-title" tabindex="-1">
+    <header class="build-reader__bar">
+      <span>BLAHA COLA <span>/ BUILD JOURNAL</span></span>
+      <button type="button" data-close-project aria-label="Close project details">Back to machine <span aria-hidden="true">×</span></button>
+    </header>
+    <article class="build-reader__article">
+      <p class="build-reader__kicker" data-project-kicker></p>
+      <h1 id="project-panel-title" data-project-title></h1>
+      <p class="build-reader__summary" data-project-summary></p>
+      <div class="build-reader__tags" data-project-tags></div>
+      <div class="build-reader__content" data-project-content aria-busy="false"></div>
+      <footer class="build-reader__footer">
+        <a href="#" data-project-link>Open standalone post <span aria-hidden="true">↗</span></a>
+        <button type="button" data-close-project>Back to machine</button>
+      </footer>
+    </article>
+  </section>
+</div>
+
+<div class="garage-drawer" data-inventory hidden>
+  <button tabindex="-1" class="garage-drawer__backdrop" type="button" data-close-inventory aria-label="Close project inventory"></button>
+  <aside class="garage-drawer__sheet" role="dialog" aria-modal="true" aria-labelledby="inventory-title">
+    <header class="garage-drawer__head">
+      <div>
+        <p class="garage-drawer__kicker">Past projects / build archive</p>
+        <h2 id="inventory-title">Project inventory</h2>
+      </div>
+      <button class="garage-drawer__close" type="button" data-close-inventory aria-label="Close project inventory">Close</button>
+    </header>
+    <p class="garage-drawer__intro">Active experiments, shipped tools, and older builds—everything on this bench, newest first.</p>
+    <div class="garage-drawer__filters" role="group" aria-label="Filter project inventory">
+      <button class="is-active" type="button" data-drawer-filter="all">All</button>
+      <button type="button" data-drawer-filter="hardware">Hardware</button>
+      <button type="button" data-drawer-filter="software">Software</button>
+      <button type="button" data-drawer-filter="ai">AI</button>
+      <button type="button" data-drawer-filter="golf">Golf</button>
+    </div>
+    <ol class="garage-inventory">
+      {% for project in garage_projects %}
+      <li class="garage-inventory__item" data-inventory-item data-tags="{{ project.title | downcase | escape }} {% for tag in project.tags %}{{ tag | downcase }} {% endfor %}">
+        <a href="{{ project.url }}">
+          <span class="garage-inventory__thumb">{% if project.hero %}<img src="{{ project.hero }}" alt="" loading="lazy" />{% endif %}</span>
+          <span class="garage-inventory__copy">
+            <span class="garage-inventory__meta"><time datetime="{{ project.date | date_to_xmlschema }}">{{ project.date | date: "%Y" }}</time>{% if project.status %}<span>{{ project.status }}</span>{% endif %}</span>
+            <strong>{{ project.title }}</strong>
+            <span>{{ project.summary }}</span>
+          </span>
+          <span class="garage-inventory__arrow" aria-hidden="true">→</span>
+        </a>
+      </li>
+      {% endfor %}
+    </ol>
+    <a class="garage-drawer__full" href="/portfolio/">Open full project inventory →</a>
+  </aside>
+</div>
+
+<div class="garage-info" data-info-panel hidden>
+  <button tabindex="-1" class="garage-info__backdrop" type="button" data-close-info aria-label="Close information"></button>
+  <aside class="garage-info__sheet" role="dialog" aria-modal="true" aria-labelledby="garage-info-title">
+    <button class="garage-info__close" type="button" data-close-info aria-label="Close information">Close</button>
+    <p class="garage-info__kicker">The human behind the bench</p>
+    <h2 id="garage-info-title">I like turning messy ideas into things you can hold.</h2>
+    <p>I'm Sam—a DIY engineer mixing hardware, software, AI, fabrication, and design. I care about the small details: clean UX, reliable builds, and prototypes that survive beyond the workbench.</p>
+    <p class="garage-info__contact" data-contact-block>
+      Want to compare notes or build something strange?
+      <a href="https://github.com/samblaha">Find me on GitHub →</a>
+    </p>
+  </aside>
+</div>
+
+<script type="application/json" id="garage-projects">
 [
-{% for project in latest_projects limit: 6 %}
-  {% unless forloop.first %},{% endunless %}
-  {
-    "id": {{ project.path | split: "/" | last | remove: ".md" | jsonify }},
+{% for project in garage_projects %}
+  {% unless forloop.first %},{% endunless %}{
+    "id": {{ project.slug | jsonify }},
     "title": {{ project.title | jsonify }},
+    "kicker": {{ project.garage_kicker | default: project.status | jsonify }},
+    "summary": {{ project.summary | jsonify }},
+    "tags": {% if project.tags %}{{ project.tags | jsonify }}{% else %}[]{% endif %},
     "url": {{ project.url | jsonify }},
-    "summary": {{ project.summary | default: "" | jsonify }},
-    "status": {{ project.status | default: "" | jsonify }},
-    "date": {{ project.date | date: "%Y-%m-%d" | jsonify }},
     "year": {{ project.date | date: "%Y" | jsonify }},
-    "tag": {{ project.tags | first | default: "" | jsonify }},
-    "tags": {% if project.tags %}{{ project.tags | jsonify }}{% else %}[]{% endif %}
+    "status": {{ project.status | jsonify }},
+    "hero": {{ project.hero | jsonify }}
   }
 {% endfor %}
 ]
 </script>
-<script src="/assets/js/multimeter.js" defer></script>
+<script src="/assets/js/garage.js?v={{ site.time | date: '%s' }}" defer></script>
+<script src="/assets/js/garage3d.bundle.js?v={{ site.time | date: '%s' }}" defer></script>
+
 <noscript>
-  <p class="dmm__noscript">The meter needs JavaScript. The cards still open every logged build.</p>
+  <section class="garage-noscript">
+    <h2>Project inventory</h2>
+    <p>The interactive garage needs JavaScript, but every build is still available.</p>
+    <a href="/portfolio/">Browse every project →</a>
+  </section>
 </noscript>
-{% endif %}
-
-{% include arcade.html num="02" %}
-
-<section id="ideas" class="section" data-station-target="ideas">
-  <div class="section__head" data-reveal>
-    <span class="section__num">03</span>
-    <h2 class="display-2">The Idea Box</h2>
-  </div>
-  <p class="section__intro" data-reveal>
-    An IR camera, not a suggestion form with fake tickets. Heat is unfinished
-    work already logged on this bench — iron still on, missing hero shots,
-    cold joints. Nudge a chip in this browser if you want that iron back.
-  </p>
-
-  <div class="idea-heat" data-idea-heat data-reveal role="region" aria-label="Idea box heat camera">
-    <div class="instrument idea-heat__instrument">
-      <div class="instrument__bezel">
-        <div class="instrument__chrome">
-          <span>CH3 · IR CAM</span>
-          <span class="instrument__live">
-            <span class="led{% if idea_hot %} led--hot{% endif %}" data-idea-heat-led aria-hidden="true"></span>
-            <span data-idea-heat-live>{% if idea_hot %}HOT{% else %}COLD{% endif %}</span>
-          </span>
-        </div>
-
-        <div class="idea-heat__stage">
-          <canvas class="idea-heat__canvas" data-idea-heat-canvas width="800" height="140" aria-hidden="true"></canvas>
-          <div class="idea-heat__reticle" aria-hidden="true"></div>
-          <div class="idea-heat__scale">
-            <span>COLD</span>
-            <span class="idea-heat__lut" aria-hidden="true"></span>
-            <span>IRON</span>
-          </div>
-        </div>
-
-        <div class="idea-heat__hud">
-          <div class="idea-heat__hud-top">
-            <p class="idea-heat__kicker">Backlog · unfinished joints on this bench</p>
-            <p class="idea-heat__peak" data-idea-heat-peak aria-live="polite">{% if idea_hot %}{{ heat_count }} JOINT{% if heat_count != 1 %}S{% endif %}{% else %}NO JOINTS{% endif %}</p>
-          </div>
-
-          <ul class="idea-heat__chips" data-idea-heat-chips>
-            {% for project in site.projects %}
-              {% assign hero_s = project.hero | default: "" | strip %}
-              {% assign status_s = project.status | default: "" | downcase %}
-              {% assign project_gap = false %}
-              {% assign project_wip = false %}
-              {% if hero_s == "" %}{% assign project_gap = true %}{% endif %}
-              {% if status_s contains "progress" %}{% assign project_wip = true %}{% endif %}
-              {% if project_gap or project_wip %}
-              {% assign heat_id = project.path | split: "/" | last | remove: ".md" %}
-              <li>
-                <article
-                  class="idea-heat__chip"
-                  data-heat-id="{{ heat_id }}"
-                  data-heat-status="{{ project.status | default: '' | escape }}"
-                  data-heat-hero="{% if project_gap %}0{% else %}1{% endif %}"
-                  data-heat-date="{{ project.date | date: '%Y-%m-%d' }}"
-                >
-                  <div class="idea-heat__chip-bar" aria-hidden="true"></div>
-                  <div class="idea-heat__chip-body">
-                    <p class="idea-heat__why">
-                      {% if project_wip %}Iron still on{% endif %}{% if project_wip and project_gap %} · {% endif %}{% if project_gap %}Media gap{% endif %}
-                    </p>
-                    <a class="idea-heat__name" href="{{ project.url }}">{{ project.title }}</a>
-                    {% if project.summary %}<p class="idea-heat__blurb">{{ project.summary }}</p>{% endif %}
-                  </div>
-                  <div class="idea-heat__meter">
-                    <span class="idea-heat__temp"><span data-heat-temp>—</span> <small>GLOW</small></span>
-                    <span class="idea-heat__band" data-heat-band-label>SCAN</span>
-                    <button type="button" class="idea-heat__vote" data-heat-vote aria-pressed="false">+ heat</button>
-                  </div>
-                </article>
-              </li>
-              {% endif %}
-            {% endfor %}
-          </ul>
-        </div>
-
-        <div class="idea-heat__sink" data-idea-heat-sink>
-          <div class="idea-heat__sink-head">
-            <span>Heat sink</span>
-            <span>visitor ideas</span>
-          </div>
-          {% include giscus.html empty="heat" %}
-        </div>
-      </div>
-    </div>
-    <p class="instrument__caption">Phosphor LUT. Glow is status + media gap + a local nudge — votes stay in this browser. No accounts, no invented projects.</p>
-  </div>
-</section>
-
-<script type="application/json" id="idea-heat-data">
-[
-{% for project in site.projects %}
-  {% assign hero_s = project.hero | default: "" | strip %}
-  {
-    "id": {{ project.path | split: "/" | last | remove: ".md" | jsonify }},
-    "title": {{ project.title | jsonify }},
-    "url": {{ project.url | jsonify }},
-    "summary": {{ project.summary | default: "" | jsonify }},
-    "status": {{ project.status | default: "" | jsonify }},
-    "date": {{ project.date | date: "%Y-%m-%d" | jsonify }},
-    "year": {{ project.date | date: "%Y" | jsonify }},
-    "hero": {% if hero_s == "" %}false{% else %}true{% endif %},
-    "tag": {{ project.tags | first | default: "" | jsonify }},
-    "tags": {% if project.tags %}{{ project.tags | jsonify }}{% else %}[]{% endif %}
-  }{% unless forloop.last %},{% endunless %}
-{% endfor %}
-]
-</script>
-<script src="/assets/js/idea-heat.js" defer></script>
-<noscript>
-  <p class="idea-heat__noscript">JavaScript paints the sweep and local +heat. The chips above are still the real unfinished joints.</p>
-</noscript>
-
-{% assign career_projects = site.projects | sort: "date" %}
-
-<section id="about" class="section" data-station-target="about">
-  <div class="section__head" data-reveal>
-    <span class="section__num">04</span>
-    <h2 class="display-2">The Human</h2>
-  </div>
-  <div class="about-bench">
-    <div class="prose" data-reveal>
-      {{ content }}
-    </div>
-
-    {% if career_projects.size > 0 %}
-    {% assign newest_logged = career_projects | last %}
-    <div class="career-scope" data-career-scope data-reveal>
-      <div class="instrument career-scope__instrument">
-        <div class="instrument__bezel">
-          <div class="instrument__chrome">
-            <span>CH4 · Career scope</span>
-            <span class="instrument__live"><span class="led led--live" aria-hidden="true"></span> {{ career_projects.size }} BUILDS</span>
-          </div>
-
-          <div class="career-scope__stage" data-career-stage>
-            <canvas class="career-scope__canvas" data-career-canvas width="960" height="280" aria-hidden="true"></canvas>
-            <ol class="career-scope__markers" data-career-markers>
-              {% for project in career_projects %}
-              <li>
-                <a
-                  class="career-scope__blip{% if project.status == 'In progress' %} is-hot{% endif %}"
-                  href="{{ project.url }}"
-                  data-career-id="{{ project.path | split: '/' | last | remove: '.md' }}"
-                  data-career-year="{{ project.date | date: '%Y' }}"
-                >
-                  <span class="sr-only">{{ project.date | date: "%Y" }} · {{ project.title }}{% if project.status %} · {{ project.status }}{% endif %}</span>
-                </a>
-              </li>
-              {% endfor %}
-            </ol>
-          </div>
-
-          <div class="career-scope__timebase" data-career-ticks aria-hidden="true"></div>
-
-          <div class="career-scope__hud" data-career-hud>
-            <p class="career-scope__kicker" data-career-kicker>Timebase · oldest on the left</p>
-            <p class="career-scope__title" data-career-title>Probe a blip</p>
-            <p class="career-scope__summary" data-career-summary>Every spike is a logged write-up. Pointer is the probe.</p>
-            <a class="career-scope__open" data-career-open href="{{ newest_logged.url }}">Open the write-up →</a>
-          </div>
-        </div>
-      </div>
-      <p class="instrument__caption">Build career, not a résumé — every spike is a logged write-up. Tab a spike, Enter opens the log.</p>
-    </div>
-    {% endif %}
-  </div>
-
-  <div class="contact panel panel--contact" data-reveal>
-    <h3 class="contact__title">Let's build something ridiculous together</h3>
-    <p class="contact__sub">Got an idea? Want to collaborate? Just want to argue about 3D printer brands?</p>
-    <a class="btn btn--phosphor" href="mailto:email@example.com">Get in touch ✦</a>
-  </div>
-</section>
-
-{% if career_projects.size > 0 %}
-<script type="application/json" id="career-scope-data">
-[
-{% for project in career_projects %}
-  {
-    "id": {{ project.path | split: "/" | last | remove: ".md" | jsonify }},
-    "title": {{ project.title | jsonify }},
-    "url": {{ project.url | jsonify }},
-    "summary": {{ project.summary | default: "" | jsonify }},
-    "status": {{ project.status | default: "" | jsonify }},
-    "date": {{ project.date | date: "%Y-%m-%d" | jsonify }},
-    "year": {{ project.date | date: "%Y" | jsonify }},
-    "tag": {{ project.tags | first | default: "" | jsonify }},
-    "tags": {% if project.tags %}{{ project.tags | jsonify }}{% else %}[]{% endif %}
-  }{% unless forloop.last %},{% endunless %}
-{% endfor %}
-]
-</script>
-<script src="/assets/js/career-scope.js" defer></script>
-<noscript>
-  <p class="career-scope__noscript">JavaScript draws the phosphor trace. The spikes above still link to every logged build.</p>
-</noscript>
-{% endif %}

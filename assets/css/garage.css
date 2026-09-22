@@ -1,0 +1,405 @@
+/* Blaha Labs: the neon storefront. Scene controls share the artwork coordinate space. */
+.page-home { background:#07060c; color:#f6f2ff; --font-display:'Space Grotesk',sans-serif; }
+.page-home .content-wrapper,.page-home .page {width:100%;max-width:none;margin:0;padding:0}
+.garage {position:relative;min-height:100svh;overflow:hidden;background:#07060c;isolation:isolate}
+.neon-header,.neon-footer {position:absolute;left:2.8%;right:2.8%;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:20px;font:14px 'IBM Plex Mono',monospace;letter-spacing:.2em;text-transform:uppercase}
+.neon-header {top:24px}.neon-header h1{margin:0;font:inherit;font-weight:500;letter-spacing:.38em}.neon-header h1 span{display:none}
+.neon-header button,.neon-footer button {padding:10px 0;border:0;background:none;color:#d0bfea;font:inherit;letter-spacing:inherit;text-transform:inherit;cursor:pointer}
+.neon-header button:hover,.neon-footer button:hover{color:#77eeff}
+.neon-stage{height:100svh;position:relative;overflow:hidden}
+.garage-canvas{display:block;width:100%;height:100%;touch-action:none;outline:none;cursor:grab}
+.garage-canvas:active{cursor:grabbing}.garage-canvas:focus-visible{outline:2px solid #7eeaff;outline-offset:-4px}
+.scene-status{position:absolute;left:50%;top:48%;transform:translate(-50%,-50%);font:14px 'IBM Plex Mono',monospace;color:#e8caff;pointer-events:none}
+.scene-tooltip{position:absolute;left:50%;bottom:110px;transform:translateX(-50%);padding:10px 16px;background:#120d22ec;border:1px solid #ad76c4;color:#f9f1ff;font:13px 'IBM Plex Mono',monospace;pointer-events:none;z-index:4}
+.scene-access{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+.scene-access:focus-within{clip-path:none;width:auto;height:auto;left:20px;top:80px;display:flex;flex-direction:column;padding:16px;background:#100a20;z-index:20;gap:8px}
+.scene-access button,.scene-access a{background:none;border:1px solid #9a68af;color:white;padding:10px;text-align:left}
+.camera-controls{position:absolute;left:50%;bottom:83px;transform:translateX(-50%);display:flex;gap:6px;z-index:5}
+.garage.is-arcade .camera-controls,.garage.is-arcade .neon-explore{display:none}
+.arcade-hud{position:absolute;left:50%;bottom:78px;transform:translateX(-50%);z-index:20;display:flex;flex-direction:column;align-items:center;gap:10px;width:min(540px,calc(100% - 32px));pointer-events:none}
+@media(min-width:721px){.arcade-hud{display:none!important}}
+.arcade-hud__row{pointer-events:auto}
+.arcade-hud[hidden]{display:none}
+.arcade-hud__status{margin:0;padding:8px 14px;border:1px solid #7de7ff66;background:#100b1eeb;color:#d8fbff;font:12px 'IBM Plex Mono',monospace;letter-spacing:.08em;text-transform:uppercase;text-align:center}
+.arcade-hud__grid{display:none;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:0;padding:0;list-style:none;width:100%;pointer-events:auto}
+.arcade-hud__grid button{width:100%;padding:10px 8px;border:1px solid #7de7ff55;border-radius:8px;background:#101820e6;color:#f4ecff;font:11px 'IBM Plex Mono',monospace}
+.arcade-hud.is-detail .arcade-hud__grid{display:none}
+.arcade-hud__row{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
+.arcade-hud__row button{border:1px solid #8f71a84d;background:#100b1ec9;color:#f4ecff;border-radius:4px;padding:8px 12px;font:11px 'IBM Plex Mono',monospace;letter-spacing:.08em;text-transform:uppercase;cursor:pointer}
+.arcade-hud__row button:hover,.arcade-hud__row button:focus-visible{border-color:#72e6ff;color:#fff}
+.arcade-hud__row [data-arcade-select]{border-color:#5b67ff;background:#5b67ff;color:#fff;font-weight:700}
+.camera-controls button{border:1px solid #8f71a84d;background:#100b1ec9;color:#c8b6dc;border-radius:4px;padding:8px 12px;font:11px 'IBM Plex Mono',monospace;cursor:pointer}
+.camera-controls button:hover{border-color:#72e6ff;color:white}
+.garage button:focus-visible,.garage a:focus-visible{outline:2px solid #80edff;outline-offset:3px}
+.neon-footer{bottom:36px;font-size:12px;letter-spacing:.18em}.neon-explore{text-align:center}
+.neon-mobile{display:none}
+@media(max-width:720px){
+ .neon-header{top:15px;left:22px;right:22px;font-size:10px;letter-spacing:.09em}.neon-header h1{letter-spacing:.22em}
+ .neon-stage{height:65svh;min-height:420px;padding:0}.camera-controls{top:calc(65svh - 45px);bottom:auto}.scene-tooltip{bottom:60px;max-width:90%;font-size:11px}
+ .arcade-hud{top:calc(65svh - 100px);bottom:auto;width:min(420px,calc(100% - 24px))}
+ .arcade-hud__grid{display:grid}
+ .neon-footer{position:relative;left:auto;right:auto;margin:0 24px;bottom:auto;justify-content:space-between;font-size:10px}.neon-explore{display:none}
+ .neon-mobile{display:block;padding:28px 25px 36px}.neon-mobile__eyebrow{font:10px 'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.2em;color:#d8a4f1}
+ .neon-mobile h2{font:500 38px/1.05 'Space Grotesk',sans-serif;letter-spacing:-.04em;margin:16px 0}.neon-mobile p:not(.neon-mobile__eyebrow){color:#b3a8c3;font-size:14px}
+ .neon-mobile>button{width:100%;padding:16px;border:1px solid #d87de2;background:#191025;color:#fff;font:14px 'Space Grotesk',sans-serif;margin:8px 0;border-radius:4px}
+ .neon-mobile>button+button{border-color:#67f3ff66;margin-bottom:22px}
+ .neon-mobile nav{display:flex;justify-content:space-between}.neon-mobile nav button,.neon-mobile nav a{padding:8px 0;border:0;background:none;color:#cfc0df;font:12px 'IBM Plex Mono',monospace}
+ .neon-pin__label{white-space:normal;width:140px}.neon-pin{padding:12px}
+}
+@media(prefers-reduced-motion:reduce){.neon-scene,.neon-hotspots{transition:none!important}}
+.garage-panel,
+.garage-drawer,
+.garage-info {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+}
+
+.garage-panel[hidden],
+.garage-drawer[hidden],
+.garage-info[hidden] {
+  display: none;
+}
+
+.garage-panel__backdrop,
+.garage-drawer__backdrop,
+.garage-info__backdrop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: rgba(0, 0, 0, .7);
+  cursor: default;
+}
+
+.garage-panel__sheet,
+.garage-info__sheet {
+  position: absolute;
+  right: clamp(20px, 4vw, 64px);
+  top: 50%;
+  width: min(430px, calc(100vw - 40px));
+  padding: clamp(26px, 4vw, 46px);
+  border: 1px solid rgba(160, 120, 220, .5);
+  border-radius: 5px;
+  background: #100d1b;
+  box-shadow: 0 28px 80px rgba(0, 0, 0, .6);
+  transform: translateY(-50%);
+}
+
+.garage-panel__sheet::before,
+.garage-info__sheet::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 7px;
+  height: 100%;
+  background: #ef5cf5;
+}
+
+.garage-panel__close,
+.garage-drawer__close,
+.garage-info__close {
+  border: 1px solid rgba(245, 236, 220, .3);
+  border-radius: 3px;
+  background: transparent;
+  color: rgba(245, 236, 220, .72);
+  font-family: var(--font-mono);
+  font-size: .68rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.garage-panel__close,
+.garage-info__close {
+  float: right;
+  padding: 7px 9px;
+}
+
+.garage-panel__kicker,
+.garage-drawer__kicker,
+.garage-info__kicker {
+  margin: 0 0 12px;
+  color: #ed9cff;
+  font-family: var(--font-mono);
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+}
+
+.garage-panel__title,
+.garage-info__sheet h2,
+.garage-drawer__head h2 {
+  margin: 0;
+  color: #f5ecdc;
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 3.6rem);
+  line-height: .98;
+  letter-spacing: -.045em;
+}
+
+.garage-panel__summary,
+.garage-info__sheet > p:not(.garage-info__kicker) {
+  margin: 24px 0;
+  color: rgba(245, 236, 220, .74);
+  font-size: 1rem;
+  line-height: 1.65;
+}
+
+.garage-panel__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 28px;
+}
+
+.garage-panel__tags span {
+  padding: 6px 9px;
+  border: 1px solid rgba(100, 255, 210, .34);
+  border-radius: 2px;
+  color: #95edff;
+  font-family: var(--font-mono);
+  font-size: .66rem;
+  text-transform: uppercase;
+}
+
+.garage-panel__cta,
+.garage-drawer__full,
+.garage-info__contact a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 22px;
+  padding: 13px 16px;
+  border-radius: 2px;
+  background: #ef5cf5;
+  color: #100d09;
+  font-family: var(--font-mono);
+  font-size: .76rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.garage-drawer__sheet {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: min(660px, 100vw);
+  height: 100%;
+  overflow-y: auto;
+  padding: clamp(26px, 4vw, 50px);
+  border-left: 1px solid rgba(160, 120, 220, .5);
+  background: #100d1b;
+  box-shadow: -28px 0 80px rgba(0, 0, 0, .55);
+}
+
+.garage-drawer__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.garage-drawer__head h2 {
+  font-size: clamp(2.5rem, 5vw, 4.8rem);
+}
+
+.garage-drawer__close { padding: 9px 11px; }
+
+.garage-drawer__intro {
+  max-width: 46ch;
+  margin: 20px 0 26px;
+  color: rgba(245, 236, 220, .65);
+}
+
+.garage-drawer__filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 26px;
+}
+
+.garage-drawer__filters button {
+  padding: 8px 11px;
+  border: 1px solid rgba(245, 236, 220, .24);
+  border-radius: 2px;
+  background: transparent;
+  color: rgba(245, 236, 220, .72);
+  font-family: var(--font-mono);
+  font-size: .68rem;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.garage-drawer__filters button.is-active {
+  border-color: #ef5cf5;
+  background: #ef5cf5;
+  color: #100d09;
+  font-weight: 800;
+}
+
+.garage-inventory {
+  display: grid;
+  gap: 0;
+  margin: 0 0 28px;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid rgba(245, 236, 220, .16);
+}
+
+.garage-inventory__item[hidden] { display: none; }
+
+.garage-inventory__item a {
+  display: grid;
+  grid-template-columns: 82px 1fr auto;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 6px;
+  border-bottom: 1px solid rgba(245, 236, 220, .16);
+  transition: background .2s ease, padding .2s ease;
+}
+
+.garage-inventory__item a:hover,
+.garage-inventory__item a:focus-visible {
+  padding-left: 13px;
+  background: rgba(255, 113, 31, .08);
+}
+
+.garage-inventory__thumb {
+  width: 82px;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border: 1px solid rgba(245, 236, 220, .22);
+  border-radius: 3px;
+  background: #25211c;
+}
+
+.garage-inventory__thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.garage-inventory__copy { min-width: 0; }
+
+.garage-inventory__copy > strong {
+  display: block;
+  color: #f5ecdc;
+  font-size: 1rem;
+  line-height: 1.25;
+}
+
+.garage-inventory__copy > span:last-child {
+  display: -webkit-box;
+  margin-top: 5px;
+  overflow: hidden;
+  color: rgba(245, 236, 220, .56);
+  font-size: .78rem;
+  line-height: 1.35;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.garage-inventory__meta {
+  display: flex;
+  gap: 9px;
+  margin-bottom: 5px;
+  color: #ed9cff;
+  font-family: var(--font-mono);
+  font-size: .61rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.garage-inventory__arrow { color: #65eaff; }
+
+.garage-info__contact {
+  padding-top: 22px;
+  border-top: 1px solid rgba(245, 236, 220, .18);
+}
+
+.garage-info__contact a {
+  margin-top: 14px;
+}
+
+.garage-noscript {
+  padding: 32px;
+  background: #100d1b;
+  color: #f5ecdc;
+}
+
+body.garage-lock { overflow: hidden; }
+
+
+.garage-panel__sheet,.garage-info__sheet{max-height:90svh;overflow:auto}
+.garage-panel__hero{width:100%;max-height:220px;object-fit:cover;margin:20px 0 0;border-radius:3px}
+@media(max-width:540px){.garage-inventory__item a{grid-template-columns:56px 1fr;gap:12px}.garage-inventory__thumb{width:56px}.garage-inventory__arrow{display:none}.garage-drawer__sheet{padding:25px}.garage-drawer__head h2{font-size:36px}}
+
+html:has(.page-home){scrollbar-color:#84528c #07060c} html:has(.page-home)::-webkit-scrollbar-thumb{background:#84528c}
+.scene-unavailable .scene-access{clip-path:none;width:auto;height:auto;position:relative;display:flex;flex-wrap:wrap;gap:10px;padding:24px}
+.scene-unavailable .scene-status{width:80%;text-align:center}
+
+/* Orbital workshop: cool graphite surfaces and restrained cyan controls. */
+.page-home,.garage{background:#080e13;color:#e4eef2}
+.neon-header button,.neon-footer button{color:#aebfc7}
+.scene-status{color:#a2e8ee;letter-spacing:.16em;text-align:center}
+.scene-tooltip{background:#101b22ed;border-color:#42f2ff55;color:#dffcff}
+.camera-controls button{background:#101b22de;border-color:#9aafba40;color:#c3d3db}
+
+.neon-mobile__eyebrow,.neon-mobile p{color:#aebfc7}
+.neon-mobile>button{border-color:#42f2ff66;background:#101b22}
+.neon-header h1{color:#d8faff;text-shadow:0 0 18px #42f2ff42}
+.neon-header button,.neon-footer button{transition:color .2s ease,text-shadow .2s ease}
+.neon-header button:hover,.neon-footer button:hover{color:#fff;text-shadow:0 0 12px #42f2ff}
+.camera-controls button:hover{box-shadow:0 0 16px #42f2ff26}
+.scene-tooltip{letter-spacing:.08em;text-transform:uppercase;box-shadow:0 0 24px #42f2ff1f,inset 0 0 18px #42f2ff0c}
+/* Touch equivalents of the machine's native cream-and-cherry screen. */
+.arcade-hud__status{border-color:#b92f32;background:#f5edda;color:#252b27;font-weight:700;letter-spacing:.02em;text-transform:none}
+.arcade-hud__grid button{border:1px solid #b92f32;border-radius:5px;background:#f5edda;color:#252b27;font:700 14px Georgia,serif;min-height:46px;text-align:left;padding:10px 14px}
+.arcade-hud__row button{border-color:#b92f32;background:#f5edda;color:#252b27;min-height:44px;font-weight:700}
+.arcade-hud__row [data-arcade-select]{border-color:#b92f32;background:#b92f32;color:#f5edda}
+.arcade-hud__grid button:hover,.arcade-hud__grid button:focus-visible,.arcade-hud__row button:hover{background:#b92f32;color:#f5edda;border-color:#f5edda}
+@media(max-width:720px){
+ .garage.is-arcade .arcade-hud{position:relative;left:auto;top:auto;bottom:auto;transform:none;width:auto;margin:12px 20px 28px;gap:12px}
+ .garage.is-arcade .neon-mobile{display:none}
+ .garage.is-arcade .arcade-hud__row{width:100%}
+ .garage.is-arcade .arcade-hud__row button{flex:1}
+}
+/* A full journal dispensed over the workshop. */
+.garage-panel__sheet.build-reader{inset:20px;transform:none;width:min(1100px,calc(100% - 40px));height:calc(100% - 40px);max-height:none;margin:auto;padding:0;overflow:auto;overscroll-behavior:contain;border:1px solid #b4ad91;border-radius:12px;background:#f5edda;color:#252b27;--ink:#252b27;--muted:#62664f;--muted2:#787b65;--paper:#ece2c9;--base:#f5edda;--border:#c9bea3;--solder:#b92f32;--laser:#6b704a;--phosphor:#b92f32;--shadow-hard:none;--shadow-hard-sm:none;scrollbar-color:#b92f32 #ece2c9;color-scheme:light}
+.build-reader::before{display:none}
+.build-reader__bar{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:20px;padding:18px 32px;background:#b92f32;color:#f5edda;font:700 15px Arial,sans-serif;letter-spacing:.04em}
+.build-reader__bar>span>span{font:11px var(--font-mono);margin-left:14px;opacity:.8}
+.build-reader button{border:1px solid currentColor;border-radius:4px;background:transparent;color:inherit;padding:10px 14px;cursor:pointer;font:600 13px Arial,sans-serif}
+.build-reader__bar button{white-space:nowrap}.build-reader__bar button span{font-size:22px;margin-left:12px;vertical-align:middle}
+.build-reader__article{max-width:880px;margin:auto;padding:52px 48px 40px}
+.build-reader__kicker{font:600 12px var(--font-mono);text-transform:uppercase;letter-spacing:.08em;color:#b92f32;margin:0 0 18px}
+.build-reader h1{font:700 clamp(34px,4.5vw,62px)/1.05 Georgia,serif;letter-spacing:-.035em;margin:0 0 24px;overflow-wrap:anywhere}
+.build-reader__summary{font:20px/1.6 Georgia,serif;color:#5c604d;margin:0 0 22px}
+.build-reader__tags{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:36px}.build-reader__tags span{border:1px solid #b4ad91;border-radius:30px;padding:6px 12px;font:12px var(--font-mono);color:#62664f}
+.build-reader .project__hero{margin:0 0 40px;padding:0;border:0;border-radius:6px;overflow:hidden;background:#e8dec5;box-shadow:none;transform:none}
+.build-reader .project__hero-img{display:block;width:100%;height:auto;max-height:540px;object-fit:contain}
+.build-reader .project__main{min-width:0;max-width:100%;width:100%}
+.build-reader .prose{font:18px/1.85 Georgia,serif;max-width:100%;color:#252b27}
+.build-reader .prose h2,.build-reader .prose h3,.build-reader .bom__title,.build-reader .timeline__title{font-family:Georgia,serif;color:#252b27;letter-spacing:-.02em}
+.build-reader .prose h2{font-size:30px;margin-top:42px}.build-reader .prose h3{font-size:23px}
+.build-reader .prose a,.build-reader__footer a{color:#a0292c;text-decoration:underline;text-underline-offset:4px}
+.build-reader img,.build-reader video{max-width:100%;height:auto}.build-reader video{display:block;width:100%;margin:24px 0;background:#252b27}
+.build-reader .prose img{display:block;border-radius:5px;margin:28px auto;max-height:660px;object-fit:contain;cursor:default}
+.build-reader .prose pre{overflow:auto;background:#252b27;color:#f5edda;padding:20px;border-radius:5px;max-width:100%;font-size:13px}
+.build-reader .prose table{display:block;overflow:auto;max-width:100%}
+.build-reader .project__gallery{display:grid;grid-template-columns:1fr;gap:24px;margin-top:40px}
+.build-reader .project__gallery-item{margin:0;padding:0;border:0;background:#e8dec5;box-shadow:none;border-radius:6px;overflow:hidden;transform:none}
+.build-reader .project__gallery-item img{display:block;width:100%;height:auto;max-height:720px;object-fit:contain;cursor:default}
+.build-reader .specsheet{margin:24px 0 36px;padding:24px;border:1px solid #c9bea3;background:#ece2c9;box-shadow:none;transform:none}
+.build-reader .specsheet__badge{position:static;display:inline-block;margin-bottom:16px;transform:none;background:#b92f32;color:#f5edda}
+.build-reader .bom,.build-reader .timeline{margin-top:40px}
+.build-reader__notice{padding:30px 0;font:18px/1.6 Georgia,serif;color:#62664f}
+.build-reader__footer{margin-top:50px;padding-top:24px;border-top:1px solid #b4ad91;display:flex;justify-content:space-between;align-items:center;gap:20px;font:13px Arial,sans-serif}
+.build-reader :focus-visible{outline:3px solid #b92f32;outline-offset:4px}.build-reader__bar :focus-visible{outline-color:#f5edda}
+@media(max-width:600px){.garage-panel__sheet.build-reader{inset:0;width:100%;height:100%;border:0;border-radius:0}.build-reader__bar{padding:12px 16px}.build-reader__bar>span>span{display:none}.build-reader__article{padding:32px 22px}.build-reader__summary{font-size:18px}.build-reader .prose{font-size:17px}.build-reader__footer{align-items:flex-start;flex-direction:column}.build-reader .specsheet{padding:16px}.build-reader .specsheet__grid{grid-template-columns:1fr}}

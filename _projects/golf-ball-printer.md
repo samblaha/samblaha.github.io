@@ -7,6 +7,9 @@ tags:
   - CAD
   - Hardware
 status: "Shipped"
+garage_slot: "golf"
+garage_label: "Golf Ball Printer"
+garage_kicker: "Shipped · golf tech"
 hero: "/assets/projects/golf-ball-printer/hero.jpg"
 hero_alt: "A golf ball printed with a custom design"
 specs:

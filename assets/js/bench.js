@@ -42,7 +42,7 @@
       '> POST ................ OK',
       '> IRON HEATER ......... 340°C',
       '> SCOPE ............... LOCK',
-      '> GAMES ............... 3 CARTS',
+      '> PROJECTS ............ ARCHIVED',
       '> BUILDS .............. LOGGED',
       '> CURIOSITY ........... UNCAPPED',
     ];

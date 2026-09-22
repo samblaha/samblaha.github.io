@@ -1,6 +1,19 @@
-# Blaha Labs (GitHub Pages + Jekyll)
+# Blaha Labs — Digital Maker Garage
 
-A loud, TVA-toned "Workshop Pop" portfolio where every project is a blog post. **Projects are a Jekyll collection**—each project is one Markdown file in `_projects/`.
+An immersive, object-led maker portfolio built with GitHub Pages and Jekyll. The homepage is a lived-in digital workshop: active builds sit on the main bench, past projects live on the archive shelf, and every object opens a real project log. **Projects are a Jekyll collection**—each project is one Markdown file in `_projects/`.
+
+## Blender workshop
+
+The homepage loads a Blender-authored orbital workshop from `assets/models/garage.glb`.
+An atomic-age Blaha Cola machine outside the right wall opens the project selector,
+and an animated engineering hologram sits above the central projector. Desktop supports constrained
+camera exploration; mobile includes touch-friendly project controls. The project
+index remains accessible if WebGL cannot load.
+
+Runtime: `assets/js/garage3d/main.js` and `lab.js`. Scene source:
+`assets/models/garage.blend`. See [the asset contract](assets/models/ASSET-CONTRACT.md)
+for regeneration, object names, and remaining production-art work. Rebuild the
+committed browser bundle with `sh scripts/build_garage_3d.sh` after runtime edits.
 
 ## Run locally (live updates)
 This runs a local web server and automatically refreshes when you edit files.
@@ -17,19 +30,22 @@ This runs a local web server and automatically refreshes when you edit files.
 If you run into Ruby version errors, upgrade Ruby (recommended) and then re-run the steps above.
 
 ## Add a new project in 60 seconds
-1. Duplicate the template:
-   - Copy `_projects/_TEMPLATE.md` → `_projects/<your-slug>.md`
-2. Edit the frontmatter at the top:
+
+1. Generate a ready-to-edit draft:
+   - `python3 scripts/new_project.py "Project Name" --summary "What it is and why it matters." --tags "Hardware,AI"`
+2. Add media under the generated `assets/projects/<slug>/` folder.
+3. Edit the frontmatter at the top:
    - `title`, `date` (YYYY-MM-DD), `summary`, `tags`
    - Optional: `status`, `hero`, `hero_alt`, `hero_caption`, `gallery`, `repo`, `demo`, `comments`
+   - Optional homepage hotspot: `garage_slot`, `garage_label`, `garage_kicker`
    - Optional structured extras: `specs`, `parts`, `log` (see below)
-3. Add images (optional):
-   - Put them under `/assets/projects/<your-slug>/`
-   - Reference them with root-relative paths like `/assets/projects/<your-slug>/hero.jpg`
-4. Commit + push.
+4. Set `published: true`, run `python3 scripts/validate_projects.py`, then commit and push.
+
+Published projects appear automatically in the homepage archive and `/portfolio/`.
+See [ADDING-PROJECTS.md](ADDING-PROJECTS.md) for slot choices and all generator options.
 
 ## What a project post gets for free
-- **Header**: status sticker (`In progress` pulses, `Shipped` gets a check), date, reading time, clickable tags that filter the homepage.
+- **Header**: status sticker (`In progress` pulses, `Shipped` gets a check), date, reading time, and project tags.
 - **Build-log rail**: a sticky table of contents built from your `##` headings, with scroll-tracking and numbered sections. Headings get hover anchor links.
 - **Reading progress bar** across the top of the page.
 - **Rich Markdown**:
@@ -63,8 +79,7 @@ The committed JSON is an empty schema so the rack stays up without credentials. 
 ## Notes
 - Project URLs are automatically generated from filenames:
   - `_projects/laser-timing-gates.md` → `/p/laser-timing-gates/`
-- Homepage shows the **six newest** projects (by `date`) plus a link to the full catalog.
+- Homepage project objects open focused build details; the physical archive shelf opens a filterable inventory generated from the full collection.
 - Tag filters live on `/portfolio/` (deep-linkable: `/portfolio/?tag=hardware#projects`). Old `/?tag=` links redirect there.
-- Built-in arcade (Solder Snake, Laser Gates, Chip Match) sits on the homepage after projects and at `/arcade/`.
 - Missing optional fields won’t break rendering (no hero/status/repo/demo/gallery is fine).
-- The homepage Idea Box is an IR-camera heat strip of unfinished / stub builds already in `_projects/` (local +heat in `localStorage`). Comments still use giscus; see `GISCUS-SETUP.md` — IDs stay empty until a real **Project Ideas** category exists.
+- Comments use giscus; see `GISCUS-SETUP.md` for repository setup.

@@ -4,6 +4,11 @@ url: "https://samblaha.com"
 permalink: pretty
 
 exclude:
+  - assets/models/garage.blend
+  - assets/models/garage.blend1
+  - assets/models/ASSET-CONTRACT.md
+  - output/
+  - design-qa.md
   - node_modules/
   - package.json
   - package-lock.json

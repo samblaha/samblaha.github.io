@@ -7,6 +7,9 @@ tags:
   - Hardware
   - CAD
 status: "Shipped"
+garage_slot: "delta"
+garage_label: "Delta 3D printer"
+garage_kicker: "Shipped · fabrication"
 hero: "/assets/projects/delta-3d-printer/hero.jpg"
 hero_fit: "contain"
 hero_alt: "The finished delta 3D printer"

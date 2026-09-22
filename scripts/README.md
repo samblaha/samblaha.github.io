@@ -52,8 +52,8 @@ The sync script maps GHIN `course_name` onto exact `BALLS[].name` (and optional 
 
 ```bash
 python3 -m unittest scripts.test_sync_ghin
+python3 scripts/validate_projects.py
 node scripts/test_rack_scores.js
-node scripts/test_arcade_pass.js
 node scripts/test_career_scope.js
 node scripts/test_multimeter.js
 node scripts/test_idea_heat.js

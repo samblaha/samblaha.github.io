@@ -8,6 +8,9 @@ tags:
   - UX
   - AI
 status: "In progress"
+garage_slot: "openpage"
+garage_label: "OpenPage · active build"
+garage_kicker: "Active build · hardware + AI"
 repo: "https://github.com/samblaha/DIYEreader"
 demo: ""
 specs:

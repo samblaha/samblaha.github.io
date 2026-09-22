@@ -195,27 +195,21 @@ test('readings match real _projects on disk', () => {
   });
 });
 
-test('home layout probes site.projects and does not invent stats', () => {
+test('garage home exposes real project routes and a complete archive', () => {
   const home = fs.readFileSync(path.join(repo, '_layouts/home.html'), 'utf8');
-  const card = fs.readFileSync(path.join(repo, '_includes/project-card.html'), 'utf8');
-  const js = fs.readFileSync(path.join(repo, 'assets/js/multimeter.js'), 'utf8');
-  const css = fs.readFileSync(path.join(repo, 'assets/css/site.css'), 'utf8');
-  const copper = fs.readFileSync(path.join(repo, 'assets/js/copper-trace.js'), 'utf8');
-  const lab = fs.readFileSync(path.join(repo, 'lab.html'), 'utf8');
-  assert.ok(home.includes('data-dmm'));
-  assert.ok(home.includes('id="dmm-data"'));
-  assert.ok(home.includes('/assets/js/multimeter.js'));
-  assert.ok(home.includes('latest_projects limit: 6'));
-  assert.ok(home.includes('probe=true'));
-  assert.ok(card.includes('data-probe-id'));
-  assert.ok(card.includes('card__pad'));
-  assert.ok(css.includes('.dmm'));
-  assert.ok(css.includes('prefers-reduced-motion'));
-  assert.ok(copper.includes('[data-dmm]'));
-  assert.doesNotMatch(js, /ghin|password|api[_-]?key|secret/i);
-  assert.doesNotMatch(js, /productivity|star count|fake/i);
-  assert.doesNotMatch(home, /lab-pad|data-lab-pad/);
-  assert.ok(lab.includes('data-lab-pad'), 'lab probe pads stay on /lab/');
+  const js = fs.readFileSync(path.join(repo, 'assets/js/garage.js'), 'utf8');
+  const css = fs.readFileSync(path.join(repo, 'assets/css/garage.css'), 'utf8');
+  assert.ok(home.includes('data-garage'));
+  assert.ok(home.includes('data-open-inventory'));
+  assert.ok(home.includes('for project in garage_projects'));
+  assert.ok(home.includes('where_exp: "project", "project.garage_slot"'));
+  assert.ok(home.includes('data-project="{{ project.slug }}"'));
+  assert.ok(home.includes('garage-pin--{{ project.garage_slot'));
+  assert.ok(home.includes('"url": {{ project.url | jsonify }}'));
+  assert.ok(js.includes('prefers-reduced-motion'));
+  assert.ok(js.includes("event.key === 'Escape'"));
+  assert.ok(css.includes('@media (max-width: 720px)'));
+  assert.doesNotMatch(home, /arcade|constellation|star chart/i);
 });
 
 if (failed) {

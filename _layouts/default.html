@@ -3,9 +3,10 @@
   <head>
     {% include head.html %}
   </head>
-  <body class="{% if page.layout == 'home' %}page-home{% endif %}{% if page.collection == 'projects' %} page-project{% endif %}">
+  <body class="{{ page.body_class }} {% if page.layout == 'home' %}page-home{% endif %}{% if page.collection == 'projects' %} page-project{% endif %}">
     <a class="skip-link" href="#main">Skip to content</a>
 
+    {% unless page.layout == 'home' %}
     <div class="boot" id="boot" hidden>
       <div class="boot__crt" aria-hidden="true"></div>
       <canvas class="boot__scope" id="boot-scope" width="720" height="220" aria-hidden="true"></canvas>
@@ -27,8 +28,10 @@
       <div class="bg__vignette"></div>
       <div class="bg__grid"></div>
     </div>
+    {% endunless %}
 
     <div class="content-wrapper">
+      {% unless page.layout == 'home' %}
       <header class="nav-wrap">
         <nav class="nav" aria-label="Primary">
           <a class="nav__logo" href="/">
@@ -39,8 +42,6 @@
 
           <div class="nav__links">
             <a class="nav__link{% if page.url == '/portfolio/' %} is-current{% endif %}" href="/portfolio/">Work</a>
-            <a class="nav__link{% if page.url == '/constellation/' %} is-current{% endif %}" href="/constellation/">Sky</a>
-            <a class="nav__link{% if page.url == '/arcade/' %} is-current{% endif %}" href="/arcade/">Play</a>
             <a class="nav__link{% if page.url == '/rack/' %} is-current{% endif %}" href="/rack/">Rack</a>
             <a class="nav__link" href="/#about">About</a>
           </div>
@@ -52,11 +53,13 @@
           </button>
         </nav>
       </header>
+      {% endunless %}
 
       <main class="page" id="main" tabindex="-1">
         {{ content }}
       </main>
 
+      {% unless page.layout == 'home' %}
       <footer class="footer">
         <div class="footer__telemetry" aria-hidden="true">
           <span>IRON <em data-iron-temp>187</em>°C</span>
@@ -72,13 +75,15 @@
           </div>
         </div>
         <span class="footer__text">© {{ "now" | date: "%Y" }} {{ site.title | default: "Portfolio" }} — made with solder fumes &amp; questionable decisions.</span>
-        <a class="footer__lab" href="/lab/" hidden data-lab-entry>Lab <span>after hours</span></a>
       </footer>
+      {% endunless %}
     </div>
 
-    <script src="/assets/js/theme.js"></script>
-    <script src="/assets/js/bench.js" defer></script>
-    <script src="/assets/js/effects.js" defer></script>
-    <script src="/assets/js/copper-trace.js" defer></script>
+    {% unless page.layout == 'home' %}
+      <script src="/assets/js/theme.js"></script>
+      <script src="/assets/js/bench.js" defer></script>
+      <script src="/assets/js/effects.js" defer></script>
+      <script src="/assets/js/copper-trace.js" defer></script>
+    {% endunless %}
   </body>
 </html>

@@ -214,20 +214,13 @@ test('repo backlog matches unfinished / stub posts on disk', () => {
   });
 });
 
-test('home layout wires the IR cam without filling fake giscus IDs', () => {
+test('garage home retires the IR idea camera without filling fake giscus IDs', () => {
   const home = fs.readFileSync(path.join(repo, '_layouts/home.html'), 'utf8');
   const giscus = fs.readFileSync(path.join(repo, '_includes/giscus.html'), 'utf8');
   const js = fs.readFileSync(path.join(repo, 'assets/js/idea-heat.js'), 'utf8');
-  const css = fs.readFileSync(path.join(repo, 'assets/css/site.css'), 'utf8');
-  const copper = fs.readFileSync(path.join(repo, 'assets/js/copper-trace.js'), 'utf8');
-  assert.ok(home.includes('data-idea-heat'));
-  assert.ok(home.includes('id="idea-heat-data"'));
-  assert.ok(home.includes('/assets/js/idea-heat.js'));
-  assert.ok(home.includes('CH3 · IR CAM'));
-  assert.ok(home.includes('data-heat-vote'));
-  assert.ok(css.includes('.idea-heat'));
-  assert.ok(css.includes('prefers-reduced-motion'));
-  assert.ok(copper.includes('[data-idea-heat]'));
+  assert.doesNotMatch(home, /data-idea-heat|idea-heat-data|CH3 · IR CAM|data-heat-vote/);
+  assert.ok(home.includes('data-garage'));
+  assert.ok(home.includes('data-open-inventory'));
   assert.ok(giscus.includes('assign giscus_repo_id = ""'));
   assert.ok(giscus.includes('assign giscus_category_id = ""'));
   assert.ok(giscus.includes('giscus_repo_id != ""'));

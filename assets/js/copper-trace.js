@@ -5,9 +5,7 @@
   const coarseMq = window.matchMedia('(pointer: coarse)');
 
   const QUIET =
-    '[data-arcade-canvas], .arcade__screen, .arcade__match, .arcade__overlay, .arcade__pad,' +
     '.leaflet-container, .leaflet-pane, .leaflet-control,' +
-    '#constellation-stage, .constellation__stage, .constellation__canvas,' +
     '[data-career-scope], .career-scope__stage, .career-scope__canvas,' +
     '[data-dmm], .dmm__lcd, .dmm__instrument,' +
     '[data-idea-heat], .idea-heat__canvas, .idea-heat__instrument,' +

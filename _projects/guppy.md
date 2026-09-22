@@ -7,6 +7,9 @@ tags:
   - Raspberry Pi
   - Python
 status: "Shipped"
+garage_slot: "guppy"
+garage_label: "Guppy · AI assistant"
+garage_kicker: "Shipped · Raspberry Pi"
 hero: "/assets/projects/guppy/hero.jpg"
 hero_alt: "Guppy, the Raspberry Pi AI assistant"
 repo: "https://github.com/samblaha/Guppy"

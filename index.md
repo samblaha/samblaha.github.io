@@ -1,12 +1,7 @@
 ---
 layout: home
 title: Home
+description: "Step inside Sam Blaha's digital maker garage—hardware, AI, fabrication, golf tech, security tools, and prototypes."
+extra_css: /assets/css/garage.css?v=build-reader-1
 ---
-
-I love building things. I'm happiest when an idea goes from a messy sketch to something you can hold, test, and improve.
-
-I'm a DIY engineer who mixes hardware, software, and design to make projects that are fun, functional, and sometimes delightfully unnecessary. I care about the little details like reliability, clean UX, and builds that survive the real world, not just the workbench.
-
-If it can be prototyped, I probably want to try it.
-
 

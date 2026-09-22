@@ -28,6 +28,14 @@ repo: "https://github.com/your-handle/your-repo"
 demo: "https://example.com"
 comments: true               # set false to hide the discussion panel on this post
 
+# Optional: place this project on one of the five physical homepage hotspots.
+# Available slots: openpage, guppy, delta, pentest, golf.
+# Leave these out to keep the project in the automatic archive shelf only.
+# One project per slot.
+garage_slot: "openpage"
+garage_label: "Short label shown when the hotspot is focused"
+garage_kicker: "In progress · hardware + AI"
+
 # Optional: rendered as a spec-sheet card above the write-up
 specs:
   MCU: "ESP32-S3"

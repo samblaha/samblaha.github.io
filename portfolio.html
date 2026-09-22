@@ -1,49 +1,49 @@
 ---
 layout: default
-title: Portfolio
-description: "Every build on the workbench, newest first."
+title: Projects
+description: "A collection of experiments, useful things, and ideas that escaped the notebook."
 permalink: /portfolio/
+body_class: page-catalog
+extra_css: /assets/css/projects.css
 ---
-
 {% assign latest_projects = site.projects | sort: "date" | reverse %}
-
-<section class="hero hero--page">
-  <div class="hero__badge sticker sticker--phosphor" data-reveal>
-    The full workbench
+{% assign all_tags = "" | split: "" %}
+{% for project in site.projects %}{% for tag in project.tags %}{% assign all_tags = all_tags | push: tag %}{% endfor %}{% endfor %}
+{% assign all_tags = all_tags | uniq | sort %}
+<header class="catalog-intro">
+  <h1>Built out of<br>curiosity<span>.</span></h1>
+  <p>A collection of experiments, useful things, and ideas that escaped the notebook.</p>
+</header>
+<section class="catalog" id="projects" aria-label="Project archive">
+  <div class="catalog-toolbar">
+    <h2>The build index</h2>
+    <span id="catalog-count" role="status">{{ latest_projects.size }} projects</span>
+    <div class="catalog-tools">
+      <label class="catalog-search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10" cy="10" r="6.5"/><path d="m15 15 6 6"/></svg><input id="catalog-search" type="search" placeholder="Find a build" aria-label="Find a build"></label>
+      <select id="catalog-tag" aria-label="Filter by discipline"><option value="all">All disciplines</option>{% for tag in all_tags %}<option value="{{ tag | slugify }}">{{ tag }}</option>{% endfor %}</select>
+    </div>
   </div>
-
-  <h1 class="hero__title display-1" data-reveal>
-    Every <span class="marker marker--solder">build</span><span class="hero__period">.</span>
-  </h1>
-
-  <p class="hero__sub" data-reveal>
-    Newest first. Filter by tag if you're hunting something specific — or jump
-    back to the <a href="/#projects">latest six</a> on the home page.
-  </p>
-</section>
-
-<section id="projects" class="section section--flush">
-  {% assign all_tags = "" | split: "" %}
-  {% for project in site.projects %}
-    {% for tag in project.tags %}
-      {% assign all_tags = all_tags | push: tag %}
-    {% endfor %}
-  {% endfor %}
-  {% assign all_tags = all_tags | uniq | sort %}
-
-  {% if all_tags.size > 1 %}
-  <div class="filter" data-reveal role="group" aria-label="Filter builds by tag">
-    <button class="filter__btn is-active" type="button" data-filter="all">All builds</button>
-    {% for tag in all_tags %}
-      <button class="filter__btn" type="button" data-filter="{{ tag | slugify }}">{{ tag }}</button>
-    {% endfor %}
-  </div>
-  {% endif %}
-
-  <div class="grid" id="build-grid">
-    {% for project in latest_projects %}
-      {% include project-card.html project=project variant="small" %}
-    {% endfor %}
-    <p class="grid__empty" id="grid-empty" hidden>Nothing tagged that yet. Nudge me in the <a href="/#ideas">Idea Box</a>.</p>
+  <div class="catalog-layout">
+    <div class="catalog-list">
+      {% for project in latest_projects %}
+      <article class="catalog-row{% if forloop.first %} is-selected{% endif %}" data-project-row data-tags="{% for tag in project.tags %}{{ tag | slugify }} {% endfor %}" data-search="{{ project.title | append: ' ' | append: project.summary | append: ' ' | append: project.tags | join: ' ' | downcase | escape }}">
+        <a href="{{ project.url }}" class="catalog-row-link">
+          <span class="catalog-number">{% if forloop.index < 10 %}0{% endif %}{{ forloop.index }}</span>
+          <h3>{{ project.title }}</h3><time datetime="{{ project.date | date_to_xmlschema }}">{{ project.date | date: '%Y' }}</time>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h17M13 5l7 7-7 7"/></svg>
+        </a>
+        <template>
+          <div class="catalog-media">
+            {% if project.hero %}<img src="{{ project.hero }}" alt="{{ project.hero_alt | default: project.title | escape }}">{% else %}<div class="catalog-no-image"><span>{{ project.tags.first }}</span><strong>{{ project.title }}</strong><span>Build notes / {{ project.date | date: '%Y' }}</span></div>{% endif %}
+          </div>
+          <h2>{{ project.title }}</h2><p>{{ project.summary }}</p>
+          <div class="catalog-preview-bottom"><a class="catalog-open" href="{{ project.url }}">Open build log <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h17M13 5l7 7-7 7"/></svg></a><span>{{ project.status }}</span></div>
+        </template>
+      </article>
+      {% endfor %}
+      <div class="catalog-empty" hidden><h3>No builds found.</h3><p>Try another search or discipline.</p><button type="button" id="catalog-reset">Clear filters</button></div>
+    </div>
+    <aside class="catalog-preview" id="catalog-preview" aria-label="Selected project preview"></aside>
   </div>
 </section>
+<script src="/assets/js/projects.js" defer></script>

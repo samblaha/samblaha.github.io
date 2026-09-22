@@ -198,22 +198,19 @@ test('year ticks follow the first build of each year', () => {
   assert.strictEqual(ticks[1].t, laid[2].t);
 });
 
-test('home layout drives the scope from site.projects, not invented jobs', () => {
+test('garage archive replaces the homepage career scope with real projects', () => {
   const home = fs.readFileSync(path.join(repo, '_layouts/home.html'), 'utf8');
-  const about = home.split('id="about"')[1] || '';
-  assert.ok(home.includes('data-career-scope'));
-  assert.ok(home.includes('id="career-scope-data"'));
-  assert.ok(home.includes('/assets/js/career-scope.js'));
-  assert.ok(home.includes('career_projects = site.projects | sort: "date"'));
-  assert.ok(about.includes('{{ project.url }}'));
-  assert.doesNotMatch(about, /LinkedIn|Google|Meta|employer|résumé company/i);
+  assert.ok(home.includes('garage_projects = site.projects | sort: "date" | reverse'));
+  assert.ok(home.includes('for project in garage_projects'));
+  assert.ok(home.includes('{{ project.url }}'));
+  assert.ok(home.includes('data-open-about'));
+  assert.doesNotMatch(home, /data-career-scope|career-scope-data/);
+  assert.doesNotMatch(home, /LinkedIn|Google Careers|Meta Careers|résumé company/i);
   const js = fs.readFileSync(path.join(repo, 'assets/js/career-scope.js'), 'utf8');
   const css = fs.readFileSync(path.join(repo, 'assets/css/site.css'), 'utf8');
-  const copper = fs.readFileSync(path.join(repo, 'assets/js/copper-trace.js'), 'utf8');
   assert.doesNotMatch(js, /ghin|password|api[_-]?key|secret/i);
   assert.ok(css.includes('.career-scope'));
   assert.ok(css.includes('prefers-reduced-motion'));
-  assert.ok(copper.includes('.career-scope__stage'));
 });
 
 if (failed) {

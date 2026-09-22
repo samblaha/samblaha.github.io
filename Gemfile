@@ -13,3 +13,8 @@ gem "jekyll", "~> 4.2.0"
 gem "webrick", "~> 1.8"
 
 
+# Standard libraries extracted from Ruby 4; required by Jekyll.
+gem "logger"
+gem "csv"
+gem "base64"
+gem "bigdecimal"

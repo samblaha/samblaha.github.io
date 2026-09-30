@@ -14,6 +14,36 @@ layout: default
     <canvas class="garage-canvas" data-three-canvas tabindex="0" aria-label="Interactive 3D garage. Drag to orbit a full 360 degrees, scroll to zoom, or click the Blaha Cola machine outside the right wall to browse projects. Arrow keys rotate, plus and minus zoom, Home resets."></canvas>
     <p class="scene-status" data-scene-status role="status">INITIALIZING LAB</p>
     <span class="scene-tooltip" data-scene-tooltip hidden></span>
+    <aside
+      class="spectrum"
+      data-spectrum
+      role="region"
+      tabindex="0"
+      aria-label="Channel 3 spectrum analyzer. Scroll, pointer movement, and clicks light the frequency bins. Space or Enter adds a pulse when focused."
+    >
+      <div class="instrument spectrum__instrument">
+        <div class="instrument__bezel">
+          <div class="instrument__chrome">
+            <span>CH3 · SPECTRUM</span>
+            <span class="instrument__live">
+              <span class="led" data-spectrum-led aria-hidden="true"></span>
+              <span data-spectrum-live>HOLD</span>
+            </span>
+          </div>
+          <div class="spectrum__stage">
+            <canvas class="spectrum__canvas" data-spectrum-canvas width="720" height="140" aria-hidden="true"></canvas>
+            <div class="spectrum__scan" aria-hidden="true"></div>
+          </div>
+          <div class="spectrum__readouts">
+            <span>SPAN 10k</span>
+            <span data-spectrum-peak>PK −∞</span>
+            <span>RBW 120</span>
+            <span>TRIG: PTR</span>
+          </div>
+        </div>
+      </div>
+      <p class="spectrum__hint">Pointer, wheel, and taps drive the bins. Nothing leaves this bench.</p>
+    </aside>
   </div>
   <nav class="scene-access" aria-label="Workshop navigation">
     <button type="button" data-enter-arcade>Project dispenser</button>
@@ -142,6 +172,7 @@ layout: default
 ]
 </script>
 <script src="/assets/js/garage.js?v={{ site.time | date: '%s' }}" defer></script>
+<script src="/assets/js/spectrum.js?v={{ site.time | date: '%s' }}" defer></script>
 <script src="/assets/js/garage3d.bundle.js?v={{ site.time | date: '%s' }}" defer></script>
 
 <noscript>

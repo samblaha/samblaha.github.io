@@ -66,7 +66,9 @@
     } else if (kind === 'pulse') {
       for (i = 0; i < n; i += 1) {
         t = n === 1 ? 1 : i / (n - 1);
-        out[i] = 0.32 + 0.68 * t;
+        var comb = 0.4 + 0.6 * Math.abs(Math.sin(i * 1.91 + 0.35));
+        var ridge = Math.exp(-Math.pow((t - 0.82) / 0.28, 2));
+        out[i] = clamp(0.05 + 0.95 * (0.28 * t + 0.72 * ridge) * comb, 0, 1);
       }
     }
     return out;
@@ -127,7 +129,7 @@
     decay(next.bins, seconds, LIVE_TAU);
     inject(next.bins, shapeAt(n, 'scroll', e.x), e.scroll);
     inject(next.bins, shapeAt(n, 'pointer', e.x), e.pointer * 0.9);
-    inject(next.bins, shapeAt(n, 'pulse', e.x), e.pulse);
+    inject(next.bins, shapeAt(n, 'pulse', e.x), e.pulse * 0.82);
     holdPeaks(next.peaks, next.bins, seconds, PEAK_TAU);
     next.sweep = (next.sweep + seconds / 1.85) % 1;
     return next;
@@ -258,7 +260,7 @@
       var innerW = Math.max(1, w - padL - padR);
       var innerH = Math.max(1, h - padT - padB);
       var n = state.bins.length;
-      var gap = Math.max(1, Math.floor(innerW / n * 0.18));
+      var gap = Math.max(1, Math.floor(innerW / n * 0.34));
       var barW = Math.max(1, (innerW - gap * (n - 1)) / n);
       var i;
       var x;
@@ -266,6 +268,8 @@
       var peakH;
       var amp;
       var col;
+      var cx;
+      var cy;
 
       ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.globalAlpha = 1;
@@ -314,22 +318,44 @@
       ctx.lineJoin = 'round';
       ctx.lineCap = 'round';
       ctx.beginPath();
+      ctx.moveTo(padL, padT + innerH);
+      for (i = 0; i < n; i += 1) {
+        cx = padL + i * (barW + gap) + barW / 2;
+        cy = padT + innerH - dbHeight(state.bins[i]) * innerH;
+        ctx.lineTo(cx, cy);
+      }
+      ctx.lineTo(padL + innerW, padT + innerH);
+      ctx.closePath();
+      var wash = ctx.createLinearGradient(0, padT, 0, padT + innerH);
+      wash.addColorStop(0, rgba(colors.amber, 0.38));
+      wash.addColorStop(0.55, rgba(colors.green, 0.18));
+      wash.addColorStop(1, rgba(colors.green, 0.03));
+      ctx.fillStyle = wash;
+      ctx.fill();
+
       for (i = 0; i < n; i += 1) {
         x = padL + i * (barW + gap);
         amp = dbHeight(state.bins[i]);
         liveH = amp * innerH;
         col = mixRgb(colors.green, colors.amber, amp);
         if (amp > 0.82) col = mixRgb(col, colors.hot, (amp - 0.82) / 0.18);
-        ctx.shadowColor = rgba(col, 0.85);
-        ctx.shadowBlur = Math.max(6, barW * 1.8);
-        ctx.fillStyle = rgba(col, 0.22 + amp * 0.55);
+        ctx.shadowColor = rgba(col, 0.7);
+        ctx.shadowBlur = Math.max(5, barW * 1.4);
+        ctx.fillStyle = rgba(col, 0.16 + amp * 0.42);
         ctx.fillRect(x, padT + innerH - liveH, barW, liveH);
-        if (i === 0) ctx.moveTo(x + barW / 2, padT + innerH - liveH);
-        else ctx.lineTo(x + barW / 2, padT + innerH - liveH);
       }
-      ctx.shadowBlur = 18;
+
+      ctx.beginPath();
+      for (i = 0; i < n; i += 1) {
+        cx = padL + i * (barW + gap) + barW / 2;
+        cy = padT + innerH - dbHeight(state.bins[i]) * innerH;
+        if (i === 0) ctx.moveTo(cx, cy);
+        else ctx.lineTo(cx, cy);
+      }
+      ctx.shadowColor = rgba(colors.amber, 0.9);
+      ctx.shadowBlur = 16;
       ctx.strokeStyle = rgba(colors.amber, 0.95);
-      ctx.lineWidth = Math.max(1.25, barW * 0.22);
+      ctx.lineWidth = Math.max(1.4, barW * 0.28);
       ctx.stroke();
 
       ctx.shadowBlur = 0;
@@ -337,7 +363,7 @@
         peakH = dbHeight(state.peaks[i]) * innerH;
         if (peakH <= 1) continue;
         x = padL + i * (barW + gap);
-        ctx.fillStyle = rgba(colors.amber, 0.92);
+        ctx.fillStyle = rgba(colors.amber, 0.95);
         ctx.fillRect(x, padT + innerH - peakH - 1, barW, 2);
       }
       ctx.restore();

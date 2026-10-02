@@ -2,6 +2,12 @@
 
 An immersive, object-led maker portfolio built with GitHub Pages and Jekyll. The homepage is a lived-in digital workshop: active builds sit on the main bench, past projects live on the archive shelf, and every object opens a real project log. **Projects are a Jekyll collection**—each project is one Markdown file in `_projects/`.
 
+## Tiny planet navigation
+
+The homepage now starts on a rotatable tiny planet in space. Click the neon Projects, Blog, Research, or About arrows, drag to orbit, or use keyboard arrows and Home. The garage opens the existing workshop and project holograms. Blog and Research currently show unpublished-content states. Accessible destination buttons provide equivalent navigation.
+
+The detailed landscape and miniature buildings are authored in `assets/js/garage3d/planet-world.js`, with the generated surface texture in `assets/planet/`. The planet entry point is `assets/js/garage3d/planet.js`; it lazily initializes the existing garage runtime on entry. Rebuild with `sh scripts/build_garage_3d.sh`.
+
 ## Blender workshop
 
 The homepage loads a Blender-authored orbital workshop from `assets/models/garage.glb`.
@@ -83,3 +89,9 @@ The committed JSON is an empty schema so the rack stays up without credentials. 
 - Tag filters live on `/portfolio/` (deep-linkable: `/portfolio/?tag=hardware#projects`). Old `/?tag=` links redirect there.
 - Missing optional fields won’t break rendering (no hero/status/repo/demo/gallery is fine).
 - Comments use giscus; see `GISCUS-SETUP.md` for repository setup.
+
+The exterior-left project cabinet (`project-cabinet.js`) displays the published project collection as illuminated 3D miniatures. Projects navigation flies to the cabinet; selecting a miniature or its numbered button updates a field-note card. The build reader opens the existing project post and returns to the selected cabinet item. Miniature GLBs load on first visit. Arrow keys select projects; Escape returns to the planet.
+
+The exterior display now uses a twin conveyor with a ten-project viewing window. “Belt back” and “Belt forward” advance five positions with wraparound; numbered selection also brings off-belt projects into view. Add projects to the existing `_projects` collection as usual: the home JSON includes the collection automatically, and builds without miniature assets receive a titled build-note model. Models load when first brought into view. Picking uses dedicated compartment planes, excluding decorative outlines. Conveyor reachability and ray hits were checked with collections of 1, 7, 10, 11, and 27 projects.
+
+The planet is now a space camp. `space-camp.js` adds the Engineering module, Broadcast studio, habitat, compact reactor, terrain-following crew, workbenches, and illuminated utility lines. Engineering focuses the project conveyor; Broadcast reads `site.posts` (add normal Jekyll `_posts/YYYY-MM-DD-title.md` posts to publish dispatches). Other station signs focus their 3D landmarks. Drag orbits, right-drag pans, and scrolling zooms, including in focused views. “Explore freely” dismisses station details without resetting the camera; Home returns to camp overview. Reduced-motion settings freeze crew, conveyor, and power-line animation and remove camera-flight transitions.

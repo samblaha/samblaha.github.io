@@ -115,27 +115,12 @@
     }, 420);
   }
 
-  function openProject(id, trigger) {
-    var project = projectData[id];
-    if (!project || !projectPanel) return;
-
-    projectPanel.querySelector('[data-project-kicker]').textContent = project.kicker;
-    projectPanel.querySelector('[data-project-title]').textContent = project.title;
-    projectPanel.querySelector('[data-project-summary]').textContent = project.summary;
-    projectPanel.querySelector('[data-project-link]').href = project.url;
-
-    var tags = projectPanel.querySelector('[data-project-tags]');
-    tags.textContent = '';
-    project.tags.forEach(function (tag) {
-      var chip = document.createElement('span');
-      chip.textContent = tag;
-      tags.appendChild(chip);
-    });
-
-    enterGarage();
-    openPanel(projectPanel, trigger);
-    projectPanel.querySelector('.build-reader').scrollTop = 0;
-    loadProjectPost(project);
+  function requestHologram(id, trigger) {
+    if (!id || !projectData[id]) return;
+    closeAll(false);
+    enterGarage(trigger);
+    document.documentElement.dataset.pendingHologram = id;
+    document.dispatchEvent(new CustomEvent('garage:open-hologram', { detail: { id: id } }));
   }
 
   root.querySelectorAll('[data-enter-garage]').forEach(function (button) {
@@ -144,12 +129,22 @@
 
   root.querySelectorAll('[data-project]').forEach(function (button) {
     button.addEventListener('click', function () {
-      openProject(button.getAttribute('data-project'), button);
+      requestHologram(button.getAttribute('data-project'), button);
+    });
+  });
+
+  document.querySelectorAll('[data-open-hologram]').forEach(function (button) {
+    button.addEventListener('click', function () {
+      requestHologram(button.getAttribute('data-open-hologram'), button);
     });
   });
 
   document.querySelectorAll('[data-open-inventory]').forEach(function (button) {
     button.addEventListener('click', function () {
+      if (root.classList.contains('is-planet') && root.classList.contains('is-3d-ready')) {
+        document.dispatchEvent(new CustomEvent('planet:open-cabinet'));
+        return;
+      }
       enterGarage();
       openPanel(inventory, button);
     });
@@ -197,10 +192,27 @@
     });
   });
 
+  document.addEventListener('garage:read-project', function (event) {
+    var project = projectData[event.detail && event.detail.id];
+    if (!project) return;
+    projectPanel.querySelector('[data-project-title]').textContent = project.title;
+    projectPanel.querySelector('[data-project-kicker]').textContent = [project.year, project.status].filter(Boolean).join(' / ');
+    projectPanel.querySelector('[data-project-summary]').textContent = project.summary || '';
+    var tags = projectPanel.querySelector('[data-project-tags]');
+    tags.replaceChildren();
+    (project.tags || []).forEach(function (tag) { var item = document.createElement('span'); item.textContent = tag; tags.appendChild(item); });
+    projectPanel.querySelector('[data-project-link]').href = project.url;
+    projectPanel.querySelectorAll('[data-close-project]').forEach(function (button) {
+      if (!button.classList.contains('garage-panel__backdrop')) { button.textContent = 'Back to cabinet'; button.setAttribute('aria-label', 'Back to cabinet'); }
+    });
+    openPanel(projectPanel, document.activeElement);
+    loadProjectPost(project);
+  });
+
   document.addEventListener('garage:enter', function () { enterGarage(); });
   document.addEventListener('garage:open-project', function (event) {
     var id = event.detail && event.detail.id;
-    if (id) openProject(id);
+    if (id) requestHologram(id);
   });
 
   document.addEventListener('keydown', function (event) {
@@ -226,12 +238,12 @@
   } catch (_error) {}
 
   if (root.classList.contains('is-entered')) enterGarage();
-  if (window.location.hash === '#about') openPanel(infoPanel);
+
 
   var soundButton = root.querySelector('[data-sound]');
   var audioContext;
   var soundOn = false;
-  soundButton.addEventListener('click', async function () {
+  soundButton?.addEventListener('click', async function () {
     try {
       if (!audioContext) {
         var AudioCtor = window.AudioContext || window.webkitAudioContext;

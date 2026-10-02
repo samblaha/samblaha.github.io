@@ -1,7 +1,7 @@
 ---
 layout: home
 title: Home
-description: "Step inside Sam Blaha's digital maker garage—hardware, AI, fabrication, golf tech, security tools, and prototypes."
-extra_css: /assets/css/garage.css?v=build-reader-1
+description: "Explore Sam Blaha's tiny planet—a maker garage, projects, blog, and research in orbit."
+extra_css: /assets/css/garage.css?v=tiny-planet-1
 ---
 

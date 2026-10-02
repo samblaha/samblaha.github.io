@@ -5,50 +5,82 @@ layout: default
 {% assign garage_projects = site.projects | sort: "date" | reverse %}
 {% assign featured_projects = site.projects | where_exp: "project", "project.garage_slot" %}
 
-<section class="garage" data-garage aria-labelledby="garage-title">
+<section class="garage is-planet" data-garage aria-labelledby="garage-title">
   <header class="neon-header">
-    <h1 id="garage-title">Sam Blaha <span> / Blaha Labs</span></h1>
-    <button type="button" data-open-inventory>Project index <span aria-hidden="true">↗</span></button>
+    <h1 id="garage-title"><span class="neon-pulse" aria-hidden="true"></span>Sam Blaha <span>/ Space Camp</span></h1>
+    <button type="button" data-camp-free>Explore freely</button>
+    <button type="button" data-open-inventory>Engineering <span aria-hidden="true">↗</span></button>
   </header>
   <div class="neon-stage" data-three-stage>
-    <canvas class="garage-canvas" data-three-canvas tabindex="0" aria-label="Interactive 3D garage. Drag to orbit a full 360 degrees, scroll to zoom, or click the Blaha Cola machine outside the right wall to browse projects. Arrow keys rotate, plus and minus zoom, Home resets."></canvas>
+    <canvas class="garage-canvas" data-three-canvas tabindex="0" aria-label="Interactive 3D garage. Drag to orbit a full 360 degrees, scroll to zoom, or click the project wall to browse builds. Arrow keys rotate, plus and minus zoom, Home resets."></canvas>
+    <div class="neon-vignette" aria-hidden="true"></div>
     <p class="scene-status" data-scene-status role="status">INITIALIZING LAB</p>
     <span class="scene-tooltip" data-scene-tooltip hidden></span>
   </div>
   <nav class="scene-access" aria-label="Workshop navigation">
-    <button type="button" data-enter-arcade>Project dispenser</button>
-    <button type="button" data-open-about>About Sam</button>
+    <button type="button" data-enter-arcade>Project wall</button>
+    <button type="button" data-planet-destination="about">About Sam</button>
     <a href="/portfolio/">Build logs</a>
     <button type="button" data-enter-garage>Explore the lab</button>
     {% for project in featured_projects %}
     <button type="button" data-project="{{ project.slug }}" data-slot="{{ project.garage_slot }}">{{ project.garage_label | default: project.title }}</button>
     {% endfor %}
   </nav>
+  <a class="back-planet" data-back-planet href="/" hidden>← Back to planet</a>
+  <nav class="planet-destinations" aria-label="Planet destinations">
+    <button data-planet-destination="projects">Engineering</button>
+    <button data-planet-destination="blog">Broadcast</button>
+    <button data-planet-destination="research">Research</button>
+    <button data-planet-destination="about">Habitat</button>
+    <button data-planet-destination="reactor">Reactor</button>
+  </nav>
+  <aside class="camp-panel" data-camp-panel hidden aria-label="Camp station">
+    <button type="button" data-camp-free>← Explore freely</button>
+    <h2></h2><p data-camp-copy></p>
+    <div data-broadcast-posts hidden>
+      {% for post in site.posts %}<a class="camp-post" href="{{ post.url }}"><time>{{ post.date | date: "%b %d, %Y" }}</time><strong>{{ post.title }}</strong></a>{% else %}<p class="camp-empty">The transmitter is ready. No dispatches published yet.</p>{% endfor %}
+    </div>
+    <button type="button" data-camp-about hidden>Meet Sam ↗</button>
+  </aside>
+  <section class="cabinet-ui" data-cabinet-ui hidden aria-label="The build cabinet">
+    <button class="cabinet-back" type="button" data-cabinet-exit>← Back to planet</button>
+    <article class="cabinet-file" aria-labelledby="cabinet-project-title">
+      <div class="cabinet-file__meta"><span data-cabinet-number>01 / 10</span><span data-cabinet-status></span></div>
+      <div class="cabinet-file__heading"><p>FIELD NOTES / <span data-cabinet-year></span></p><h2 id="cabinet-project-title" data-cabinet-title></h2></div>
+      <figure class="cabinet-file__photo"><img data-cabinet-image alt="" /></figure>
+      <p class="cabinet-file__summary" data-cabinet-summary></p>
+      <ul class="cabinet-file__tags" data-cabinet-tags aria-label="Project topics"></ul>
+      <a class="cabinet-file__read" data-cabinet-read href="/portfolio/">Read build log <span aria-hidden="true">↗</span></a>
+      <div class="cabinet-file__paging cabinet-belt"><button type="button" data-belt-left aria-label="Run conveyor backward">⇤ Belt back</button><button type="button" data-belt-right aria-label="Run conveyor forward">Belt forward ⇥</button></div>
+      <div class="cabinet-file__paging"><button type="button" data-cabinet-previous>← Previous</button><button type="button" data-cabinet-next>Next →</button></div>
+      <nav class="cabinet-file__numbers" data-cabinet-numbers aria-label="Choose a project"></nav>
+    </article>
+    <p class="cabinet-hint">Pick a miniature to open its story.</p>
+    <span class="cabinet-announcement" data-cabinet-announcement aria-live="polite"></span>
+  </section>
   <div class="camera-controls" aria-label="Camera controls">
-    <button type="button" data-camera="left" aria-label="Rotate garage left">↶</button>
-    <button type="button" data-camera="reset">Reset view</button>
-    <button type="button" data-camera="right" aria-label="Rotate garage right">↷</button>
+    <button type="button" data-camera="left" aria-label="Rotate planet left">↶</button>
+    <button type="button" data-camera="reset">Home</button>
+    <button type="button" data-camera="right" aria-label="Rotate planet right">↷</button>
   </div>
   <div class="arcade-hud" data-arcade-hud hidden>
-    <p class="arcade-hud__status" data-arcade-status aria-live="polite">Choose a build to get started</p>
+    <p class="arcade-hud__status" data-arcade-status aria-live="polite">Pick a build on the project wall</p>
     <ol class="arcade-hud__grid" data-arcade-grid></ol>
     <div class="arcade-hud__row">
-      <button type="button" data-arcade-back>Go back</button>
-      <button type="button" data-arcade-select hidden>Dispense build</button>
+      <button type="button" data-arcade-back>Close</button>
     </div>
   </div>
   <footer class="neon-footer">
-    <button type="button" data-open-contact>Say hello ↗</button>
-    <button class="neon-explore" type="button" data-enter-garage><span data-explore-label>Drag to orbit 360° · scroll to zoom</span></button>
-    <button type="button" data-sound aria-pressed="false">Sound off</button>
+    <p>A small camp. A world of ideas.</p>
+    <span>Drag to orbit · Scroll to zoom · Right-drag to pan</span>
   </footer>
   <div class="neon-mobile">
     <p class="neon-mobile__eyebrow">Welcome to my workshop</p>
     <h2>Useful tools.<br>Curious builds.</h2>
     <p>Hardware, software, and ideas brought to life.</p>
-    <button type="button" data-enter-arcade>Open the project dispenser ↗</button>
+    <button type="button" data-enter-arcade>Open the project wall ↗</button>
     <button type="button" data-open-inventory>Explore the builds ↗</button>
-    <nav aria-label="Quick navigation"><button type="button" data-open-about>About Sam</button><a href="/portfolio/">Build logs</a><button type="button" data-open-contact>Contact</button></nav>
+    <nav aria-label="Quick navigation"><button type="button" data-planet-destination="about">About Sam</button><a href="/portfolio/">Build logs</a><button type="button" data-planet-destination="about">Contact</button></nav>
   </div>
 </section>
 
@@ -56,8 +88,8 @@ layout: default
   <button tabindex="-1" class="garage-panel__backdrop" type="button" data-close-project aria-label="Close project details"></button>
   <section class="garage-panel__sheet build-reader" role="dialog" aria-modal="true" aria-labelledby="project-panel-title" tabindex="-1">
     <header class="build-reader__bar">
-      <span>BLAHA COLA <span>/ BUILD JOURNAL</span></span>
-      <button type="button" data-close-project aria-label="Close project details">Back to machine <span aria-hidden="true">×</span></button>
+      <span>BLAHA LABS <span>/ BUILD FILE</span></span>
+      <button type="button" data-close-project aria-label="Close project details">Back to lab <span aria-hidden="true">×</span></button>
     </header>
     <article class="build-reader__article">
       <p class="build-reader__kicker" data-project-kicker></p>
@@ -67,7 +99,7 @@ layout: default
       <div class="build-reader__content" data-project-content aria-busy="false"></div>
       <footer class="build-reader__footer">
         <a href="#" data-project-link>Open standalone post <span aria-hidden="true">↗</span></a>
-        <button type="button" data-close-project>Back to machine</button>
+        <button type="button" data-close-project>Back to lab</button>
       </footer>
     </article>
   </section>
@@ -94,7 +126,7 @@ layout: default
     <ol class="garage-inventory">
       {% for project in garage_projects %}
       <li class="garage-inventory__item" data-inventory-item data-tags="{{ project.title | downcase | escape }} {% for tag in project.tags %}{{ tag | downcase }} {% endfor %}">
-        <a href="{{ project.url }}">
+        <button type="button" data-open-hologram="{{ project.slug }}">
           <span class="garage-inventory__thumb">{% if project.hero %}<img src="{{ project.hero }}" alt="" loading="lazy" />{% endif %}</span>
           <span class="garage-inventory__copy">
             <span class="garage-inventory__meta"><time datetime="{{ project.date | date_to_xmlschema }}">{{ project.date | date: "%Y" }}</time>{% if project.status %}<span>{{ project.status }}</span>{% endif %}</span>
@@ -102,7 +134,7 @@ layout: default
             <span>{{ project.summary }}</span>
           </span>
           <span class="garage-inventory__arrow" aria-hidden="true">→</span>
-        </a>
+        </button>
       </li>
       {% endfor %}
     </ol>
@@ -117,12 +149,20 @@ layout: default
     <p class="garage-info__kicker">The human behind the bench</p>
     <h2 id="garage-info-title">I like turning messy ideas into things you can hold.</h2>
     <p>I'm Sam—a DIY engineer mixing hardware, software, AI, fabrication, and design. I care about the small details: clean UX, reliable builds, and prototypes that survive beyond the workbench.</p>
-    <p class="garage-info__contact" data-contact-block>
-      Want to compare notes or build something strange?
-      <a href="https://github.com/samblaha">Find me on GitHub →</a>
-    </p>
+    <p><a href="/#about">More about me and how I work ↗</a></p>
+    <section class="garage-info__contact" data-contact-block aria-labelledby="garage-contact-title">
+      <h3 id="garage-contact-title">Get in touch</h3>
+      <p>Have a project in mind, a question about a build, or an idea to compare notes on?</p>
+      <a href="mailto:samblaha66@gmail.com?subject=Hello%20from%20Blaha%20Labs">samblaha66@gmail.com ↗</a>
+      <p><small>Opens your email app with my address ready to go.</small></p>
+    </section>
   </aside>
 </div>
+
+<dialog class="planet-dialog" data-destination-dialog aria-labelledby="destination-title">
+  <form method="dialog"><button aria-label="Close destination">Close ×</button></form>
+  <h2 id="destination-title"></h2><p data-destination-copy></p><a href="/portfolio/">Explore the project archive ↗</a>
+</dialog>
 
 <script type="application/json" id="garage-projects">
 [
@@ -136,7 +176,8 @@ layout: default
     "url": {{ project.url | jsonify }},
     "year": {{ project.date | date: "%Y" | jsonify }},
     "status": {{ project.status | jsonify }},
-    "hero": {{ project.hero | jsonify }}
+    "hero": {{ project.hero | jsonify }},
+    "specs": {% if project.specs %}{{ project.specs | jsonify }}{% else %}{}{% endif %}
   }
 {% endfor %}
 ]
@@ -151,3 +192,12 @@ layout: default
     <a href="/portfolio/">Browse every project →</a>
   </section>
 </noscript>
+
+<dialog class="habitat-modal" data-habitat-modal aria-labelledby="habitat-about-title"><form method="dialog"><button class="habitat-modal__close" aria-label="Close About Me">Close ×</button></form>    <section class="habitat-profile">
+      <p class="habitat-profile__id">CREW 01 / RESIDENT BUILDER</p>
+      <h2 id="habitat-about-title">Hey, I'm Sam.</h2>
+      <p>A DIY engineer turning curious ideas into things you can hold, use, and explore.</p>
+      <p>I mix hardware, software, AI, fabrication, and design. I care about clean interfaces, reliable builds, and prototypes that survive beyond the workbench.</p>
+      <p>This camp is where I share what I'm making and what I'm learning along the way.</p>
+      <div class="habitat-contact"><h3>Earth to Sam.</h3><p>Have a project in mind or a question about a build? Open a channel.</p><a href="mailto:samblaha66@gmail.com?subject=Hello%20from%20Space%20Camp">samblaha66@gmail.com ↗</a><small>Opens your email app.</small><a href="https://github.com/samblaha">Find me on GitHub ↗</a></div>
+    </section><form method="dialog"><button class="habitat-modal__return">Back to the planet ↗</button></form></dialog>

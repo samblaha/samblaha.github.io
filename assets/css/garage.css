@@ -699,6 +699,8 @@ html:has(.page-home)::-webkit-scrollbar-thumb { background: #1a3a44; }
 @media(prefers-reduced-motion:reduce) { .cabinet-file__photo { transform: none; } }
 
 /* Camp stations remain non-modal: the landscape can still be explored. */
+.build-reader__tags { display: flex; flex-wrap: wrap; gap: 8px 12px; margin: 16px 0; }
+.build-reader__tags > span { display: inline-block; }
 .neon-header>button[data-camp-free] { margin-left:auto; margin-right:20px; }
 .camp-panel[hidden] { display:none; }
 .camp-panel { position:absolute; z-index:7; right:3%; top:18%; width:min(330px,32vw); padding:26px; background:#13232deb; border:1px solid #59777b; box-shadow:0 18px 60px #0005; color:#e7e2d3; backdrop-filter:blur(10px); }
@@ -707,6 +709,13 @@ html:has(.page-home)::-webkit-scrollbar-thumb { background: #1a3a44; }
 .camp-panel button { background:none;border:0;color:#87e2d7;font:12px 'IBM Plex Mono',monospace;cursor:pointer; }
 .camp-empty { border-top:1px solid #45606a;padding-top:16px;color:#aebec5; }
 .camp-post { display:block;padding:16px 0;border-top:1px solid #45606a;color:#f1e9d8;text-decoration:none; }.camp-post time { display:block;font:10px monospace;color:#94b8be;margin-bottom:8px; }
-@media(max-width:720px){.neon-header>button[data-camp-free]{font-size:9px;margin-right:10px;}.camp-panel{right:16px;left:16px;top:auto;bottom:160px;width:auto;max-height:40svh;overflow:auto;padding:18px;}.camp-panel h2{font-size:26px;margin:15px 0;}.planet-destinations{gap:10px;}.planet-destinations button{font-size:10px;}}
+@media(max-width:720px) {
+  .neon-header>button[data-camp-free] { min-height: 44px; font-size: 11px; margin-right: 10px; }
+  .camp-panel { right: 16px; left: 16px; top: auto; bottom: 212px; width: auto; max-height: 40svh; overflow: auto; padding: 18px; }
+  .camp-panel h2 { font-size: 26px; margin: 15px 0; }
+  .planet-destinations { gap: 4px; }
+  .planet-destinations button { min-height: 44px; padding: 8px; font-size: 12px; }
+  .is-planet .neon-footer>span { bottom: 220px; }
+}
 .camp-panel.is-habitat{top:10%;width:min(390px,36vw);max-height:76%;overflow:auto;border-radius:12px;background:#10212cef;border-color:#74b7b780}.habitat-profile[hidden]{display:none}.habitat-profile h3{font:500 24px 'Space Grotesk',sans-serif;margin:18px 0 12px}.habitat-profile .habitat-profile__id{font-size:9px;letter-spacing:.12em;color:#edaa79}.habitat-contact{border-top:1px solid #779c9c55;margin-top:22px;padding-top:10px}.habitat-contact a{display:block;color:#9be5d8;font:12px/1.8 'IBM Plex Mono',monospace;overflow-wrap:anywhere;margin:14px 0;text-underline-offset:4px}.habitat-contact small{font:10px monospace;color:#92a8b5}.camp-panel.is-habitat>h2{font:500 30px 'Space Grotesk',sans-serif;margin-bottom:10px}.camp-panel.is-habitat>[data-camp-copy]{display:none}@media(max-width:720px){.camp-panel.is-habitat{top:auto;bottom:105px;max-height:43svh;width:auto;right:12px;left:12px;padding:18px}.habitat-profile h3{font-size:20px}}
 .habitat-modal{width:min(580px,calc(100vw - 32px));max-height:86svh;overflow:auto;margin:auto;padding:36px;border:1px solid #8bc7c680;border-radius:18px;background:radial-gradient(ellipse at top right,#244750,#101d2b 65%);color:#e9ece5;box-shadow:0 25px 100px #000a}.habitat-modal::backdrop{background:#020b16a6;backdrop-filter:blur(5px)}.habitat-modal form{margin:0}.habitat-modal__close{display:block;margin-left:auto;background:transparent;border:1px solid #769c9c66;border-radius:6px;color:#b5e4df;padding:8px 12px;cursor:pointer}.habitat-modal h2{font:500 42px/1.1 'Space Grotesk',sans-serif;letter-spacing:-.04em;margin:20px 0}.habitat-modal p{font:14px/1.85 'IBM Plex Mono',monospace;color:#c4d0d5}.habitat-modal .habitat-profile__id{color:#edaa79;font-size:10px;letter-spacing:.12em}.habitat-modal .habitat-contact h3{font-size:26px}.habitat-modal__return{margin-top:24px;padding:13px 18px;border:1px solid #8bc7c6;border-radius:6px;background:#88d6cd;color:#10212c;font:13px 'IBM Plex Mono',monospace;cursor:pointer}.habitat-modal button:focus-visible,.habitat-modal a:focus-visible{outline:2px solid #edaa79;outline-offset:4px}@media(max-width:600px){.habitat-modal{padding:24px}.habitat-modal h2{font-size:34px}.habitat-modal p{font-size:12px}}

@@ -1,6 +1,28 @@
-# Neon storefront design QA
+# Space Camp regression baseline
 
-final result: passed
+Implementation check: passed locally for the scoped corrections below; independent QA and public deployment are still pending.
+
+## Current experience and scope
+- The homepage is the orbitable 3D Space Camp, with Engineering's project conveyor, Broadcast, Research, Habitat/About, and Reactor stations. The older storefront evidence below is historical, not a pass for this interface.
+- Golf Ball Printer now carries the canonical Golf tag while retaining 3D Printing, CAD, and Hardware. Catalog filtering stays metadata-driven; no title-matching workaround was added.
+- Reader topics use a wrapping flex row with 12px horizontal and 8px vertical gaps.
+- Mobile station buttons use 12px labels and at least 44px height. They wrap without removing any station; non-modal station details are raised above the enlarged navigation. This is usability polish, not a claim that the former 32px controls violated WCAG AA.
+
+## Local verification — task t_bc578863
+- `python3 scripts/validate_projects.py`: passed, 10 projects / 5 garage slots.
+- `PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts -p 'test_*.py'`: all 22 tests passed. These are Python helper tests, not frontend coverage.
+- `sh scripts/build_garage_3d.sh` and `node --check assets/js/garage3d.bundle.js`: passed; rebuilt bundle unchanged.
+- `bundle exec jekyll build --disable-disk-cache` with an external scratch destination: passed with Ruby 4 / Jekyll 4.2.2. Nonfatal Logger/Stevenson compatibility warnings remain.
+- Real Chromium at 1440 × 900 and 390 × 844: Golf dropdown includes Virtual Golf Ball Rack and Golf Ball Printer; reader topics are visibly separated; Escape returns focus to the cabinet reader link. Mobile About closes, Research/Broadcast/Reactor actions work, and Engineering opens the conveyor.
+- At 390px, all five station buttons measure 44px high, use 12px labels, and are unobstructed at their centers in the overview and Research view. Document width is 390px (no horizontal overflow).
+- Browser error/unhandled-rejection arrays were empty in the checked camp/reader states. This is not exhaustive network, screen-reader, contrast, hardware-performance, no-WebGL, or reduced-motion certification.
+- This local implementation check does not replace independent review or prove that GitHub Pages has deployed these changes.
+
+---
+
+# Historical neon storefront design QA
+
+Historical result: passed for the former storefront only. The title-matching Golf workaround and image-based navigation described below do not describe the current catalog or Space Camp. Original evidence is retained for provenance; it has not been revalidated.
 
 ## Evidence
 - Source visual truth: /Users/samblaha/.codex/generated_images/01a09135-8acb-7361-bf00-aaed72030e52/exec-113edad8-64be-4301-8000-2cb65b7036ac.png

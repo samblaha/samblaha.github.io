@@ -3,6 +3,7 @@ title: "Golf Ball Printer"
 date: 2020-07-01
 summary: "An egg printer redesigned in CAD to draw on golf balls, driven by an Inkscape bot that turns images and text into pen paths."
 tags:
+  - Golf
   - 3D Printing
   - CAD
   - Hardware
